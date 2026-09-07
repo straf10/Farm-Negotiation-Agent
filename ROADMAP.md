@@ -17,16 +17,16 @@
 
 ---
 
-## 1. Where we are — **2026-08-28** *(refreshed against a live leaderboard snapshot + the episodes API)*
+## 1. Where we are — **2026-09-01** *(refreshed against a live leaderboard snapshot + the episodes API)*
 
 | | Value |
 |---|---|
-| **Active pair** | `55726984` **reconstruction + H2 tail-liquidation — 144 ladder episodes, past the burst and judgeable**, uploaded 08-23 23:07 · `55675634` **reconstruction + market overlay + tile recovery — 1.657,3**, 119 public episodes, frozen 08-21 19:06. *(`55726984` evicted `55586926` on 08-23; that route survives inside it — `55726984` **is** `55586926` + H2.)* |
-| **Team standing** | **STRAF rank 1.179 of 6.649, 1.645,8** (snapshot 2026-08-27 21:14). `55726984` is now past the burst at **144 ladder episodes, 79-65 (WR 0,549)** — judgeable. Against its first read (1.669,2 / #1.234) that is **−23 points and +55 places**: §2 rule 3, the pool deflates, so read the **rank**. Prior snapshot 2026-08-23 15:30 read 1.815,1 / #903, *before* the 08-23 upload re-placed us |
-| **Next eviction** | by **date** ⇒ the next upload drops **`55675634`** (08-21, 1.657,3) — the *lower*-scored slot, so this one is cheap again. Decide it deliberately anyway (§9 rule 3) |
+| **Active pair** | `55726984` **reconstruction + H2 tail-liquidation — public score 1.494,8**, 244 ladder episodes, uploaded 08-23 23:07 · `55675634` **reconstruction + market overlay + tile recovery — public score 1.501,3**, 326 ladder episodes, frozen 08-21 19:06. *(`55726984` evicted `55586926` on 08-23; that route survives inside it — `55726984` **is** `55586926` + H2.)* **Role reversal since 08-28: `55675634` is now the higher-scoring slot** — the "cheap eviction" framing below no longer holds |
+| **Team standing** | **STRAF rank 1.574 of 7.210, 1.501,3** (snapshot 2026-09-01 18:51 UTC). Vs the last read (1.179/6.649, 1.645,8 on 08-27): **−395 places, −144,5 points** — pool grew ~8,4% over the same window, so most but not all of the rank move is real drift, not just deflation (§2 rule 3). `55726984` at **244 ladder episodes, 110-134 (WR 0,451)**, down from 0,549 at 144 eps; its most recent block of 82 episodes reads **25-57 (WR 0,305)** — worth a look before trusting it as the stronger slot again. `55675634` at **326 ladder episodes, 169-157 (WR 0,518)** |
+| **Next eviction** | by **date** ⇒ the next upload drops **`55675634`** (08-21) — now the *higher*-scored slot (see role reversal above), so this is no longer the cheap eviction it was on 08-28. Decide it deliberately (§9 rule 3) |
 | **Converged win rate** | **43,4%** (controlled, past the placement window). By opponent band: **54% / 41% / 38%** at <1.800 / 1.800-2.100 / 2.100+ |
-| **Ladder top** (2026-08-27 21:14) | #1 Crop Dusta **3.111,4** · #2 Ryo Hasegawa 2.979,4 · #3 Subramanya N 2.968,7 · #4 tetsuya 2.900,7 · #5 Blu3s 2.884,2 · **#112 ReCurSiON 2.424,8** (our donor, still frozen 08-14 — **−344,4 points and −96 places** since 08-23 while frozen; §2 rule 4, a 2400-2800 band bleeds ~−67 pts/day) |
-| **The gap** | **779 points / 1.067 places** to our own donor (2026-08-27; was 954 / 887 on 08-23). The *score* gap closed only because the frozen donor bled faster than we did — the **place** gap widened. Measured, not inferred — §1.1 |
+| **Ladder top** (2026-09-01 18:51 UTC) | #1 tetsuya **2.928,6** · #2 Crop Dusta 2.884,6 · #3 senkin13 2.850,3 · #4 QQ Farming 2.848,7 · #5 yukino 2.845,0 · **#839 ReCurSiON 1.844,5** (our donor, still frozen 08-14 — **−935,1 points and −824 places since 08-23** while frozen, ~9 days; the whole top of the board has also turned over since 08-27, none of that day's top 5 remain in it) |
+| **The gap** | **343,2 points / 735 places** to our own donor (2026-09-01; was 779/1.067 on 08-27). Both the score **and** place gap narrowed this time — unlike 08-23→08-27, where only the score gap closed while the place gap widened. Re-check §1.1's "the gap is real strength" framing against this before leaning on it further |
 | **Deadline** | **2026-09-30 23:59 UTC** (33 days; §9 rule 5 freezes the last week ⇒ real limit ~**09-23**). Final ranking = one Bradley-Terry tournament over the ~2 weeks of episodes played *after* it, using whatever sits in the two slots |
 | **Prizes** | 10 **equal** $5.000 prizes, places 1-10 ⇒ the target is **stable top-10**, not #1. A high-variance 3.200 is worth less than a steady 3.050 |
 | **Gates** | **2.800+** = minimum bar (below it we are still copying) · **3.000+** = "top-5 tactics replicated"; only above it is originating our own tactics the highest-value work |

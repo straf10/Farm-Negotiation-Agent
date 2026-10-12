@@ -265,6 +265,8 @@ economics around the plant: crew size and land timing.
   (5) Their architecture was one open-loop backbone with four closed-loop components, of which we measured
   three and never examined the fourth (a WHEAT market maker). (6) An artifact contract: route hash, size,
   latency, parity call count, and the archive SHA reproduced under two filenames.
+- Public notebook harvest, 2026-10-13: 689 notebooks downloaded and read as data, never executed; meta read and
+  claim check in `docs/NOTEBOOK_META.md`.
 
 ---
 
@@ -420,6 +422,9 @@ with H2, not replace it.
   gitignored. `gates/` tracks only the aggregate `results.json`. Do not commit competition data.
 - Competitor notebook source was never executed or extracted. Only markdown, tables and printed statistics
   were read as evidence.
+- 2026-10-13: this amends the line above for code cells. Competitor notebook code may be read for strategy, as
+  data. It is never executed, no notebook code is copied into tracked files beyond quotes of five lines or fewer
+  with a citation, and downloads are never committed (`notebooks/` is gitignored).
 - Replays are game data and may be used as route sources, with provenance recorded
   (episode id, seat, team, sha256). Licensing exposure at the prize stage (the "own original work"
   warranty) is recorded here and was not re-opened.

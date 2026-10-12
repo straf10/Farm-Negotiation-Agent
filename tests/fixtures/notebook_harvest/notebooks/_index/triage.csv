@@ -1,0 +1,4 @@
+ref,kind,relevant,reason
+fx/fake,agent,Y,defines act() that plants WHEAT
+fx/good,agent,Y,defines act() returning a WHEAT plant order
+fx/missing,strategy-analysis,Y,markdown write-up of the opening; no card written yet

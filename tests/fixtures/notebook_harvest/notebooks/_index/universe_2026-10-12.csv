@@ -1,0 +1,4 @@
+ref,title,author,lastRunTime,totalVotes,source
+fx/fake,Fake,fx,2026-09-11 10:00:00,1,competition
+fx/good,Good,fx,2026-09-10 10:00:00,3,competition
+fx/missing,Missing,fx,2026-09-12 10:00:00,0,competition

@@ -25,6 +25,16 @@ final ranking has not been recorded yet.
   needs a `--force` rebuild because the old one has the wrong schema.
 - **Tests:** 452 passed, 49 skipped, 0 failed. The skips need gitignored replay folders.
 
+**Session 2026-10-13, notebook meta harvest** (`prompts/03`):
+
+- **Coverage:** 689 public notebooks (602 listed, 87 found by keyword search), all downloaded. 664 relevant,
+  25 not. 544 representatives and 120 near-copies in 60 clusters. Nothing from `notebooks/` is committed.
+- **Output:** `docs/NOTEBOOK_META.md`, with 23 families and a claim check. Of 15 notebook claims tested against the
+  768 top-50 seat traces, 5 match the field, 2 do not, and 8 cannot be tested with this set.
+- **RECORD:** no edits to §6, §10 or §11. Proposed wording for §10 and §11 is in the meta document. One notebook
+  names tomato, carrot and egg as the §11.5 hinge products; the top-50 set has no pre-change baseline to test it.
+- **Policy:** §12 now allows reading notebook code as data, with no execution and no commits of downloads.
+
 ---
 
 ## 1. Corrections to our own readings

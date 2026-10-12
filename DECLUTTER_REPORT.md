@@ -78,7 +78,7 @@ What is missing, so the byte-identical rebuild **cannot run in this checkout**:
   `s6_step1b_cluster_*` are absent everywhere locally (only 12 tracked derived files exist).
   `analysis/build_reconstruction_submission.py` and `build_tape_overlay_submission.py` both read them.
 - `analysis/s6_step1b_cluster.py`, which produces `s6_step1b_cluster_*.json`, is **not tracked** in
-  the repo. It is cited by name in `build_reconstruction_submission.py:126,175`. So even with the
+  the repo and not on disk in the main checkout (searched by name, excluding `.venv`). It is cited by name in `build_reconstruction_submission.py:126,175`. So even with the
   data present, the cluster artefact cannot be regenerated from tracked source. This is a
   reproducibility gap for the post-mortem and should be recorded in the final report.
 - The stream sha256 values the docs cite (`1d9e0efd…`, `89ce9e86…`, `09250ef5…`) match no artefact
@@ -188,8 +188,8 @@ and emoji markers in non-agent code. Every dead script, its tests and its artefa
 
 ### 4.2 SAFE tier, executed in this branch
 
-Commit plan. Each commit goes through pytest (pinned env), ruff on touched files, and the
-grep/link/sha checks in section 6.
+Executed as five commits, C1 to C5 (section 7). Each went through pytest (pinned env), ruff on the
+touched files, vulture, the build-path check and the link check (section 6).
 
 - **C1 `Remove unused imports in analysis and tests`** (ruff F401). Files: `analysis/s6_step0_leg2.py`,
   `s6_step0_leg3.py`, `s6_step2b_phase0.py`, `s6_step2b_phase05.py`, `s6_step2c.py`, `s6_step2d.py`,
@@ -205,12 +205,27 @@ grep/link/sha checks in section 6.
   (`pytest.importorskip` stays, it is the skip), `tests/test_v1s_herd.py:20` (`enabled` is never
   passed, I checked), `analysis/s6_step2e.py:96` (`"WEED" if False else`). Kept:
   `engine_reference/kaggriculture.py:249` (read-only mirror, byte-compared to the installed engine).
-- **C3 `Strip emoji markers from non-agent code`**: `analysis/s6_step2c.py:376`,
-  `analysis/v1i_h0_sell_diagnostic.py:18`. Kept: every emoji under `agent/` (frozen), and
+- **C3 `Strip emoji warning markers from non-agent code`**: 13 lines in nine files. Docstrings
+  lose the glyph and keep the bold text. Printed output keeps the signal as `WARNING:` or `STOP:`:
+  `analysis/s6_step2c.py`, `v1i_h0_sell_diagnostic.py`, `v1r_feed_reserve.py`, `v1u_oracle.py`,
+  `harness/ladder.py`, `harness/town_pin.py`, `tests/test_agent_guards.py`, `tests/test_metrics.py`
+  (3 docstrings), `tests/test_s6_step2e.py`. Kept: every marker under `agent/` (frozen), and
   `analysis/build_tape_overlay_submission.py:672` (builder).
 
-ERA001 findings in `tests/test_harness.py:122,213` are section banners such as `# ---- play()`, not
-commented-out code. Left alone; they are false positives. The `agent/config.py:175` ERA001 is frozen.
+ERA001 flagged the section banners `# ---- play()` and `# ---- compare()` in `tests/test_harness.py` as
+commented-out code. They are banners, so I dropped the parentheses (C2). That clears the finding
+without touching any code. The `agent/config.py:175` ERA001 is frozen and stays.
+
+- **C4 `Unwrap markdown links to files that exist in neither checkout`** (section 4.3 D, which had
+  deferred it). 60 links become their link text, one link to an existing file loses its `:300` line
+  suffix, and one malformed dataset link becomes a proper URL. The ROADMAP §1 table and the end of
+  `docs/journal/memory.md` are not touched: the highest changed line in memory.md is 4722 of 5,276, and
+  the first changed ROADMAP line is 448. The 117 links to gitignored artefacts are left as they are.
+- **C5 `Remove dead helpers and an unused constant (vulture 60%, pass 2)`**: `invalidate_cache()` in
+  `board_join.py`, `all_donor_tapes()` in `donor_streams.py`, `BASELINE` in `test_meta_bench.py`, and two
+  unread tuple-unpack names in `test_agent_guards.py`. Kept after review: `opponent_clean()` (4.3 E),
+  `SCREEN_SUBS` (Instrument A config), and the `compare()` dataclass fields that vulture reports (the
+  result schema, not dead code).
 
 ### 4.3 REVIEW tier, not executed (for decision)
 
@@ -282,21 +297,32 @@ and harness citations are reworded. `reference_ladder.py` (64 lines) is not coun
   files, 484): fix links and claims. Not done in this branch.
 - `README.md` (101 lines): front door. Needs the final result numbers from ROADMAP, so it comes after
   the ROADMAP record.
-- Broken links: 61 truly broken at HEAD (section 1.6). Mechanical fixes (unwrap the link, keep the
-  text) are safe, but they touch ROADMAP and memory.md, so they wait for the docs pass.
+- Broken links: the 61 missing-everywhere links were fixed in C4 (section 1.6). The other 117 point at
+  gitignored artefacts that resolve in the main checkout. A rewrite of these docs is still REVIEW.
 
 **E. Code-level, not SAFE** (each needs an evidence-backed change).
 
-- Duplicated `_assert_gitignored`/`_sha256` helpers in the three `analysis/build_*_submission.py`
-  files. Consolidation would change the builders, which are must-survive, so REVIEW.
+- Duplicated helpers. `_sha256` and `_assert_gitignored` are defined in each of the three
+  `analysis/build_*_submission.py` files, and `donor_streams.py:37` has a third `_sha256`. A shared
+  module would have to be created, and the builders are must-survive, so REVIEW.
+- `analysis/s8_replay_io.py:114` `opponent_clean()`: no callers. It records a rule for live reads,
+  that a seat which crashed mid-episode is not a real opponent. Kept, because the rule is not
+  written anywhere else in the repo.
+- Dead internals in REVIEW-tier scripts, decided with their script: `analysis/s6_step2d.py:76`
+  `FREE_GATE`, `:79` `_prod`, `analysis/s6_step2e.py:59` `DOLLAR_PER_RATING_PT`, `:279` `slope_weeds`.
+- `analysis/s10_replay_bench.py:134` `SCREEN_SUBS` is unused. It sits in Instrument A, which must
+  survive, so it is kept as configuration.
+- Left untouched on purpose: `analysis/s6_step1_reconstruct.py:224` (an unused import, in the
+  producer). Removing it provably keeps output byte-identical, but I could not run the producer to
+  confirm it, so it waits for a run with the data.
 - Deliberate duplication: `_shape` is inlined in `build_tape_overlay_submission.py` (lines 101 and
   455) to keep the shipped `main.py` self-contained. Do not consolidate.
 - Time/space inefficiency: no candidate has a benchmark yet. Not measured in this pass.
 
 ## 5. Surprises
 
-1. The reconstruction submission cannot be rebuilt from tracked source: `s6_step1b_cluster.py` is
-   untracked and its artefact is absent (section 1.4).
+1. The reconstruction submission cannot be rebuilt from tracked source: `s6_step1b_cluster.py` is not
+   in git or on disk, and its artefact is absent (section 1.4).
 2. The local `.venv` runs the wrong engine (1.32.6), so 11 tests fail there that pass under the pinned
    1.32.7.
 3. A date-dependent test in the parallel agent's file (`test_cmd_top_...`) fails on any day other than
@@ -313,4 +339,88 @@ not runnable (section 1.4), so the substitute is the build-path check (no change
 the build-path set of section 2); (d) grep for every deleted path or symbol: none deleted;
 (e) relative-link check: no new broken links.
 
-Pass 1 (in progress). Commits are listed in section 7 as they land.
+**Pass 1.** Candidates: ruff F401 (26), F841 (6), ERA001 (3), vulture-80 (3), emoji markers (13 lines),
+broken links (61 missing-everywhere).
+Removed or fixed: C1 (24 imports), C2 (7 locals, parameter and dead ternary, 2 banner headers), C3 (13
+emoji lines), C4 (61 links).
+Failures met along the way, all resolved without touching the test or the logic:
+- 11 tests failed in the main `.venv` (engine 1.32.6). Fixed by running under the pinned 1.32.7 env.
+- `engine_reference` compared as byte-different. That was a worktree line-ending artefact (section 1.5).
+- A binary-classified notebook was converted to LF by my first attempt. Restored from HEAD before any commit.
+- `test_cmd_top_selects_by_team_and_reports_shortfall` fails (date-dependent, parallel agent's file). Not fixed; reported.
+
+**Pass 2.** Candidates: vulture 60% (45). Removed: C5 (2 helpers, 1 constant, 2 unread names). Kept after
+review: `opponent_clean`, `SCREEN_SUBS`, `compare()` dataclass fields, `pytestmark` (pytest reads it).
+Unreachable set and test-only set unchanged. No failures.
+
+**Pass 3.** Candidates: vulture 60% (40), ruff repo-wide (4). Every remaining finding is one of: agent
+or engine (frozen), `main.py`'s deliberate import, the producer's unused import (left, section 4.3 E),
+REVIEW-tier internals, or a deliberate keep. **No new SAFE candidate: loop stops** (cap of 5 not reached).
+
+## 7. Result
+
+### 7.1 Commits (on `declutter`, after `main` @ `920ef63`)
+
+| commit | subject |
+|---|---|
+| `c5f4435` | Add declutter inventory report (baseline, candidates, tiers) |
+| `1737c45` | Remove unused imports in analysis and tests (ruff F401) |
+| `221161e` | Drop unused locals, a dead parameter and a dead ternary (ruff F841, vulture) |
+| `55b5e45` | Strip emoji warning markers from non-agent code |
+| `b958d17` | Unwrap markdown links to files that exist in neither checkout |
+| `409ad63` | Remove dead helpers and an unused constant (vulture 60%, pass 2) |
+| (this commit) | Update the report with the executed result |
+
+### 7.2 Before and after
+
+| | before | after |
+|---|---:|---:|
+| tracked files | 243 | 243 (+1 report) → **244 with the report** |
+| lines, code and docs, excluding the report | 159,554 | 159,524 (**−30**) |
+| Python lines | 32,618 | 32,588 (**−30**: +34 / −64 in the diff) |
+| files deleted | — | **0** |
+| ruff F401/F841/ERA001 | 35 | 4 (all kept: `main.py` F401, `agent/config.py` ERA001, `engine_reference` F841, producer F401) |
+| vulture 80% | 3 | 0 |
+| relative links missing in both checkouts | 61 | 0 |
+| relative links to gitignored artefacts | 117 | 117 (resolve in the main checkout) |
+
+The line reduction is small, and that is the honest result of this pass. The prompt's large wins sit
+in the REVIEW tier: the 25 dead-script files (about 7,700 lines), the 10 uncited gates results
+(41,793 lines), and the docs rewrite. They need decisions from you, so they were not executed.
+
+### 7.3 Tests
+
+| | before (pinned 1.32.7) | after (pinned 1.32.7) |
+|---|---:|---:|
+| passed | 447 | 447 |
+| failed | 1 | 1 |
+| skipped | 49 | 49 |
+| tests removed | — | 0 |
+
+The one failure is `test_cmd_top_selects_by_team_and_reports_shortfall`, owned by the parallel agent
+(section 1.2). The "zero failures" check is **not met** in this branch because of it, and I did not
+work around it. The fix is one line in a file this task was told to leave alone.
+
+### 7.4 sha256 verification
+
+**Not run.** The rebuild needs `data/derived/s6_step1_reconstruction_ReCurSiON.json`, its fidelity,
+shed and cluster artefacts, and the untracked `analysis/s6_step1b_cluster.py`. None of these are
+available (section 1.4). So neither final submission can be rebuilt here, and the byte-identical check
+is not met.
+
+Substitute, which I did run for every commit: no protected path changed. Protected means `main.py`,
+`agent/`, `engine_reference/`, `analysis/build_*_submission.py` and `analysis/s6_step1_reconstruct.py`.
+Checked against the base with `git diff --name-only 920ef63 HEAD`, which returned no protected path.
+The archive that exists locally, `submission.tar.gz`, is untouched and still has sha256
+`b81007323a6b6a203b94d996ddc8064b9b477e0a7673e049ecb2dfb8321b2cf7`.
+
+### 7.5 What is still open
+
+1. **Fix the date-dependent archive-sync test** on `main` (parallel agent). Until then the test check is red.
+2. **Rebuild the reconstruction on a machine with the data.** The builder reads an artefact from
+   `analysis/s6_step1b_cluster.py`, which is in neither git nor the local tree. Recover or re-create that
+   script, track it, and then run the byte-identical check.
+3. **Decide the REVIEW tier** (section 4.3): the 25-file dead-script set, the 10 uncited gate results,
+   `opponent_clean`, the bench agents, and the docs rewrite (ROADMAP record, plans, memory fold, README).
+4. **Fix the stale `--bench meta_route` example** in `harness/cli.py:5` and the "engine 1.32.6" string in
+   `harness/compare.py:720`.

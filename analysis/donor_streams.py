@@ -84,15 +84,6 @@ def make_donor_tape(episode_id: int, seat: int = 0) -> Callable:
     return agent
 
 
-def all_donor_tapes(seat: int = 0) -> dict[str, Callable]:
-    """{team_name: tape_agent} for every donor present locally (R26 / A2 mirror bench)."""
-    out = {}
-    for episode_id, team in DONORS.items():
-        if available(episode_id, seat):
-            out[team] = make_donor_tape(episode_id, seat)
-    return out
-
-
 if __name__ == "__main__":
     for eid, team in DONORS.items():
         if not available(eid):

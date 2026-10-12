@@ -126,9 +126,3 @@ def episode_times(submission: str) -> dict[int, dt.datetime]:
             if (r.get("id") or "").isdigit():
                 result[int(r["id"])] = _to_naive_utc(r["createTime"])
     return result
-
-
-def invalidate_cache():
-    """For testing — force snapshots to reload."""
-    global _snapshots_cache
-    _snapshots_cache = None

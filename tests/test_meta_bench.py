@@ -11,7 +11,6 @@ from harness.play import play, resolve_agent
 REPO_ROOT = Path(__file__).resolve().parents[1]
 META = REPO_ROOT / "harness" / "bench_agents" / "meta_route.py"
 META_SHEEP = REPO_ROOT / "harness" / "bench_agents" / "meta_route_sheep.py"
-BASELINE = REPO_ROOT / "checkpoints" / "v1h_2d" / "main.py"
 
 
 def test_meta_route_is_last_callable():

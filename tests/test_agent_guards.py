@@ -1727,7 +1727,7 @@ def test_v1p2_assign_restricts_a_task_to_its_own_zone_with_global_fallback():
     # Now nobody is zoned NW at all — the task must fall back to the global pool (the near
     # hand) instead of going unserved.
     with patch.object(scheduler_module, "_zone_partition", return_value={0: "NE", 1: "NE"}):
-        farmer_action2, hand_actions2, _ = assign([task], snapshot, config=config)
+        _, hand_actions2, _ = assign([task], snapshot, config=config)
     assert hand_actions2 != [["PASS"]]
 
 
@@ -1874,7 +1874,7 @@ def test_v1p2b_assign_keeps_a_committed_unit_eligible_when_the_zone_mix_shifts()
         Task(f"ne{i}", "WATER", (6 + i % 2, 1 + i), priority=0, deadline_step=23)
         for i in range(3)
     ]
-    farmer_action2, hand_actions2, commitments2 = assign(
+    _, hand_actions2, commitments2 = assign(
         [nw_task, *ne_tasks], snapshot, committed=commitments1, config=config,
     )
 

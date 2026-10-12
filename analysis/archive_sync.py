@@ -50,7 +50,15 @@ from analysis.s8_replay_io import _eid_from_name, load, meta, parse_episodes_csv
 
 RAW = ROOT / "data" / "archive" / "raw"
 MANIFEST_PATH = ROOT / "data" / "archive" / "manifest.csv"
-KAGGLE_BIN = ROOT / ".venv" / "bin" / "kaggle"
+
+
+def _kaggle_bin(os_name: str = os.name) -> Path:
+    """The kaggle CLI inside the project venv: `Scripts/kaggle.exe` on Windows,
+    `bin/kaggle` on macOS/Linux (the launchd machine)."""
+    return ROOT / ".venv" / ("Scripts/kaggle.exe" if os_name == "nt" else "bin/kaggle")
+
+
+KAGGLE_BIN = _kaggle_bin()
 COMPETITION = "kaggriculture"
 OUR_TEAM = "STRAF"
 
@@ -85,6 +93,17 @@ def _run_kaggle(args: list[str], **kw) -> subprocess.CompletedProcess:
     return subprocess.run([str(KAGGLE_BIN), *args], env=env, capture_output=True, text=True, **kw)
 
 
+def _cli_ok(r: subprocess.CompletedProcess) -> bool:
+    """Did a `kaggle` call produce its output?
+
+    The CLI exits 255 on some successful calls (ROADMAP §3.2 / this file's history: seen on
+    the Windows venv), so the exit code alone cannot decide success. 0 is success; 255 is
+    success only when it printed something; anything else failed. Downloads are judged by
+    the file they write, not by this, so a 255 after a real download still counts.
+    """
+    return r.returncode == 0 or (r.returncode == 255 and bool(r.stdout.strip()))
+
+
 def active_submissions(n: int = 2) -> list[str]:
     """The `n` most recent submission refs (ROADMAP §9 slot policy: latest `n` active).
 
@@ -92,7 +111,7 @@ def active_submissions(n: int = 2) -> list[str]:
     the `date` column defensively rather than trusted blindly.
     """
     r = _run_kaggle(["competitions", "submissions", COMPETITION, "-v"])
-    if r.returncode != 0:
+    if not _cli_ok(r):
         raise SystemExit(f"kaggle competitions submissions failed: {r.stderr.strip()}")
     rows = list(csv.DictReader(io.StringIO(r.stdout)))
     rows = [row for row in rows if (row.get("ref") or "").strip().isdigit()]
@@ -137,7 +156,7 @@ def sync_episodes_csv(sub: str) -> Path:
     """Run `episodes -v` for `sub` and write it to data/archive/raw/live_<sub>_episodes.csv
     (same naming as the hand-downloaded ones already on disk, e.g. live_55675634_episodes.csv)."""
     r = _run_kaggle(["competitions", "episodes", sub, "-v"])
-    if r.returncode != 0:
+    if not _cli_ok(r):
         raise SystemExit(f"kaggle competitions episodes {sub} failed: {r.stderr.strip()}")
     out = RAW / f"live_{sub}_episodes.csv"
     out.write_text(r.stdout)
@@ -157,7 +176,8 @@ def download_missing_replays(sub: str, ids: list[int], *, sleep: float = 0.3,
     for i, eid in enumerate(todo):
         r = _run_kaggle(["competitions", "replay", str(eid), "-p", str(dir_), "-q"])
         candidate = dir_ / f"episode-{eid}-replay.json"
-        if r.returncode == 0 and candidate.exists():
+        # Judged by the file, not the exit code: a 255 after a real download is still a download.
+        if candidate.exists():
             _gzip_replay(candidate)
             downloaded += 1
         else:
@@ -199,7 +219,7 @@ def cmd_board(args) -> int:
         return 0
     out_dir.mkdir(parents=True, exist_ok=True)
     r = _run_kaggle(["competitions", "leaderboard", COMPETITION, "-d", "-p", str(out_dir)])
-    if r.returncode != 0:
+    if not _cli_ok(r) and not list(out_dir.glob("*.zip")):
         raise SystemExit(f"kaggle competitions leaderboard failed: {r.stderr.strip()}")
     # `-d` downloads a zip, not a bare CSV (verified live 2026-08-29) — unzip it so the
     # dir matches the existing hand-downloaded snapshots (plain

@@ -17,20 +17,20 @@
 
 ---
 
-## 1. Where we are — **2026-09-01** *(refreshed against a live leaderboard snapshot + the episodes API)*
+## 1. Where we are — **2026-10-12** *(refreshed against a live leaderboard snapshot, 2026-10-12 15:19 UTC; rows not restated here carry their 2026-09-01 values)*
 
 | | Value |
 |---|---|
-| **Active pair** | `55726984` **reconstruction + H2 tail-liquidation — public score 1.494,8**, 244 ladder episodes, uploaded 08-23 23:07 · `55675634` **reconstruction + market overlay + tile recovery — public score 1.501,3**, 326 ladder episodes, frozen 08-21 19:06. *(`55726984` evicted `55586926` on 08-23; that route survives inside it — `55726984` **is** `55586926` + H2.)* **Role reversal since 08-28: `55675634` is now the higher-scoring slot** — the "cheap eviction" framing below no longer holds |
-| **Team standing** | **STRAF rank 1.574 of 7.210, 1.501,3** (snapshot 2026-09-01 18:51 UTC). Vs the last read (1.179/6.649, 1.645,8 on 08-27): **−395 places, −144,5 points** — pool grew ~8,4% over the same window, so most but not all of the rank move is real drift, not just deflation (§2 rule 3). `55726984` at **244 ladder episodes, 110-134 (WR 0,451)**, down from 0,549 at 144 eps; its most recent block of 82 episodes reads **25-57 (WR 0,305)** — worth a look before trusting it as the stronger slot again. `55675634` at **326 ladder episodes, 169-157 (WR 0,518)** |
-| **Next eviction** | by **date** ⇒ the next upload drops **`55675634`** (08-21) — now the *higher*-scored slot (see role reversal above), so this is no longer the cheap eviction it was on 08-28. Decide it deliberately (§9 rule 3) |
+| **Active pair** (submissions closed 2026-09-30) | `55726984` **reconstruction + H2 tail-liquidation — public score 903,5**, uploaded 08-23 23:07, **1.000 episodes listed** (the listing cap; 989 + 15 replays downloaded, 1 refused 403). The board's team score 909,6 is this slot's current rating. · `55675634` **reconstruction + market overlay + tile recovery — public score 865,5**, frozen 08-21 19:06. **Episodes not collected on 2026-10-12** (slot cut from this pass by decision). *(`55726984` evicted `55586926` on 08-23; that route survives inside it — `55726984` **is** `55586926` + H2.)* |
+| **Team standing** | **STRAF rank 4.479 of 10.148, score 909,6** (snapshot 2026-10-12 15:19 UTC). Vs 2026-09-01 (1.574 of 7.210, 1.501,3): **+2.905 places, −591,7 points**. The pool grew by 2.938 teams and scores deflated across it; per §2 rule 3 a score delta without a rank measures nothing. |
+| **Next eviction** | n/a — submissions closed 2026-09-30; no further uploads |
 | **Converged win rate** | **43,4%** (controlled, past the placement window). By opponent band: **54% / 41% / 38%** at <1.800 / 1.800-2.100 / 2.100+ |
-| **Ladder top** (2026-09-01 18:51 UTC) | #1 tetsuya **2.928,6** · #2 Crop Dusta 2.884,6 · #3 senkin13 2.850,3 · #4 QQ Farming 2.848,7 · #5 yukino 2.845,0 · **#839 ReCurSiON 1.844,5** (our donor, still frozen 08-14 — **−935,1 points and −824 places since 08-23** while frozen, ~9 days; the whole top of the board has also turned over since 08-27, none of that day's top 5 remain in it) |
+| **Ladder top** (board 2026-10-12 15:19 UTC, top 10) | #1 M & M & P & Q **3.298,0** · #2 Victor @ Tufa Labs 3.244,3 · #3 DSM 3.103,6 · #4 Farmcore 3.053,0 · #5 DECEM 3.022,3 · #6 有辣条有权 3.013,2 · #7 CDE 3.003,1 · #8 Anton Tikhonov 2.980,9 · #9 tetsuya & yuanzhe & guoqin 2.943,7 · #10 KawattaTaido 2.934,1 |
 | **The gap** | **343,2 points / 735 places** to our own donor (2026-09-01; was 779/1.067 on 08-27). Both the score **and** place gap narrowed this time — unlike 08-23→08-27, where only the score gap closed while the place gap widened. Re-check §1.1's "the gap is real strength" framing against this before leaning on it further |
-| **Deadline** | **2026-09-30 23:59 UTC** (33 days; §9 rule 5 freezes the last week ⇒ real limit ~**09-23**). Final ranking = one Bradley-Terry tournament over the ~2 weeks of episodes played *after* it, using whatever sits in the two slots |
+| **Deadline** | **2026-09-30 23:59 UTC — passed.** Submissions are closed. The board is in its convergence window (to ~2026-10-14), after which the standings are final. The final ranking is one Bradley-Terry tournament over the post-deadline episodes, using whatever sits in the two slots |
 | **Prizes** | 10 **equal** $5.000 prizes, places 1-10 ⇒ the target is **stable top-10**, not #1. A high-variance 3.200 is worth less than a steady 3.050 |
 | **Gates** | **2.800+** = minimum bar (below it we are still copying) · **3.000+** = "top-5 tactics replicated"; only above it is originating our own tactics the highest-value work |
-| **Local suite** | `pytest tests/` **463 passed, 0 skipped, 0 failed, 0 collection errors** (2026-08-28, S16 correction pass — +18 since the 445 baseline earlier that day, incl. `test_s16_recovery_bit_equivalence.py`, `test_s16_slot_comparison.py`, `test_s16_bare_base_fix.py`, `test_s16_occupancy_rng.py`). ⚠️ The old *"3 known `test_v1h2d_*` failures, pre-existing, expected"* line is **retired** — they pass. Never accept a failure as "known" |
+| **Local suite** | `pytest tests/` **452 passed, 49 skipped, 0 failed** (2026-10-12). The 49 skips need gitignored replay directories absent on this machine (`live_55586926`, `live_55675634`, donor replays). Last full baseline was 463 passed, 0 skipped (2026-08-28, S16 correction pass). Never accept a failure as "known" |
 
 ### 1.1 The gap is real strength — all four escape hatches are closed
 

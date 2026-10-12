@@ -9,6 +9,28 @@
 
 ---
 
+## 2026-10-12 — Session: post-deadline data refresh (prompts/01) — leaderboard, top-50 replays, our newer slot; b1 profile and manifest stopped
+
+**Done**
+- **Leaderboard:** `data/archive/raw/live_leaderboard_2026-10-12/` — 10,148 teams, snapshot 15:19 UTC. STRAF rank 4.479, score 909,6.
+- **`analysis/archive_sync.py`:** CLI resolved by OS (`.venv/Scripts/kaggle.exe` on Windows). Exit 255 is judged by output or by the file written, not by the code. Board download judged by the zip it writes. +4 tests in `tests/test_archive_sync.py`; fixed a test that hard-coded `top2_2026-08-29` (the command uses today's date).
+- **Venv:** `kaggle-environments` 1.32.6 → 1.32.7 (the pin in `requirements-dev.txt`). Engine-reference copies normalized to LF to match installed bytes (Windows CRLF checkout broke the byte-identity test). No content change.
+- **Source:** `georgymamarin/kaggriculture-episodes` (through 2026-10-11): 381,213 episode rows, 90,389 public post-09-30. Only metadata and the Oct shard (6,728 rows) downloaded to `data/archive/fresh_2026-10-11/`. The official daily datasets are per-episode ~40 MB JSON (~534/day), not used.
+- **Top-50 post-deadline:** the dataset has 0–14 post-09-30 episodes per top team (crawler coverage gap). Collected from the public ListEpisodes endpoint (the two newest submission IDs per team, from the dataset's `agents.csv`) plus the replay CDN. 50,421 listing rows over 100 submission IDs; 40,775 distinct episodes; 31,454 eligible post-09-30 public completed. Greedy picks to target (30 for ranks 1–10, 10 for 11–50): **394 unique replays**, 0 failed, 0 shortfall. ListEpisodes throttled (HTTP 429) for long stretches.
+- **Our slot 55726984 only** (55675634 cut by decision): 1,000 listed (CLI cap); 1,004 replays on disk; one refused (115089225, HTTP 403).
+- **Post-deadline corpus:** 7,737 replays (616 ours + 394 top-50 + 6,727 Oct shard) → `data/archive/rebuild_2026-10-12/replays.parquet`. Features: 15,474 rows (two seats per episode), 0 parse errors.
+- **Working set swapped:** `data/archive/` and `data/kaggriculture-episodes/` now hold dataset metadata through 10-11, the rebuilt `teams.csv`, post-deadline features, and the post-deadline `replays.parquet`. Old copies moved (not deleted) to `data/archive/superseded_2026-10-12/` (619 MB). **Deletion pending the user's decision.**
+- **Tests:** `pytest tests/` → 452 passed, 49 skipped, 0 failed. The skips need gitignored replay dirs absent on this machine.
+
+**Not done**
+- `b1_top_profile.py` → `data/derived/` **not produced** (stopped by the user before finishing). The selection manifest it reads is written: `raw/top50_post0930_2026-10-12/manifest.json` (50 teams, 768 team-episode rows).
+- `archive_sync.py manifest` **not rebuilt.** The existing `data/archive/manifest.csv` has an old schema (`KeyError: 'path'`). A `--force` rebuild was stopped before it finished.
+- 55675634: not collected.
+
+**Next session should:** decide on deleting `superseded_2026-10-12`; run `b1_top_profile.py` on the manifest; rebuild the provenance manifest with `--force`; then re-read the leaderboard and the top-50 standings.
+
+---
+
 ## 2026-08-21 ο — Session: **S7 Ship B — paper-bound του WHEAT market maker (component iv): ⛔ KILL· και μετά έλεγχος του ίδιου του report → το verdict στέκει, αλλά το «loose bound» ΔΕΝ ήταν bound και το glut ride-along μετρήθηκε στο ΛΑΘΟΣ προϊόν — το §6 row 13 ΞΑΝΑΝΟΙΓΕΙ**
 
 **Εντολή (user):** τρέξε το paper-bound του §7.2 για το component (iv)· μετά, **έλεγξε ότι το task

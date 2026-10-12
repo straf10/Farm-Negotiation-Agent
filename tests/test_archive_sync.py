@@ -101,6 +101,44 @@ def test_active_submissions_raises_on_cli_failure(monkeypatch):
         asy.active_submissions(2)
 
 
+def test_kaggle_bin_resolves_per_os():
+    """Windows venv uses Scripts/kaggle.exe; the macOS/launchd venv keeps bin/kaggle."""
+    assert asy._kaggle_bin("nt") == asy.ROOT / ".venv" / "Scripts" / "kaggle.exe"
+    assert asy._kaggle_bin("posix") == asy.ROOT / ".venv" / "bin" / "kaggle"
+
+
+def test_cli_ok_treats_255_as_success_only_when_it_printed_output():
+    assert asy._cli_ok(_fake_completed(stdout="ref\n1\n", returncode=0))
+    assert asy._cli_ok(_fake_completed(stdout="ref\n1\n", returncode=255))
+    assert not asy._cli_ok(_fake_completed(stdout="", returncode=255, stderr="auth"))
+    assert not asy._cli_ok(_fake_completed(stdout="ref\n", returncode=1))
+
+
+def test_active_submissions_accepts_255_exit_with_output(monkeypatch):
+    csv_text = (
+        "ref,fileName,date,description,status,publicScore,privateScore\n"
+        '222,submission.tar.gz,2026-08-20 10:00:00,"mid",SubmissionStatus.COMPLETE,200,\n'
+        '333,submission.tar.gz,2026-08-25 10:00:00,"newest",SubmissionStatus.COMPLETE,300,\n'
+    )
+    monkeypatch.setattr(asy, "_run_kaggle", lambda args, **kw: _fake_completed(stdout=csv_text, returncode=255))
+    assert asy.active_submissions(2) == ["333", "222"]
+
+
+def test_download_counts_file_written_even_when_cli_exits_255(tmp_path, monkeypatch):
+    monkeypatch.setattr(asy, "RAW", tmp_path)
+
+    def fake_run(args, **kw):
+        eid = args[2]
+        (tmp_path / "live_SUB" / f"episode-{eid}-replay.json").write_text("{}")
+        return _fake_completed(returncode=255)
+
+    (tmp_path / "live_SUB").mkdir()
+    monkeypatch.setattr(asy, "_run_kaggle", fake_run)
+    dl, fail = asy.download_missing_replays("SUB", [7], sleep=0)
+    assert dl == 1 and fail == 0
+    assert (tmp_path / "live_SUB" / "episode-7-replay.json.gz").exists()
+
+
 # --------------------------------------------------------------------------- ours
 
 def test_download_missing_replays_skips_present_and_gzips_new(tmp_path, monkeypatch):
@@ -349,6 +387,8 @@ def test_cmd_top_selects_by_team_and_reports_shortfall(tmp_path, monkeypatch, ca
     assert "TopTeam: 2/3 replays  [SHORT by 1" in out
     assert "SecondTeam: 0/3 replays  [SHORT by 3" in out
 
-    manifest_json = json.loads((tmp_path / "top2_2026-08-29" / "manifest.json").read_text())
+    # cmd_top writes to today's date, so the expected directory is computed, not hard-coded.
+    today = asy.dt.date.today().isoformat()
+    manifest_json = json.loads((tmp_path / f"top2_{today}" / "manifest.json").read_text())
     assert len(manifest_json["selection"]["TopTeam"]) == 2
     assert manifest_json["selection"]["SecondTeam"] == []

@@ -422,3 +422,10 @@ with H2, not replace it.
   git history at commit `920ef63`.
 - The engine mirror `engine_reference/` is read-only. The test suite compares it byte-for-byte with the
   installed package, and every engine-fact test reads the installed package, never the mirror.
+
+**Code references to the removed documents.** Comments in the code cite the old documents by name and
+section (for example "old roadmap §6 row 21"). Those citations resolve to the pre-consolidation files
+at commit `920ef63`: `git show 920ef63:ROADMAP.md`, and the same for the journal, the audit and the
+plans. The submission builders are the one exception. Some of their citations are written into the
+submitted `main.py` text, and changing them would change the archive bytes, so they keep the old wording.
+The removed analysis scripts can be recovered the same way, with `git show 920ef63:analysis/<name>.py`.

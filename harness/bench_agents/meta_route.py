@@ -1,4 +1,4 @@
-"""Clean-room meta-bench opponents (§Β.2 / MASTERPLAN §3.2ter).
+"""Clean-room meta-bench opponents (§Β.2 / old strategy doc §3.2ter).
 
 Two deterministic profiles built from **published statistics only** — never from
 competitor trajectories or notebook blobs (Ανοιχτό #11):
@@ -77,7 +77,7 @@ from agent.scheduler import (  # noqa: E402
 from agent import scheduler as _scheduler_mod  # noqa: E402
 from agent.state import parse  # noqa: E402
 
-# Published sell prior (MASTERPLAN §3.2ter). Withhold until this day, then sell.
+# Published sell prior (old strategy doc §3.2ter). Withhold until this day, then sell.
 _SELL_OPEN_DAY = {
     "WHEAT": 2,
     "FERTILIZER": 3,

@@ -4,7 +4,7 @@
 Not a stream transform against a frozen inventory path: our seat gets an ONLINE agent that
 carries the recorded tape and applies the H2 floor guard against the live market it actually
 faces; the opponent seat gets its own recorded stream; the seed is the recorded seed. That is
-Instrument A with one side swapped (`docs/plans/s9_liquidation_heuristics.md` §5).
+Instrument A with one side swapped (`an old pass brief` §5).
 
 Nothing here imports `agent/` — the overlay lives in this file, exactly like `tape_agent.py`.
 

@@ -2,7 +2,7 @@
 
 What it predicts, and why that is the *only* actionable prediction here
 ---------------------------------------------------------------------
-The Η0 diagnostic (`analysis/v1i_h0_sell_diagnostic.py`, `gates/v1i_h0_diagnostic/`) measured
+The Η0 diagnostic (`the removed v1i h0 diagnostic script`, `gates/v1i_h0_diagnostic/`) measured
 that the executor already sells, every turn, everything its floor lets it sell: on 24 mirror
 episodes only 5.5 unit-turns/ep of non-floor-bound stock ever sat unsold. So there is no
 "wait, then front-run" decision to make — the agent is never waiting. What the executor does

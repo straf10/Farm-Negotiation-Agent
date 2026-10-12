@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Automated collection for the live-episode archive (ROADMAP §3.2 / §9 / §11).
+"""Automated collection for the live-episode archive (old roadmap §3.2 / §9 / §11).
 
 Every download used to be by hand: `kaggle competitions episodes/replay/leaderboard`,
 auth from the gitignored `.env`, CLI in `.venv/`. That is fine for one pass but loses
@@ -18,7 +18,7 @@ Subcommands:
                22 GB archive isn't re-hashed every run.
 
 All reading/parsing of replay files goes through `analysis/s8_replay_io` — one reader,
-reused (ROADMAP §3). This module only drives the `kaggle` CLI and manages files on disk.
+reused (old roadmap §3). This module only drives the `kaggle` CLI and manages files on disk.
 
 Usage:
     python analysis/archive_sync.py ours
@@ -96,7 +96,7 @@ def _run_kaggle(args: list[str], **kw) -> subprocess.CompletedProcess:
 def _cli_ok(r: subprocess.CompletedProcess) -> bool:
     """Did a `kaggle` call produce its output?
 
-    The CLI exits 255 on some successful calls (ROADMAP §3.2 / this file's history: seen on
+    The CLI exits 255 on some successful calls (old roadmap §3.2 / this file's history: seen on
     the Windows venv), so the exit code alone cannot decide success. 0 is success; 255 is
     success only when it printed something; anything else failed. Downloads are judged by
     the file they write, not by this, so a 255 after a real download still counts.
@@ -105,7 +105,7 @@ def _cli_ok(r: subprocess.CompletedProcess) -> bool:
 
 
 def active_submissions(n: int = 2) -> list[str]:
-    """The `n` most recent submission refs (ROADMAP §9 slot policy: latest `n` active).
+    """The `n` most recent submission refs (old roadmap §9 slot policy: latest `n` active).
 
     `kaggle competitions submissions <comp> -v` already lists newest-first; sorted by
     the `date` column defensively rather than trusted blindly.
@@ -331,7 +331,7 @@ def cmd_top(args) -> int:
     """N replays for each of the top-K teams on the current board.
 
     This does NOT fetch an arbitrary team's episodes directly — the Kaggle episodes
-    API is keyed by submission_id, and we only have our own. Per ROADMAP §11 ("the
+    API is keyed by submission_id, and we only have our own. Per old roadmap §11 ("the
     untracked collector chain... does not need rebuilding"), every input comes from
     `kaggle competitions replay/episodes/leaderboard` — all submission-scoped. So the
     only honest source of "N games of team X" is games where X played against one of

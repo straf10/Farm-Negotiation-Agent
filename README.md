@@ -1,101 +1,75 @@
-# Kaggriculture Agent
+# Kaggriculture
 
-A competition-analysis-and-engineering project for [Kaggriculture](https://www.kaggle.com/competitions/kaggriculture),
-a Kaggle simulation where two players compete on a shared farm board to maximize their end-of-season
-bank — planting and harvesting crops, raising livestock, and trading in a dynamic shared market.
+Our entry to the Kaggle simulation competition [Kaggriculture](https://www.kaggle.com/competitions/kaggriculture)
+(2026-07-29 to 2026-09-30). Two players run farms on a shared market for a 720-turn season. The final
+ranking is a Bradley-Terry tournament over the games played after the deadline.
 
-Hand-written heuristics plateaued early (around a ~700 rating), so I stopped tuning them and built
-something more general instead: **a system that reconstructs strong policies from public episode
-replays, measures them rigorously against a local ladder, and improves them with my own closed-loop
-overlays.** That system reached roughly the **top ~18%** of the leaderboard.
+**Start with [docs/RECORD.md](docs/RECORD.md)**: the outcome, the engine facts, the measurements, what
+did not work, and the open questions.
 
-The engineering in this repo — the reconstruction pipeline, the evaluation harness, the acceptance
-gates, and the overlays — is the substance of the project. (The *base* policy a submission replays is
-reconstructed from a top-ranked team's public replays via majority-vote decoding, with replay
-**fidelity validated** before use; see [Two agents](#two-agents) and `ROADMAP.md`. The original
-contribution is the system around that base, not the base farming strategy itself.)
+## What reached the ladder
 
-## What's actually here
+Our two final submissions replay a decoded action tape of another team's policy. The tape is a
+majority vote over that team's own traces, and it was validated for fidelity against the donor's own
+opponents (0.12% median bank error) before use. On top of it sit closed-loop overlays of our own: tile
+recovery for one slot, and H2 tail-liquidation for the other.
 
-- **A reconstruction pipeline** (`analysis/build_*_submission.py`, `analysis/s6_step1_reconstruct.py`)
-  — decode a strong policy's action stream from many public replays by majority vote, validate it by
-  replaying against the donor's *own* recorded opponents in their *own* recorded towns (a fidelity
-  check that catches state-adaptive policies a fixed tape can't carry), and package it as a
-  self-contained `main.py` with no runtime dependency on `agent/`.
-- **Closed-loop overlays** (`agent/tape_overlay.py`) — my own micro-strategies layered on top of the
-  replayed base: *tile recovery* (when the tape's action would be a silent no-op on the live board —
-  a weed where it expected a plant, an already-watered tile — substitute the cheapest legal action)
-  and *tail liquidation* (defer the sub-floor tail of a strawberry batch and re-sell once the market
-  price recovers). Both are proven **bit-exact** against a reference implementation and gated on
-  win/loss before shipping.
-- **A local evaluation harness** (`harness/`) — a `play / compare / profile / report` CLI that runs
-  head-to-head episodes over seed ranges, builds opponent benches from downloaded replays, and
-  applies structural + priced-loss acceptance gates with deterministic, reproducible replay.
-- **A measurement discipline** — every change is priced in rating points, gated on wins first, and
-  checked for bit-exactness; dead ends are recorded with the number that killed them (`ROADMAP.md`).
-
-## Two agents
-
-The repo contains two distinct agents, kept separate on purpose:
-
-1. **The heuristic reference agent** (`agent/policy.py` → `main.py`). A readable, fully-tested
-   `plan → schedule → execute` farming agent. This is the code the tests and the harness baseline
-   exercise, and the easiest place to read how the game works. It is the ~700-rating lineage — kept
-   as the legible reference, not as the competitive entry.
-   - **`agent/planner.py`** reads the `Snapshot` and produces a `DayPlan`;
-   - **`agent/scheduler.py`** turns the plan into a task ledger and assigns it to hands;
-   - **`agent/executor.py`** converts assigned tasks into the engine's per-turn action/order format;
-   - **`agent/receipts.py`** reconciles expected vs. actual post-action state so silent execution
-     failures surface immediately.
-2. **The shipped tape-overlay agent** (`agent/tape_overlay.py`, packaged by
-   `analysis/build_tape_overlay_submission.py`). The reconstructed base policy plus the closed-loop
-   overlays above, inlined into a self-contained `main.py`. This is what actually placed on the
-   ladder.
+The copy is faithful, and it still lost about 1,000 rating points to its donor. We never found the
+reason. The heuristic agent in `agent/` is our readable reference and our research platform. It is not
+what was submitted.
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| `agent/` | Both agents — the heuristic `plan→schedule→execute` reference and the shipped tape overlay, plus shared state parsing, config, and constants |
-| `harness/` | Local evaluation CLI — play single episodes, compare agents over many seeds, profile timing, render reports, build opponent benches |
-| `analysis/` | Reproducibility scripts — submission builders and the load-bearing diagnostics the tests exercise (superseded per-pass one-offs were pruned; they remain in git history, narrated in `docs/journal/`) |
-| `tests/` | Guard tests for both agents, engine-fact tripwires, and harness unit tests (`pytest tests/` → 390 passing) |
-| `engine_reference/` | Read-only mirror of the installed `kaggle-environments` engine, cited for line-accurate references in comments (never imported by tests or the agent) |
-| `docs/` | Curated engine/market reference and dated meta/ladder snapshots — see [`docs/INDEX.md`](docs/INDEX.md); session narrative lives in [`docs/journal/`](docs/journal) |
-| `ROADMAP.md` | Strategy, measurement protocol, and the current hypothesis list |
-| `main.py` | The heuristic-agent submission entrypoint (`tar -czf submission.tar.gz main.py agent/`); the tape-overlay submission is a separate self-contained `main.py` emitted by the builder |
+| `main.py`, `agent/` | The heuristic agent (planner, scheduler, executor, receipts) and its guard tests. `main.py` is the Kaggle loader entry point, and `agent` must stay the last callable it imports. |
+| `analysis/build_tape_overlay_submission.py` | Builds the self-contained submission for the two final slots: `--mode augment` (tile recovery) and `--mode liquidate` (H2). |
+| `analysis/build_reconstruction_submission.py`, `build_tape_submission.py` | The majority-vote route and the open-loop tape it descends from. |
+| `analysis/s6_step1_reconstruct.py` | Produces the reconstruction artefact the builders read. |
+| `analysis/s10_replay_bench.py` | Instrument A: replays recorded ladder episodes with our action stream substituted. |
+| `analysis/archive_sync.py`, `analysis/b1_top_profile.py` | The kaggle CLI collector, and the top-K profile of the current leaderboard. |
+| `harness/` | Local play, paired comparisons, Bradley-Terry ladder, metrics, checkpoint fingerprints. |
+| `engine_reference/` | Read-only byte mirror of `kaggle-environments==1.32.7`. Never imported. |
+| `checkpoints/*/manifest.json`, `gates/*/results.json` | Fingerprints of accepted baselines and the aggregate gate results. Agent packages and replays are not tracked. |
+| `tests/` | Engine-fact tripwires, agent guards, harness and instrument tests. |
+| `docs/RECORD.md` | The record. |
 
-Generated artifacts — episode replays, gate/comparison results, versioned agent checkpoints, scraped
-datasets, and packaged submissions — are produced locally by the harness and analysis scripts and are
-intentionally not tracked (see `.gitignore`); they're large, regenerable, and not needed to read or
-run the code.
-
-## Getting started
-
-The submission itself needs nothing but the competition engine (`kaggle_environments`), which Kaggle
-provides at runtime. To run the harness and tests locally:
+## Setup and checks
 
 ```bash
 pip install -r requirements-dev.txt
-
-# Run one episode between two agents (a file path, or "starter" for the built-in baseline)
-python -m harness.cli play main.py main.py --seed 0
-
-# Compare two agents over a range of seeds
-python -m harness.cli compare main.py main.py --seeds 0-23 --out runs/demo
-
-# Profile per-turn timing
-python -m harness.cli profile main.py --seed 0
-
-python -m pytest tests/     # 390 tests, ~2.5 min
+PYTHONPATH=. pytest tests/        # what CI runs on every push
 ```
 
-## Status
+Some tests read gitignored replays. They skip in a fresh clone, which is expected.
 
-An active competition entry. Strategy, measurement protocol, carried-forward findings, and the
-current hypothesis list all live in [`ROADMAP.md`](ROADMAP.md). Start at [`docs/INDEX.md`](docs/INDEX.md)
-to find anything else.
+Play the agent against a built-in opponent (`pass`, `random`, `starter`) or another agent file:
 
-## License
+```bash
+python -m harness.cli play main.py starter --steps 720
+python -m harness.cli compare main.py starter --seed-set dev
+```
+
+Build the two final submissions. The builders need the local replays and derived artefacts, which
+are not in the repo (see section 11 of the record):
+
+```bash
+python analysis/build_tape_overlay_submission.py --team ReCurSiON --mode augment --package
+python analysis/build_tape_overlay_submission.py --team ReCurSiON --mode liquidate --package
+```
+
+## Engine
+
+Pinned to `kaggle-environments==1.32.7`. Where the documentation and the engine disagree, the engine
+wins. The verified deviations are in section 3 of the record. Each one is either a tripwire test or an
+official answer from the organisers. To check for an engine change without installing it, diff the
+package's `.py` and `.json` against `engine_reference/`.
+
+## Data
+
+Replays, derived data, gate replays and packaged submissions are gitignored. They are game data and are
+not redistributed. Competitor notebook source was never executed or extracted.
+
+## Licence
 
 [MIT](LICENSE)

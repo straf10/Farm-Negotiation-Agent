@@ -1,4 +1,4 @@
-"""T2 — the closed-loop market overlay on an open-loop donor tape (ROADMAP §4.3 S3 step 3).
+"""T2 — the closed-loop market overlay on an open-loop donor tape (old roadmap §4.3 S3 step 3).
 
 Keeps the donor tape's `farmer`/`hands` verbatim (T1 proved these run byte-identically against
 every opponent) and its `market` BUY/HIRE orders verbatim (they fund production; Phase 0 showed
@@ -108,7 +108,7 @@ class TapeOverlay:
         # augment/replace channel — it keeps every tape order verbatim (farmer/hands/BUY/HIRE/other
         # sells) and only DEFERS the sub-$25 tail of a STRAWBERRY batch on day >= liq_first_day,
         # re-selling at the first later step whose price is back >= liq_floor_price, or when forced.
-        # No tile recovery (the arm is market-only, ROADMAP §3.1(2)). Every parameter is frozen;
+        # No tile recovery (the arm is market-only, old roadmap §3.1(2)). Every parameter is frozen;
         # none is tuned in this pass. Any change to this path must also land in the inlined copy in
         # analysis/build_tape_overlay_submission.py (bit-equivalent, part of G13).
         self.liq_floor_price = int(liq_floor_price)

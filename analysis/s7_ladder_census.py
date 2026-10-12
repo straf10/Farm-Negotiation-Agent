@@ -3,7 +3,7 @@
 
 Two external sources landed on 2026-08-20 and both say the same thing: **the ladder is judged in
 wins against the opponents you actually meet, and the live score is a path-dependent number that
-deflates.** This script measures both halves on our own data, so the ROADMAP's evaluation strategy
+deflates.** This script measures both halves on our own data, so the old roadmap's evaluation strategy
 rests on repo measurements rather than on a forum post.
 
   A — the live panel.  Every ladder replay of `55586926` (the shipped ReCurSiON reconstruction):
@@ -28,20 +28,19 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import csv
 import datetime as dt
 import glob
 import gzip
 import json
 import statistics
 import sys
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from analysis.board_join import _load_lb, _to_naive_utc  # noqa: E402
+from analysis.board_join import _load_lb  # noqa: E402
 
 LIVE = ROOT / "data" / "archive" / "raw" / "live_55586926"
 EP_CSV = ROOT / "data" / "archive" / "raw" / "live_55586926_episodes.csv"

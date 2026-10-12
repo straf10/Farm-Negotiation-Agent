@@ -1,5 +1,4 @@
 """Tests for the tile-validity checker and the desync recovery overlay (§7.2 component (i))."""
-import pytest
 from agent.tape_overlay import _tile_valid, _tile_recovery, TapeOverlay
 
 

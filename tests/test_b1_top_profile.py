@@ -30,7 +30,7 @@ def _farm(money, tiles, hands, quadrants):
 
 def _obs(day, farm0, farm1, inventory):
     # Shared fields (farms, market) live on seat 0's observation only — s9_market_ledger
-    # and the ROADMAP §4 engine note both read seat 0 for these, never seat 1's.
+    # and the old roadmap §4 engine note both read seat 0 for these, never seat 1's.
     return {"player": 0, "day": day, "farms": [farm0, farm1],
             "market": {"inventory": inventory}}
 

@@ -1,4 +1,4 @@
-"""v1s — ROADMAP §4.3 S3 step 2 guards: the herd-13 slot assignment and the day-gated ramp.
+"""v1s — old roadmap §4.3 S3 step 2 guards: the herd-13 slot assignment and the day-gated ramp.
 
 Two separable pieces of the herd-13 increment, pinned in isolation:
 
@@ -17,7 +17,7 @@ from agent.planner import _herd_ramp_cap, make_day_plan
 from agent.state import parse
 
 
-def _obs(day, *, enabled=True):
+def _obs(day):
     """A minimal day-`day` observation on an empty NW farm (money to spare)."""
     farm = {
         "money": 3000,

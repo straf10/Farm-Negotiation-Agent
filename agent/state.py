@@ -11,7 +11,7 @@ class Snapshot:
     player: int
     money: float
     my_tiles: list
-    # review.md L9: opponent_money/unlocked_shops had zero real readers and were removed;
+    # old audit L9: opponent_money/unlocked_shops had zero real readers and were removed;
     # opponent_tiles is kept despite also having no current reader — it's reserved for a
     # Phase 2 opponent-aware selling policy (undercutting/matching the opponent's own sell
     # behavior), not dead in the same sense.

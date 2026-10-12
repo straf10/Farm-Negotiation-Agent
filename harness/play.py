@@ -8,8 +8,8 @@ Agent specs (callables, built-in names, .py paths) are handed to `env.run()` unr
 whenever possible, so kaggle_environments' own agent loader (`build_agent`/`get_last_callable`)
 does the resolution — lazily, on the first turn, exactly like the Kaggle server does. This
 keeps local profiling honest (import cost lands on turn 1, not before the timer starts —
-review.md H3) and guarantees the harness never becomes more lenient than the server about
-which callable in a file gets picked (review.md C2).
+old audit H3) and guarantees the harness never becomes more lenient than the server about
+which callable in a file gets picked (old audit C2).
 """
 import gzip
 import json
@@ -71,7 +71,7 @@ def resolve_agent(agent_spec: AgentSpec, *, entrypoint: Optional[str] = None) ->
     `entrypoint`, if given, is a name that must resolve to the *same* callable as the
     server's own last-callable selection; if a module defines that name but it isn't
     the last callable, this raises instead of silently picking a different function
-    than the server would (review.md C2) — the harness must never be more forgiving
+    than the server would (old audit C2) — the harness must never be more forgiving
     of loader order than production.
     """
     if callable(agent_spec):
@@ -121,7 +121,7 @@ def _turn_durations(env, seat: int) -> list:
 def _agent_errors(env) -> list:
     """[{seat, step, stderr}] for every turn where the agent printed to stderr (crash
     tracebacks land here). env.toJSON() does not include this — it's the only place a
-    silent ERROR/TIMEOUT/INVALID status leaves a trace (review.md C1)."""
+    silent ERROR/TIMEOUT/INVALID status leaves a trace (old audit C1)."""
     errors = []
     for step, log in enumerate(env.logs):
         for seat in (0, 1):
@@ -161,15 +161,15 @@ def play(agent_a, agent_b, seed: int, *,
 
     agent_* = callable(obs)->action | "main.py"-style path | built-in name ("pass"/"random"/"starter").
     steps=None uses the engine's own episodeSteps default (currently 720) instead of hardcoding
-    it, so a future engine bump is visible locally instead of silently diverging (review.md M9).
+    it, so a future engine bump is visible locally instead of silently diverging (old audit M9).
     record=True writes a gzip-compressed env.toJSON() to run_dir (default runs/adhoc/).
     profile_seat selects which seat's per-turn durations (from env.logs) populate turn_times.
     strict=True (default) raises RuntimeError if either seat ever left ACTIVE/DONE status or
     printed to stderr — a crashing/timing-out/invalid agent must never silently produce a
-    number that looks like a valid result (review.md C1). Pass strict=False to inspect
+    number that looks like a valid result (old audit C1). Pass strict=False to inspect
     `clean`/`health`/`agent_errors` on the result instead of raising.
     metrics=False skips extract_metrics() (two full 720-float bank curves per seat) — use it
-    for bulk runs like compare() that only need `rewards` (review.md L5).
+    for bulk runs like compare() that only need `rewards` (old audit L5).
     render_html=True (requires record=True) additionally writes the engine's
     own bundled offline visualizer (`env.render(mode="html")`, ~14.7MB, no CDN) to `<run_dir>/
     episode_seed<N>_seat0-<a>_seat1-<b>.html`. Diagnostics (KAGGRI_RECEIPT records — only

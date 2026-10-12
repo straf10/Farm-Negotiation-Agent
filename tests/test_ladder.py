@@ -1,4 +1,4 @@
-"""Guards for the local Bradley-Terry ladder (ROADMAP R22 / §4.3 S6 step 3).
+"""Guards for the local Bradley-Terry ladder (old roadmap R22 / §4.3 S6 step 3).
 
 The BT fit is the part that can be silently wrong — a ranking that looks plausible but is
 not actually a BT fit would be worse than no ranking, because it would be trusted. These

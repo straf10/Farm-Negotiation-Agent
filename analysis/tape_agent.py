@@ -1,4 +1,4 @@
-"""Thin open-loop "tape" agent (ROADMAP.md S2) — replays a recorded action stream.
+"""Thin open-loop "tape" agent (old roadmap S2) — replays a recorded action stream.
 
 `make_tape_agent(action_stream)` returns a plain callable(obs, configuration) -> action,
 the same shape as any other harness agent (see `harness/bench_agents/meta_route.py`).

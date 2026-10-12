@@ -91,7 +91,7 @@ BENCH_CONSTRAINT = (
 # S16 task 6 — the market-only constraint above assumes a market-only arm: the town is
 # bit-identical, so "their orders stay put and only the prices those orders meet move" is
 # the right frame. An OCCUPANCY arm (recovery_calibration, recovery_alpha_bias) does not
-# just fail to react to a price shift — ROADMAP §3.1 rule 1 (corrected) means changing which
+# just fail to react to a price shift — old roadmap §3.1 rule 1 (corrected) means changing which
 # tiles are occupied re-rolls the shared per-day RNG's remaining shop-unlock draws for BOTH
 # farms, so the town itself diverges. The opponent's fixed tape then plays out in a town
 # that no longer exists, not merely against orders it can't respond to. Stronger and
@@ -99,7 +99,7 @@ BENCH_CONSTRAINT = (
 OCCUPANCY_BENCH_CONSTRAINT = (
     "The candidate seat is an occupancy arm: it changes which tiles are None on our farm, "
     "which re-rolls the shared per-day RNG's remaining shop-unlock draws for BOTH farms "
-    "(ROADMAP §3.1 rule 1). The recorded opponent tape is not just static against a price "
+    "(old roadmap §3.1 rule 1). The recorded opponent tape is not just static against a price "
     "shift it can't react to — it is replaying a town that has diverged from the one it was "
     "recorded in. Quantified, not corrected, by recovery_fires / the alpha-bias bit-exact "
     "share; never tuned toward zero. Sufficient for a screen; NOT a proof."
@@ -324,7 +324,7 @@ def _h2_one(job):
 class _CountingOverlay:
     """Wraps TapeOverlay.act to count how many steps `_recover_tile_actions` actually
     changes an action (vs. how many it merely passes through), without duplicating its
-    policy (plan §4 rule 2 / ROADMAP §3 'reuse, do not duplicate')."""
+    policy (plan §4 rule 2 / old roadmap §3 'reuse, do not duplicate')."""
 
     def __init__(self, stream, **kwargs):
         from agent.tape_overlay import TapeOverlay

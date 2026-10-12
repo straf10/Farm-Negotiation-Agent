@@ -1,4 +1,4 @@
-"""compare(): paired-seed A-vs-B comparison. Methodology from MASTERPLAN §6
+"""compare(): paired-seed A-vs-B comparison. Methodology from old strategy doc §6
 (viz cells 46-50) — same seeds for both agents.
 
 Go/no-go needs directional confidence and a practical margin:
@@ -9,7 +9,7 @@ Go/no-go needs directional confidence and a practical margin:
 - `practical`: the mean diff also clears an absolute-$ floor, so a statistically "significant"
   but trivial $1 diff doesn't read as a real result.
 - `verdict`: IMPROVED/NON_INFERIOR/WITHIN_MARGIN/REGRESSED/INCONCLUSIVE/INCOMPLETE. A negative
-  practical result can never be approved by taking `abs(mean_diff)`. WITHIN_MARGIN (review.md
+  practical result can never be approved by taking `abs(mean_diff)`. WITHIN_MARGIN (old audit
   H2) is NON_INFERIOR's confirmed-regression sibling: the paired-seed CI is entirely negative
   (not straddling zero — that's genuine equivalence, still NON_INFERIOR) but still inside the
   margin. It reads as a different claim ("regressed, but not by much" vs "didn't regress") and
@@ -37,7 +37,7 @@ from harness.town_pin import PIN_MODES, pinned_town, schedule_for_mode
 
 # Two-sided 95% t-critical value by degrees of freedom (df = n-1). Exact through df=30,
 # then a handful of anchor points with linear interpolation, 1.96 (normal) beyond df=120 —
-# avoids a hard scipy dependency for what is a small, well-known table (review.md M5).
+# avoids a hard scipy dependency for what is a small, well-known table (old audit M5).
 MIN_N_FOR_NON_INFERIOR = 12  # review_89d99f0_2026-08-05.md M3
 
 # review_89d99f0_2026-08-05.md §5 check #5: a $-verdict alone can hide a regression that just
@@ -55,7 +55,7 @@ VALID_STAGES = ("dev-screen", "holdout-confirm")
 # of the two, so the looser regime is always an explicit, recorded choice.
 ARM_ROLES = ("acceptance", "regression")
 
-# review.md H5: the only durable, git-tracked evidence that a gate ran and what it decided.
+# old audit H5: the only durable, git-tracked evidence that a gate ran and what it decided.
 # runs/ (replays, per-episode jsonl) stays gitignored — this is deliberately small.
 GATES_DIR = Path("gates")
 DEFAULT_CONFIRM_LEDGER = GATES_DIR / "confirm_log.jsonl"
@@ -67,7 +67,7 @@ DEFAULT_CONFIRM_LEDGER = GATES_DIR / "confirm_log.jsonl"
 # something it did not intend. Counters that are *losses* get priced, because a loss is a
 # number of dollars and has to be compared against the dollars the change earns. The old
 # all-hard-zero gate rejected +$3,019.3/ep for 84 burnt units and 34 lost tiles across 96
-# episodes (memory.md 2026-08-09 (ε)) — that is a $237/ep objection to a $3,019/ep gain, and
+# episodes (old journal 2026-08-09 (ε)) — that is a $237/ep objection to a $3,019/ep gain, and
 # three sessions were spent on it while the ladder rating stood still.
 #
 # Prices are deliberately conservative (they over-state the loss, so the gate errs towards
@@ -164,7 +164,7 @@ def _t_crit(df: int) -> float:
 
 def _sign_test_p(k: int, n: int) -> Optional[float]:
     """Two-sided exact binomial sign-test p-value for `k` (the less frequent outcome) out of
-    `n` non-tied trials under H0: p=0.5 (review.md H2) — same no-scipy-dependency reasoning
+    `n` non-tied trials under H0: p=0.5 (old audit H2) — same no-scipy-dependency reasoning
     as `_t_crit`'s vendored table. None when there are no non-tied trials to test."""
     if n <= 0:
         return None
@@ -175,7 +175,7 @@ def _sign_test_p(k: int, n: int) -> Optional[float]:
 
 def _seed_set_label(seeds: Sequence[int]) -> str:
     """A stable, human-readable name for a seed collection, used in provenance fields and
-    the confirm ledger key (review.md C2/H5). Exact-matches a registered harness.seeds range
+    the confirm ledger key (old audit C2/H5). Exact-matches a registered harness.seeds range
     first; falls back to a descriptive range string for ad-hoc subsets so the ledger key still
     means something instead of colliding across genuinely different seed lists."""
     seeds_set = set(seeds)
@@ -191,7 +191,7 @@ _HARNESS_GIT_SHA_CACHE: Optional[str] = None
 
 
 def _harness_git_sha() -> Optional[str]:
-    """review.md H5: which harness/agent commit produced this result — best-effort, None
+    """old audit H5: which harness/agent commit produced this result — best-effort, None
     (not raised) outside a git checkout or without git installed, since compare() must keep
     working in either case."""
     global _HARNESS_GIT_SHA_CACHE
@@ -208,7 +208,7 @@ def _harness_git_sha() -> Optional[str]:
 
 
 def _kaggri_env() -> dict:
-    """review.md H7: every KAGGRI_* env var currently set, recorded so a gate artefact never
+    """old audit H7: every KAGGRI_* env var currently set, recorded so a gate artefact never
     looks 'clean' while having actually run under debug instrumentation or (for older
     checkpoints that still read it) an ablation override."""
     return {k: v for k, v in sorted(os.environ.items()) if k.startswith("KAGGRI_")}
@@ -219,10 +219,10 @@ def _agent_spec_label(agent_spec) -> str:
 
 
 def _warn_if_not_checkpoint(agent_spec, label: str) -> Optional[str]:
-    """review.md H5 point 3: a go=True from stage='holdout-confirm' should run on immutable
+    """old audit H5 point 3: a go=True from stage='holdout-confirm' should run on immutable
     checkpointed code (has a manifest.json next to it), not live main.py, so the result can
     be reproduced later. Warn, don't raise — dev workflows legitimately compare live code.
-    Returns the warning message (review.md L7: so compare() can also collect it onto
+    Returns the warning message (old audit L7: so compare() can also collect it onto
     CompareResult.warnings), or None if no warning was raised."""
     if not isinstance(agent_spec, str):
         return None
@@ -232,7 +232,7 @@ def _warn_if_not_checkpoint(agent_spec, label: str) -> Optional[str]:
             f"compare(): {label}={agent_spec!r} has no manifest.json next to it — a GO from "
             "stage='holdout-confirm' should run on checkpointed code (harness.checkpoint."
             "create_checkpoint), not live main.py, so the result can be reproduced later "
-            "(review.md H5)"
+            "(old audit H5)"
         )
         warnings.warn(message, stacklevel=3)
         return message
@@ -297,13 +297,13 @@ _V1K_REPORT_METRICS = (
     "crop_tile_days",
     "worker_turns_idle",
     "worker_turns_total",
-    # R15 (ROADMAP §6): worker_turns_idle/_total were aggregated here but worker_turns_moving
-    # was not, so the commute share — the number ROADMAP §4.3 S3 step 1c's throughput work is
+    # R15 (old roadmap §6): worker_turns_idle/_total were aggregated here but worker_turns_moving
+    # was not, so the commute share — the number old roadmap §4.3 S3 step 1c's throughput work is
     # judged on (57-62% of every unit-turn) — was invisible in every gate artefact ever produced.
-    # analysis/v1o3_visit_efficiency.py had to recover it per episode with its own separate
+    # the removed v1o3 visit efficiency script had to recover it per episode with its own separate
     # play() calls because of this gap.
     "worker_turns_moving",
-    # R17 (ROADMAP §1.1, S3 step 1d race): v1p1b arm A1 hit 46,0%
+    # R17 (old roadmap §1.1, S3 step 1d race): v1p1b arm A1 hit 46,0%
     # worker_turns_moving — the largest commute cut ever measured here — by doing *fewer*
     # working turns than baseline and shedding 30% of crop_tile_days into idle. A ratio
     # threshold on worker_turns_moving alone is satisfiable by shrinking the farm; the
@@ -313,7 +313,7 @@ _V1K_REPORT_METRICS = (
     "crop_revenue",
 )
 
-# R20 (ROADMAP §6, S3 step 2): per-product units + realised revenue in
+# R20 (old roadmap §6, S3 step 2): per-product units + realised revenue in
 # every gate artefact. v1m emitted only the MELON pair; every herd-13 economic risk (§0.2 of the
 # step-2 brief) is a MILK/WOOL realised-price question (§4.1), and that number could not be read
 # from a gate artefact at all. Generalised over this tuple, emitting `{product.lower()}_units_{arm}`
@@ -438,7 +438,7 @@ class CompareResult:
     mean_diff: float = 0.0
     se_diff: float = 0.0
     n_effective: int = 0
-    t_crit: Optional[float] = None  # review.md L8: None (not NaN) — NaN doesn't survive to JSON
+    t_crit: Optional[float] = None  # old audit L8: None (not NaN) — NaN doesn't survive to JSON
     ci95: tuple = (0.0, 0.0)
     wins_a: int = 0
     wins_b: int = 0
@@ -449,7 +449,7 @@ class CompareResult:
     median_bank_a: float = 0.0
     significant: Optional[bool] = False  # None when se_diff==0 (undefined, not "infinitely true")
     practical: Optional[bool] = False
-    sign_test_p: Optional[bool] = None  # review.md H2: exact binomial sign test on wins_a/wins_b
+    sign_test_p: Optional[bool] = None  # old audit H2: exact binomial sign test on wins_a/wins_b
     verdict: str = "INCONCLUSIVE"
     incomplete: bool = False  # True if any seed errored or was otherwise skipped
     code_fingerprints: tuple = ("", "")
@@ -460,18 +460,18 @@ class CompareResult:
     town_pin: Optional[str] = None
     town_schedules: dict = field(default_factory=dict)  # {seed: [shop names]} — {} when unpinned
     metrics_checked: bool = False  # whether the metrics param was on for this run
-    water_weeds_lost_a: Optional[int] = None  # None unless metrics_checked (review.md C3)
+    water_weeds_lost_a: Optional[int] = None  # None unless metrics_checked (old audit C3)
     plant_decay_units_lost_a: Optional[int] = None
     animals_escaped_a: Optional[int] = None  # G5/v1d
     clipped_production_ticks_a: Optional[int] = None  # G8/v1d
-    # review.md M1: four more signals extract_metrics() already computes but the gate ignored.
+    # old audit M1: four more signals extract_metrics() already computes but the gate ignored.
     shed_overflow_burnt_a: Optional[int] = None  # hard gate, same as the four above
     weeds_lost_a: Optional[int] = None  # raw diagnostic; includes successful retirement
     unexpected_weeds_lost_a: Optional[int] = None  # corrected semantic hard gate
     units_sold_at_or_below_5_a: Optional[int] = None  # budget (<=2% of sales_count_a), not ==0
     sales_count_a: Optional[int] = None  # denominator for the units_sold_at_or_below_5_a budget
     unexplained_noops_a: Optional[int] = None  # None unless diagnostics were collected (KAGGRI_DEBUG)
-    market_sim_aborted_a: Optional[bool] = None  # review.md M11: True fails the gate
+    market_sim_aborted_a: Optional[bool] = None  # old audit M11: True fails the gate
     # v1k: mandatory per-gate diagnostics, totals across all raw episodes.
     crop_tile_days_a: Optional[int] = None
     crop_tile_days_b: Optional[int] = None
@@ -479,9 +479,9 @@ class CompareResult:
     worker_turns_idle_b: Optional[int] = None
     worker_turns_total_a: Optional[int] = None
     worker_turns_total_b: Optional[int] = None
-    worker_turns_moving_a: Optional[int] = None  # R15 (ROADMAP §6)
+    worker_turns_moving_a: Optional[int] = None  # R15 (old roadmap §6)
     worker_turns_moving_b: Optional[int] = None
-    worker_turns_working_a: Optional[int] = None  # R17 (ROADMAP §6)
+    worker_turns_working_a: Optional[int] = None  # R17 (old roadmap §6)
     worker_turns_working_b: Optional[int] = None
     animals_underfed_days_a: Optional[int] = None
     animals_underfed_days_b: Optional[int] = None
@@ -492,7 +492,7 @@ class CompareResult:
     melon_units_b: Optional[int] = None
     melon_revenue_a: Optional[int] = None
     melon_revenue_b: Optional[int] = None
-    # R20 (ROADMAP §6): MILK + WOOL units/revenue, same shape as the MELON pair. Realised price
+    # R20 (old roadmap §6): MILK + WOOL units/revenue, same shape as the MELON pair. Realised price
     # is revenue/units per product — the §4.1 currency, and the number the herd-13 MILK-saturation
     # risk (§3.3) is decided on.
     milk_units_a: Optional[int] = None
@@ -546,18 +546,18 @@ class CompareResult:
     unexplained_metrics: tuple = ()  # non-zero priced counters with no declared mechanism
     metric_gate_passed: Optional[bool] = None  # None unless metrics_checked
     prior_dev_screen_found: bool = False
-    min_effect_used: float = 0.0  # review.md H1: the actual $ floor this verdict was judged against
+    min_effect_used: float = 0.0  # old audit H1: the actual $ floor this verdict was judged against
     non_inferiority_margin_used: float = 0.0
     go: bool = False  # True only for stage="holdout-confirm" + IMPROVED/NON_INFERIOR + metric gate passed
-    repeat_confirm_index: int = 0  # review.md C2: 0 = first confirm for this (agent_b, seed set)
-    agent_a_spec: str = ""  # review.md H5: raw spec strings, seed set name, and run provenance
+    repeat_confirm_index: int = 0  # old audit C2: 0 = first confirm for this (agent_b, seed set)
+    agent_a_spec: str = ""  # old audit H5: raw spec strings, seed set name, and run provenance
     agent_b_spec: str = ""
     seed_set_name: str = ""
     harness_git_sha: Optional[str] = None
     platform: str = ""
     python_version: str = ""
     env: dict = field(default_factory=dict)  # every KAGGRI_* env var set during this run
-    warnings: list = field(default_factory=list)  # review.md L7: warnings.warn() messages raised
+    warnings: list = field(default_factory=list)  # old audit L7: warnings.warn() messages raised
 
 
 def compare(agent_a, agent_b, seeds: Sequence[int], *,
@@ -582,24 +582,24 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
             screen_evidence_dir: Optional[Path] = None) -> CompareResult:
     """Paired-seed protocol: A and B play the same seeds. With both_seats=True (default),
     each seed is played twice — A@seat0/B@seat1 and B@seat0/A@seat1 — since the weed-RNG
-    seat coupling (MASTERPLAN §2#6) means seat 0/1 are not interchangeable. A seed's diff is
+    seat coupling (old strategy doc §2#6) means seat 0/1 are not interchangeable. A seed's diff is
     the mean of (bank_a - bank_b) across both orientations.
 
     record=False by default (each replay is several MB; a 24-seed both_seats run at
-    record=True was measured at 105MB — review.md M3). Pass run_dir to also get incremental
+    record=True was measured at 105MB — old audit M3). Pass run_dir to also get incremental
     append-only `results.jsonl` there; resume=True skips seeds already present in it, so a
     run that dies partway (an errored seed, a crashed process) can continue instead of
-    restarting (review.md M6). strict is forwarded to `play()`; a per-seed exception (from a
+    restarting (old audit M6). strict is forwarded to `play()`; a per-seed exception (from a
     strict violation or anything else) is caught, recorded in `errors`, and that seed is
     skipped rather than losing every seed played before it. Resuming re-checks the full run
     contract recorded in the first line of results.jsonl (code_fingerprints, metrics,
-    both_seats, steps) and raises on any mismatch (review.md C3) — an unmeasured metric gate
+    both_seats, steps) and raises on any mismatch (old audit C3) — an unmeasured metric gate
     or a single-seat run must never silently launder into a "complete" both-seats/metrics
     report just because --resume skipped every seed as already done.
 
     min_effect is the absolute-$ floor for `practical` (default max($200, 2% of mean bank_b)).
     non_inferiority_margin defaults to the same value; both are exposed on the result as
-    `min_effect_used`/`non_inferiority_margin_used` (review.md H1) since the percentage
+    `min_effect_used`/`non_inferiority_margin_used` (old audit H1) since the percentage
     default drifts as bank_b grows. Directional verdicts are: IMPROVED, NON_INFERIOR,
     WITHIN_MARGIN, REGRESSED, INCONCLUSIVE, or INCOMPLETE.
 
@@ -608,7 +608,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     wall time changes. A non-picklable agent_a/agent_b (e.g. a lambda) falls back to
     workers=1 with a warning instead of raising. Results are persisted (when run_dir is
     given) as soon as each seed's orientation(s) all land, not only after the whole pool
-    finishes (review.md H6) — a run killed partway through still leaves a resumable
+    finishes (old audit H6) — a run killed partway through still leaves a resumable
     results.jsonl. As today, if any orientation for a seed errors, the whole seed is recorded
     as errored — a lone successful sibling orientation is discarded, not silently kept.
 
@@ -640,7 +640,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     Απόφαση Β is a regression detector: the $-verdict and the structural/mechanism legs apply,
     the priced budget never does. Under Α the mirror was held to 10% of a mean_diff that a
     correct market-only fix drives to ~0 — a $6.49 budget no candidate could ever meet
-    (memory.md 2026-08-10 (ι)). Both arms' raw counters are reported
+    (old journal 2026-08-10 (ι)). Both arms' raw counters are reported
     either way; Δ changed the criterion, not the transparency.
 
     Two points where the written rule needed an interpretation, recorded here and in
@@ -659,14 +659,14 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     A stage="holdout-confirm" call also checks+appends a tracked confirm ledger
     (confirm_ledger_path, default harness.compare.DEFAULT_CONFIRM_LEDGER): a repeat confirm
     for the same (agent_b fingerprint, seed set) raises unless allow_repeat_confirm=True, in
-    which case it's recorded as `repeat_confirm_index` (review.md C1/C2) instead of silently
+    which case it's recorded as `repeat_confirm_index` (old audit C1/C2) instead of silently
     picking the best of several pulls. It also raises if KAGGRI_ABLATION is set in the
-    environment, and warns if KAGGRI_DEBUG is (review.md H7) — both are recorded either way
+    environment, and warns if KAGGRI_DEBUG is (old audit H7) — both are recorded either way
     in the `env` field.
 
     town_pin (§Β.0′, harness.town_pin) pins which shops the town unlocks, so
     both arms of an *occupancy* comparison play the same town on a given seed. Shop unlock and
-    weed spawning share one per-day RNG stream (MASTERPLAN §2 #7), so any change to how many
+    weed spawning share one per-day RNG stream (old strategy doc §2 #7), so any change to how many
     tiles are occupied at night — crew size, planting, BUY_LAND, animal placement — re-rolls the
     whole shop sequence, and an unpinned occupancy gate silently compares two different towns.
     Modes: "schedule" (a per-seed permutation of the 8 types — today's engine), "basket" (a
@@ -682,7 +682,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     `go` is only ever True for stage="holdout-confirm" with verdict IMPROVED or NON_INFERIOR
     (or WITHIN_MARGIN with accept_within_margin=True) *and* both seats, metrics_checked with
     the metric gate passed, an unpinned town distribution, and no sign-test-confirmed
-    regression (review.md H2: wins_b > wins_a at p<0.01 blocks go unless
+    regression (old audit H2: wins_b > wins_a at p<0.01 blocks go unless
     accept_within_margin=True) — a $-verdict computed without metrics never counts as a GO
     .
     """
@@ -707,7 +707,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     collected_warnings: list = []
 
     def _warn(message: str) -> None:
-        # review.md L7: results.json used to have no trace that a warning was ever raised —
+        # old audit L7: results.json used to have no trace that a warning was ever raised —
         # stacklevel=3 here matches the stacklevel=2 the inlined warnings.warn() calls below
         # used to have (one extra frame for this wrapper) so the warning still points at
         # compare()'s caller, not at this function.
@@ -724,7 +724,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     seeds = list(seeds)
     deduped_seeds = list(dict.fromkeys(seeds))
     if len(deduped_seeds) != len(seeds):
-        # review.md M8: a duplicate seed in --seeds used to be played and persisted twice,
+        # old audit M8: a duplicate seed in --seeds used to be played and persisted twice,
         # silently shrinking n_effective below the requested seed count with no signal.
         _warn(
             f"compare(): seeds contained {len(seeds) - len(deduped_seeds)} duplicate(s) — "
@@ -732,7 +732,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
         )
     seeds = deduped_seeds
 
-    # review.md C2(a): stage and seeds used to be entirely uncross-checked — a --seed-set dev
+    # old audit C2(a): stage and seeds used to be entirely uncross-checked — a --seed-set dev
     # --stage holdout-confirm combination (or any ad-hoc seed list) could produce a GO from
     # seeds that were just tuned on. A final confirm must consume one complete registered set:
     # accepting proper subsets enables repeated, overlapping looks at the holdout under distinct
@@ -753,7 +753,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
             raise ValueError(
                 "compare(): stage='dev-screen' requires seeds drawn from harness.seeds."
                 "DEV_SEEDS — got seeds outside it, which could silently mix confirm-set seeds "
-                "into what's supposed to be a tuning-only report (review.md C2)."
+                "into what's supposed to be a tuning-only report (old audit C2)."
             )
 
     code_fingerprints = (agent_fingerprint(agent_a), agent_fingerprint(agent_b))
@@ -775,11 +775,11 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
         )
     if len(seeds) < 24:
         _warn(
-            f"compare(): {len(seeds)} seeds — MASTERPLAN §6 asks for 24-48 for a final go/no-go "
+            f"compare(): {len(seeds)} seeds — old strategy doc §6 asks for 24-48 for a final go/no-go "
             "decision; fewer is fine only for catching large, obvious regressions early."
         )
 
-    # review.md H7: an ablated/debug-instrumented environment must never produce a "clean"
+    # old audit H7: an ablated/debug-instrumented environment must never produce a "clean"
     # confirm artefact with no trace of it.
     env_snapshot = _kaggri_env()
     if stage == "holdout-confirm" and "KAGGRI_ABLATION" in env_snapshot:
@@ -787,13 +787,13 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
             "compare(): KAGGRI_ABLATION is set in the environment during a stage="
             "'holdout-confirm' run — a confirm gate must never run under an ablation "
             f"override (got {env_snapshot['KAGGRI_ABLATION']!r}); unset it before confirming "
-            "(review.md H7)."
+            "(old audit H7)."
         )
     if env_snapshot.get("KAGGRI_DEBUG") not in (None, "0"):
         _warn(
             f"compare(): KAGGRI_DEBUG={env_snapshot['KAGGRI_DEBUG']!r} is set — this adds "
             "per-turn debug work and receipt emission to every agent call, which will skew "
-            "timing; unset it for a clean gate/timing run (review.md H7)."
+            "timing; unset it for a clean gate/timing run (old audit H7)."
         )
 
     if stage == "holdout-confirm":
@@ -810,7 +810,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
         {seed: schedule_for_mode(town_pin, seed) for seed in seeds} if town_pin is not None else {}
     )
 
-    # review.md C1/C2: a confirm seed set is checked exactly once per (agent_b, seed set)
+    # old audit C1/C2: a confirm seed set is checked exactly once per (agent_b, seed set)
     # question. Checked up front (before playing anything) so a disallowed repeat fails fast.
     ledger_path = Path(confirm_ledger_path) if confirm_ledger_path is not None else DEFAULT_CONFIRM_LEDGER
     seed_set_name = _seed_set_label(seeds)
@@ -827,7 +827,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
                 f"compare(): stage='holdout-confirm' already has {repeat_confirm_index} "
                 f"recorded confirm(s) for agent_b fingerprint {code_fingerprints[1][:12]}... "
                 f"on seed set {seed_set_name!r} in {ledger_path} — a confirm set is checked "
-                "exactly once per question (review.md C1). Pass "
+                "exactly once per question (old audit C1). Pass "
                 "allow_repeat_confirm=True only if this repeat is deliberate; it will be "
                 "recorded as repeat_confirm_index in the ledger and the result."
             )
@@ -837,7 +837,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
 
     # review_89d99f0_2026-08-05.md M2: rows used to carry no version identity, so `--resume` after changing the
     # agent under test silently mixed seeds from two different code versions into one verdict
-    # that still looked complete. review.md C3: the meta line now records the *whole* run
+    # that still looked complete. old audit C3: the meta line now records the *whole* run
     # contract (not just fingerprints) — metrics/both_seats/steps — and resuming into a
     # results.jsonl recorded under a different contract raises, instead of silently averaging
     # an unmeasured metric gate or a single-seat run into what looks like a complete report.
@@ -877,7 +877,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
                         f"{contract_field}={recorded_value!r}, but this call passes "
                         f"{contract_field}={current_value!r} — delete {jsonl_path} or use a "
                         "different run_dir instead of resuming with different run parameters "
-                        "(review.md C3: an unmeasured metric gate or a single-seat run must "
+                        "(old audit C3: an unmeasured metric gate or a single-seat run must "
                         "never silently launder into a measured GO just because every seed "
                         "looks 'done')"
                     )
@@ -914,7 +914,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
                 "two different agent versions or run contracts"
             )
         else:
-            # review.md L3: an empty results.jsonl (a run that died before its first _persist)
+            # old audit L3: an empty results.jsonl (a run that died before its first _persist)
             # used to fall through here with no meta line ever written — the *next* --resume
             # would then see a non-empty file with ordinary seed rows and raise the wrong
             # diagnosis ("no recorded code fingerprints"). Write the meta line now, same as the
@@ -945,14 +945,14 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
         winner = "a" if diff > 0 else ("b" if diff < 0 else "tie")
         # Summed (not averaged) over every orientation played this seed — a
         # defect that shows up in one orientation but not the other must still fail the gate,
-        # not get diluted into a mean. review.md C3: None (not 0) when metrics wasn't on for
+        # not get diluted into a mean. old audit C3: None (not 0) when metrics wasn't on for
         # this run — a metric that was never measured must never read as "measured, zero".
         if metrics:
             water_weeds_lost_a = sum(o.get("water_weeds_lost_a", 0) for o in orientations)
             plant_decay_units_lost_a = sum(o.get("plant_decay_units_lost_a", 0) for o in orientations)
             animals_escaped_a = sum(o.get("animals_escaped_a", 0) for o in orientations)
             clipped_production_ticks_a = sum(o.get("clipped_production_ticks_a", 0) for o in orientations)
-            # review.md M1/M11: same summed-not-averaged pattern as the four counters above.
+            # old audit M1/M11: same summed-not-averaged pattern as the four counters above.
             shed_overflow_burnt_a = sum(o.get("shed_overflow_burnt_a", 0) for o in orientations)
             weeds_lost_a = sum(o.get("weeds_lost_a", 0) for o in orientations)
             unexpected_weeds_lost_a = sum(
@@ -1032,7 +1032,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
             **v1k_diagnostics,
         }
 
-    # review_89d99f0_2026-08-05.md M2 / review.md M6 fields above already guard resume; a callable agent_spec (lambda,
+    # review_89d99f0_2026-08-05.md M2 / old audit M6 fields above already guard resume; a callable agent_spec (lambda,
     # nested function) can't cross a spawned worker process, so workers>1 degrades to
     # sequential rather than raising.
     effective_workers = workers
@@ -1057,7 +1057,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
             if both_seats:
                 jobs.append((seed, True))
 
-        # review.md H6: finalize+persist as soon as a seed's orientation(s) all land, instead
+        # old audit H6: finalize+persist as soon as a seed's orientation(s) all land, instead
         # of waiting for every future in the whole pool — a run killed partway (Ctrl-C, OOM,
         # reboot) at seed 47/48 used to lose all 47 already-finished seeds because nothing was
         # written until the pool closed. If any orientation for a seed errors, the whole seed
@@ -1066,7 +1066,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
         partial: dict = {}
         errored_seeds: set = set()
         try:
-            # review.md M6: default start method is fork on Linux — a forked worker inherits
+            # old audit M6: default start method is fork on Linux — a forked worker inherits
             # the parent's already-imported agent.config, so an env-var-based override never
             # gets re-read (the H4 failure mode). spawn always re-imports from scratch.
             mp_context = multiprocessing.get_context("spawn")
@@ -1113,7 +1113,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
                     _persist(row)
                     del partial[seed]
         except Exception as e:
-            # review.md M9: a pool-level failure (e.g. BrokenProcessPool from OOM during
+            # old audit M9: a pool-level failure (e.g. BrokenProcessPool from OOM during
             # submit) used to propagate straight out of compare() and lose every in-memory
             # result. H6 already persists each seed as soon as its orientation(s) land, so the
             # only gap left is whatever never got that far — record those explicitly instead of
@@ -1186,7 +1186,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     mean_diff = statistics.mean(diffs) if n else 0.0
     stdev = statistics.stdev(diffs) if n > 1 else 0.0
     se_diff = (stdev / (n ** 0.5)) if n > 1 else 0.0
-    # review.md L8: NaN isn't valid JSON — kept as float("nan") for the n>1-only arithmetic
+    # old audit L8: NaN isn't valid JSON — kept as float("nan") for the n>1-only arithmetic
     # below (significant/ci95), reported as None on CompareResult instead.
     t_crit = _t_crit(n - 1) if n > 1 else float("nan")
 
@@ -1229,7 +1229,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     ):
         # review_89d99f0_2026-08-05.md M3: a degenerate CI (n=1, or se_diff==0 with n>1) let a single lucky seed
         # or a coincidentally-constant diff pass as NON_INFERIOR with no statistical basis.
-        # review.md H2: an entirely-negative CI (confirmed regression, just a small one) is a
+        # old audit H2: an entirely-negative CI (confirmed regression, just a small one) is a
         # different claim from a CI straddling zero (genuine equivalence) — split it out as
         # WITHIN_MARGIN so it can never silently read as "didn't get worse".
         verdict = "WITHIN_MARGIN" if ci95[1] < 0 else "NON_INFERIOR"
@@ -1239,7 +1239,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
     wins_a = sum(1 for row in per_seed if row["winner"] == "a")
     wins_b = sum(1 for row in per_seed if row["winner"] == "b")
     ties = sum(1 for row in per_seed if row["winner"] == "tie")
-    # review.md H2: a paired-seed sign test — independent of the $-magnitude verdict above —
+    # old audit H2: a paired-seed sign test — independent of the $-magnitude verdict above —
     # catches a directionally-consistent regression (e.g. 5/43 wins) that nets under the
     # margin. wins_a/wins_b (not episode_wins_*) since those are the actual paired trials.
     sign_trials = wins_a + wins_b
@@ -1266,9 +1266,9 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
         plant_decay_units_lost_a = sum(row["plant_decay_units_lost_a"] for row in per_seed)
         animals_escaped_a = sum(row.get("animals_escaped_a", 0) for row in per_seed)
         clipped_production_ticks_a = sum(row.get("clipped_production_ticks_a", 0) for row in per_seed)
-        # review.md M1: shed_overflow_burnt/weeds_lost are hard gates (same pattern as the four
+        # old audit M1: shed_overflow_burnt/weeds_lost are hard gates (same pattern as the four
         # above); units_sold_at_or_below_5 is a budget against total sales, not a ==0 gate,
-        # since some floor-price selling is expected. review.md M11: market_sim_aborted means
+        # since some floor-price selling is expected. old audit M11: market_sim_aborted means
         # these metrics themselves are incomplete for at least one episode — fail the gate.
         shed_overflow_burnt_a = sum(row.get("shed_overflow_burnt_a", 0) for row in per_seed)
         weeds_lost_a = sum(row.get("weeds_lost_a", 0) for row in per_seed)
@@ -1347,7 +1347,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
         # Απόφαση Δ point 3: the priced budget is an *acceptance* instrument. In a mirror
         # (role="regression") the $-verdict and the structural leg are the whole gate — a
         # market-only fix correctly measures ~0 there, which under Α made the budget ~$6 and
-        # the gate mathematically unreachable (memory.md 2026-08-10 (ι)).
+        # the gate mathematically unreachable (old journal 2026-08-10 (ι)).
         # 1e-9 absorbs float division only; it is far below one cent per episode.
         priced_leg_ok = arm_role == "regression" or (
             priced_loss_delta_value <= priced_loss_budget_used + 1e-9
@@ -1385,7 +1385,7 @@ def compare(agent_a, agent_b, seeds: Sequence[int], *,
 
     # A GO is only real from stage="holdout-confirm", with a directional
     # verdict, AND the metric gate having actually run and passed — an unmeasured metric
-    # gate must never silently count as passed. review.md H2: WITHIN_MARGIN (a confirmed
+    # gate must never silently count as passed. old audit H2: WITHIN_MARGIN (a confirmed
     # regression under the margin) only counts toward go with an explicit override, same as
     # a sign-test-confirmed regression.
     verdict_allows_go = verdict in ("IMPROVED", "NON_INFERIOR") or (

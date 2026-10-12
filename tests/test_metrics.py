@@ -175,10 +175,7 @@ def test_v1l_metrics_report_crop_revenue_from_plant_sales_only():
         configuration={"seed": 0, "episodeSteps": 2, "turnsPerDay": 2, "weedSpawnChance": 0},
     )
     replay = _finish(env)
-    # Inject market sales into the finished replay the same way extract_metrics reads them.
-    steps = replay["steps"]
-    # extract_metrics reconstructs sales from engine info; for a unit test, patch via a
-    # minimal synthetic sales path by checking the returned field exists and ignores animals.
+    # Only checks that crop_revenue is present and non-negative; no sales are injected.
     metrics = extract_metrics(replay, 0)
     assert "crop_revenue" in metrics
     assert isinstance(metrics["crop_revenue"], int)
@@ -328,7 +325,7 @@ def test_s10_sell_fill_is_committed_over_ordered():
 
 
 def test_s10_ordered_counters_honour_the_engine_order_cap():
-    """🔴 Regression: the engine truncates the queue to maxMarketOrdersPerTurn BEFORE
+    """Regression: the engine truncates the queue to maxMarketOrdersPerTurn BEFORE
     quoting (kaggriculture._process_market), and so does _simulate_market. An ordered
     counter that reads the untruncated action counts units the engine never sees and
     silently depresses fill below 1,0 on an episode where every unit committed."""
@@ -346,7 +343,7 @@ def test_s10_ordered_counters_honour_the_engine_order_cap():
 
 
 def test_s10_shed_peak_sees_the_final_observation():
-    """🔴 Regression: shed_peak sampled only `previous_observation`, so the last step of
+    """Regression: shed_peak sampled only `previous_observation`, so the last step of
     the episode was never looked at. Here the shed grows monotonically (bought goods land
     in the shed), so the true peak IS the final observation."""
     env = make("kaggriculture", configuration={"seed": 0, "episodeSteps": 6})
@@ -402,9 +399,9 @@ def test_s10_realized_aliases_track_their_sources():
 
 
 def test_s10_transition_events_consumers_survive_the_widened_tuple():
-    """🔴 Regression: `_transition_events` returns a 7-tuple since S10 P2, but three
+    """Regression: `_transition_events` returns a 7-tuple since S10 P2, but three
     analysis/ callers unpacked exactly 5. They kept importing cleanly and failed only when
-    called — so an import check could not see it, and `s6_step2b_phase05` swallowed the
+    called — so an import check could not see it, and `s6 step2b phase 0.5` swallowed the
     ValueError into its `skipped_transitions` counter, turning a hard break into a silently
     empty result. Pin the contract from the consumer side, where it actually broke."""
     env = make("kaggriculture", configuration={"seed": 0, "episodeSteps": 4})

@@ -1,4 +1,4 @@
-"""Tests for the harness itself (review.md M7). The harness is the instrument every v1a-v1e
+"""Tests for the harness itself (old audit M7). The harness is the instrument every v1a-v1e
 go/no-go decision will be read off of; before this file it had zero coverage.
 Fast fake/tiny agents throughout (steps<=6) so this suite stays quick.
 """
@@ -80,7 +80,7 @@ def test_resolve_agent_py_path(tmp_path):
 
 
 def test_resolve_agent_utf8_greek_comment(tmp_path):
-    """review.md H1 — Path.read_text() without encoding= uses the locale default (cp1252 on
+    """old audit H1 — Path.read_text() without encoding= uses the locale default (cp1252 on
     Windows), which cannot decode U+03CD (ύ) and similar Greek characters this project's
     comments use throughout."""
     agent_path = tmp_path / "greek.py"
@@ -104,7 +104,7 @@ def test_resolve_agent_entrypoint_matches_last_callable(tmp_path):
 
 
 def test_resolve_agent_entrypoint_mismatch_raises():
-    """review.md C2 — reproduces the exact bug found: an import placed after `def agent`
+    """old audit C2 — reproduces the exact bug found: an import placed after `def agent`
     makes Path (not agent) the last callable in the module namespace, which is what the
     Kaggle server's own loader would pick too. entrypoint= must catch this, not paper over it."""
     import tempfile
@@ -119,7 +119,7 @@ def test_resolve_agent_entrypoint_mismatch_raises():
             resolve_agent(str(agent_path), entrypoint="agent")
 
 
-# --------------------------------------------------------------------------- play()
+# --------------------------------------------------------------------------- play
 
 
 def test_play_writes_replay(tmp_path):
@@ -130,7 +130,7 @@ def test_play_writes_replay(tmp_path):
 
 
 def test_play_path_spec_with_separators_does_not_break_filename(tmp_path):
-    """review.md M2 — an absolute Windows path (drive letter, backslashes) used as an agent
+    """old audit M2 — an absolute Windows path (drive letter, backslashes) used as an agent
     spec used to be written verbatim into the replay filename, which is invalid on Windows."""
     agent_path = tmp_path / "greek_agent.py"
     agent_path.write_text(GREEK_AGENT_SRC, encoding="utf-8")
@@ -140,7 +140,7 @@ def test_play_path_spec_with_separators_does_not_break_filename(tmp_path):
 
 
 def test_play_replay_filenames_differ_by_seat_orientation(tmp_path):
-    """review.md M1 — the two orientations of an A-vs-B comparison must not collide."""
+    """old audit M1 — the two orientations of an A-vs-B comparison must not collide."""
     r1 = play("starter", "pass", seed=0, steps=4, run_dir=tmp_path, record=True)
     r2 = play("pass", "starter", seed=0, steps=4, run_dir=tmp_path, record=True)
     assert r1.replay_path != r2.replay_path
@@ -155,7 +155,7 @@ def test_play_crashing_agent_raises_when_strict(tmp_path):
 
 
 def test_play_crashing_agent_reports_unclean_when_not_strict(tmp_path):
-    """review.md C1 — a crashing agent must never silently produce a DONE/bank number."""
+    """old audit C1 — a crashing agent must never silently produce a DONE/bank number."""
     agent_path = tmp_path / "crashing.py"
     agent_path.write_text(CRASHING_AGENT_SRC, encoding="utf-8")
     result = play(str(agent_path), "pass", seed=0, steps=6, record=False, strict=False)
@@ -210,7 +210,7 @@ def test_play_persists_receipts_only_when_diagnostics_nonempty(tmp_path):
     assert without_receipts.receipts_path is None
 
 
-# --------------------------------------------------------------------------- compare()
+# --------------------------------------------------------------------------- compare
 
 
 pytestmark_small_seed_warning = pytest.mark.filterwarnings(
@@ -220,7 +220,7 @@ pytestmark_small_seed_warning = pytest.mark.filterwarnings(
 
 @pytestmark_small_seed_warning
 def test_compare_distinct_orientations_write_distinct_replay_files(tmp_path):
-    result = compare("starter", "pass", [0], both_seats=True, steps=4, run_dir=tmp_path, record=True)
+    compare("starter", "pass", [0], both_seats=True, steps=4, run_dir=tmp_path, record=True)
     replay_files = list(tmp_path.glob("*.json.gz"))
     assert len(replay_files) == 2
     assert replay_files[0].name != replay_files[1].name
@@ -252,7 +252,7 @@ def test_compare_single_seed_does_not_crash_or_claim_significance():
 
 @pytestmark_small_seed_warning
 def test_compare_constant_diff_does_not_claim_significant_true():
-    """review.md M4 — se_diff==0 (a perfectly constant diff across seeds) must not be reported
+    """old audit M4 — se_diff==0 (a perfectly constant diff across seeds) must not be reported
     as `significant=True`; it's an undefined statistic, not infinite confidence."""
     def fake_play(a, b, seed, **kwargs):
         rewards = (101.0, 100.0) if a == "A" else (100.0, 101.0)
@@ -280,7 +280,7 @@ def test_compare_negative_practical_diff_is_regressed_not_go():
 
 @pytestmark_small_seed_warning
 def test_compare_both_seats_swaps_seats():
-    """review.md M7 — both_seats=True must call play() with agent_a/agent_b actually
+    """old audit M7 — both_seats=True must call play() with agent_a/agent_b actually
     swapped between the two seats for the same seed, not the same orientation twice."""
     calls = []
 
@@ -302,7 +302,7 @@ def test_compare_both_seats_swaps_seats():
 
 @pytestmark_small_seed_warning
 def test_compare_resume_rejects_mismatched_code_fingerprints(tmp_path):
-    """review.md M2 — resuming into a results.jsonl recorded under a different agent version
+    """old audit M2 — resuming into a results.jsonl recorded under a different agent version
     must raise instead of silently mixing seeds from two versions into one verdict."""
     def fake_play(a, b, seed, **kwargs):
         rewards = (100.0, 50.0) if a == "A" else (50.0, 100.0)
@@ -318,7 +318,7 @@ def test_compare_resume_rejects_mismatched_code_fingerprints(tmp_path):
 
 @pytestmark_small_seed_warning
 def test_compare_resume_rejects_metrics_mismatch(tmp_path):
-    """review.md C3 — resuming a metrics=False run with metrics=True (or vice versa) must
+    """old audit C3 — resuming a metrics=False run with metrics=True (or vice versa) must
     raise instead of silently averaging an unmeasured metric gate into a report that reads
     as fully measured just because every seed already looks 'done'."""
     def fake_play(a, b, seed, **kwargs):
@@ -337,7 +337,7 @@ def test_compare_resume_rejects_metrics_mismatch(tmp_path):
 
 @pytestmark_small_seed_warning
 def test_compare_resume_rejects_both_seats_mismatch(tmp_path):
-    """review.md C3 — resuming a single-seat run as both_seats=True must raise instead of
+    """old audit C3 — resuming a single-seat run as both_seats=True must raise instead of
     silently mixing 1-orientation and 2-orientation seeds into one mean_diff."""
     def fake_play(a, b, seed, **kwargs):
         rewards = (100.0, 50.0) if a == "A" else (50.0, 100.0)
@@ -385,7 +385,7 @@ def test_compare_warns_schedule_pin_is_historical():
 
 @pytestmark_small_seed_warning
 def test_compare_rejects_holdout_confirm_stage_on_non_confirm_seeds(tmp_path):
-    """review.md C2(a) — stage='holdout-confirm' must only accept seeds drawn from a
+    """old audit C2(a) — stage='holdout-confirm' must only accept seeds drawn from a
     registered confirm set (HOLDOUT_SEEDS/CONFIRM2_SEEDS); ad-hoc or dev-screen seeds must
     raise before a single episode is played."""
     with pytest.raises(ValueError, match="holdout-confirm"):
@@ -409,7 +409,7 @@ def test_compare_rejects_pinned_holdout_confirm(tmp_path):
 
 @pytestmark_small_seed_warning
 def test_compare_rejects_dev_screen_stage_on_non_dev_seeds():
-    """review.md C2(a) — the dev-screen/holdout-confirm split is symmetric: dev-screen must
+    """old audit C2(a) — the dev-screen/holdout-confirm split is symmetric: dev-screen must
     equally refuse seeds outside DEV_SEEDS (e.g. confirm-set seeds tuning shouldn't touch)."""
     with pytest.raises(ValueError, match="dev-screen"):
         compare("A", "B", list(HOLDOUT_SEEDS)[:12], record=False, stage="dev-screen")
@@ -417,7 +417,7 @@ def test_compare_rejects_dev_screen_stage_on_non_dev_seeds():
 
 @pytestmark_small_seed_warning
 def test_compare_second_confirm_raises_without_override(tmp_path):
-    """review.md C1/C2 — the exact v1c failure mode: a second stage=holdout-confirm run
+    """old audit C1/C2 — the exact v1c failure mode: a second stage=holdout-confirm run
     against the same (agent_b fingerprint, seed set) must raise unless allow_repeat_confirm
     is explicit, and is then recorded as repeat_confirm_index instead of silently picking
     the better of two pulls."""
@@ -472,7 +472,7 @@ def test_confirm_ledger_only_counts_metered_complete_runs(tmp_path):
 
 @pytestmark_small_seed_warning
 def test_compare_exposes_effective_margins():
-    """review.md H1 — min_effect_used/non_inferiority_margin_used must reflect what the
+    """old audit H1 — min_effect_used/non_inferiority_margin_used must reflect what the
     verdict was actually judged against; it drifts (2% of bank_b) unless pinned explicitly,
     and used to not be recorded anywhere in the result."""
     def fake_play(a, b, seed, **kwargs):
@@ -512,7 +512,7 @@ def test_results_json_includes_incomplete_and_warnings():
 
 @pytestmark_small_seed_warning
 def test_compare_within_margin_requires_explicit_accept_for_go(tmp_path):
-    """review.md H2 — a paired-seed CI entirely negative (every seed lost, just by less than
+    """old audit H2 — a paired-seed CI entirely negative (every seed lost, just by less than
     the margin) is a confirmed small regression, not genuine equivalence — it must read as
     WITHIN_MARGIN (not NON_INFERIOR) and must never produce go=True without an explicit
     accept_within_margin=True, since the sign test here is also unanimous against agent_a."""
@@ -607,7 +607,7 @@ def test_compare_go_requires_prior_tracked_dev_screen(tmp_path):
 
 @pytestmark_small_seed_warning
 def test_compare_holdout_confirm_rejects_kaggri_ablation_env(monkeypatch, tmp_path):
-    """review.md H7 — an ablated environment must never produce a 'clean' confirm artefact
+    """old audit H7 — an ablated environment must never produce a 'clean' confirm artefact
     with no trace of it; this must raise before any episode is played."""
     monkeypatch.setenv("KAGGRI_ABLATION", "some_flag=0")
     with pytest.raises(ValueError, match="KAGGRI_ABLATION"):
@@ -617,7 +617,7 @@ def test_compare_holdout_confirm_rejects_kaggri_ablation_env(monkeypatch, tmp_pa
 
 @pytestmark_small_seed_warning
 def test_compare_records_provenance_fields():
-    """review.md H5 — agent specs, seed set name, harness commit, and platform info must be
+    """old audit H5 — agent specs, seed set name, harness commit, and platform info must be
     on the result so a gate artefact is reproducible without external context."""
     def fake_play(a, b, seed, **kwargs):
         rewards = (150.0, 100.0) if a == "A" else (100.0, 150.0)
@@ -684,7 +684,7 @@ def test_compare_workers_falls_back_to_sequential_for_unpicklable_callable():
 
 @pytestmark_small_seed_warning
 def test_compare_non_inferior_requires_min_n():
-    """review.md M3 — NON_INFERIOR must not be reachable below the minimum sample size, even
+    """old audit M3 — NON_INFERIOR must not be reachable below the minimum sample size, even
     when the confidence interval would otherwise clear the margin."""
     def fake_play(a, b, seed, **kwargs):
         diff = 5.0 if seed % 2 == 0 else -5.0
@@ -721,7 +721,7 @@ def test_compare_metrics_off_by_default_leaves_gate_fields_unset():
         result = compare("A", "B", [0], both_seats=False, record=False)
     assert result.metrics_checked is False
     assert result.metric_gate_passed is None
-    # review.md C3 — None (not 0) when metrics wasn't measured: "not measured" and
+    # old audit C3 — None (not 0) when metrics wasn't measured: "not measured" and
     # "measured, zero" must not be indistinguishable.
     assert result.water_weeds_lost_a is None
     assert result.go is False
@@ -788,19 +788,19 @@ def test_compare_metrics_reads_agent_a_seat_in_each_orientation():
     assert result.crop_tile_days_b == 80 + 81
     assert result.worker_turns_idle_a == 10 + 11
     assert result.worker_turns_total_a == 100 + 101
-    # R15 (ROADMAP §6): worker_turns_moving must be aggregated the same way as
+    # R15 (old roadmap §6): worker_turns_moving must be aggregated the same way as
     # worker_turns_idle/_total — it used to be absent from _V1K_REPORT_METRICS entirely, so no
     # gate artefact could report the commute share the S3 step 1c work is judged on.
     assert result.worker_turns_moving_a == 60 + 61
     assert result.worker_turns_moving_b == 55 + 56
-    # R17 (ROADMAP §1.1, S3 step 1d race): worker_turns_working must be
+    # R17 (old roadmap §1.1, S3 step 1d race): worker_turns_working must be
     # aggregated the same way — a ratio on worker_turns_moving alone is satisfiable by
     # shrinking the farm (v1p1b arm A1 hit 46,0% moving by doing less work), so the absolute
     # working-turn count has to be in every gate artefact too.
     assert result.worker_turns_working_a == 30 + 29
     assert result.worker_turns_working_b == 25 + 24
     assert result.animals_underfed_days_a == 2 + 5
-    # R20 (ROADMAP §6, S3 step 2): per-product units + revenue follow
+    # R20 (old roadmap §6, S3 step 2): per-product units + revenue follow
     # agent_a's seat the same way, generalised over _V1K_REPORT_PRODUCTS. MELON stays pinned as a
     # regression guard on the byte-for-byte-preserved keys; MILK + WOOL are the new pair. agent_a
     # is seat 0 in the first orientation and seat 1 in the swapped one.
@@ -858,7 +858,7 @@ def test_v1h2d_compare_gates_unexpected_not_raw_weeds():
 def _gate_counts(gate_name, arm="a"):
     """Real measured counters from a tracked gate artifact — the whole point of pinning the
     new gate to these three is that they are not hypotheticals: they are the three decisions
-    the old hard-zero gate got wrong (or right) in memory.md 2026-08-09 (δ)/(ε).
+    the old hard-zero gate got wrong (or right) in old journal 2026-08-09 (δ)/(ε).
 
     `arm="b"` returns the opponent-side counters Απόφαση Δ added; artefacts written before Δ
     have none, which is exactly the case the callers below assert on.
@@ -877,7 +877,7 @@ def _gate_counts(gate_name, arm="a"):
 
 @pytest.mark.parametrize("gate_name,accepted,expected_loss", [
     # v1h_2c alone: +$2,888.5/ep bought with 39 escapes = $406.3/ep against a $288.8/ep budget.
-    # (This pre-v1h.2d artifact predates the shed_overflow_burnt field, which memory.md
+    # (This pre-v1h.2d artifact predates the shed_overflow_burnt field, which old journal
     # 2026-08-09 (δ) records as 1,510 — including it would only push the loss further over.)
     # Rejected under the old gate, rejected under this one: pricing is not a loosening.
     ("gate_v1h2_dev", False, 406.25),
@@ -1151,7 +1151,7 @@ def test_compare_reads_arm_b_counters_from_agent_b_seat_in_each_orientation():
 
 @pytestmark_small_seed_warning
 def test_compare_metrics_off_leaves_arm_b_counters_unmeasured():
-    """review.md C3, extended to the B side: 'not measured' and 'measured, zero' must stay
+    """old audit C3, extended to the B side: 'not measured' and 'measured, zero' must stay
     distinguishable, or a delta computed from a missing B side reads as an absolute loss."""
     def fake_play(a, b, seed, **kwargs):
         del b, seed, kwargs
@@ -1252,7 +1252,7 @@ def test_checkpoint_fingerprint_detects_agent_code_change(tmp_path):
 
 
 def test_checkpoint_fingerprint_raises_on_tampered_checkpoint(tmp_path):
-    """review.md H3 — immutability was only a naming convention: nothing verified a
+    """old audit H3 — immutability was only a naming convention: nothing verified a
     checkpoint's package still matched its manifest at compare() time. A checkpoint edited
     after creation must raise instead of silently passing as the immutable version it
     claims to be."""
@@ -1284,7 +1284,7 @@ def test_compare_rejects_identical_checkpoint_fingerprints(tmp_path):
 
 
 def test_timed_preserves_agent_name():
-    """review.md L4 — functools.wraps so the wrapped agent's name (used in replay filenames)
+    """old audit L4 — functools.wraps so the wrapped agent's name (used in replay filenames)
     doesn't collapse to the generic 'wrapped'."""
     def my_agent(obs):
         return None

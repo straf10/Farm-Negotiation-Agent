@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""S6 step 1 — Phase 0: donor selection, measured (ROADMAP §4.3 S6 step 1; the whole risk).
+"""S6 step 1 — Phase 0: donor selection, measured (old roadmap §4.3 S6 step 1; the whole risk).
 
 Step 0 refuted its own lever (C-A) but *relocated* the target: the edge is **cross-turn sell
 timing**, worth ~$2.8k scale (leg 1: Valmorlee realises 1,13-1,25x on the same route class in the

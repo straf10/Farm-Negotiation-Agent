@@ -1,4 +1,4 @@
-"""S7 leg 0 — pin the deployment-neighbourhood census (ROADMAP §1.1, §3.4).
+"""S7 leg 0 — pin the deployment-neighbourhood census (old roadmap §1.1, §3.4).
 
 The pass replaces three standing ladder readings. Guards pin each one, because each is now load-
 bearing for how every future arm is judged:

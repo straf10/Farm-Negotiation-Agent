@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""S8 — the replay-read contract, written ONCE (docs/plans/s8_submission_analysis_tasks.md §1).
+"""S8 — the replay-read contract, written ONCE (an old pass brief §1).
 
 Both live submissions store their episodes as `episode-<id>-replay.json` under
 `data/archive/raw/live_<submission>/` — a different layout from the S6 `2026-08-16`
@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 # Reuse the one parser + the one premium meter (§1.2, §1.4). Do NOT write a second.
-from analysis.s6_step1_phase0 import _seat_streams, _realised_premium  # noqa: E402
+from analysis.s6_step1_phase0 import _seat_streams  # noqa: E402
 
 RAW = ROOT / "data" / "archive" / "raw"
 OUR_TEAM = "STRAF"
@@ -128,8 +128,8 @@ def parse_episodes_csv(path: Path) -> dict[int, dict]:
     (`Use "kaggle competitions replay <episode_id>" ...`), which `csv.DictReader`
     renders as a row with missing/non-numeric fields. Skip anything malformed
     rather than special-casing the trailer text — same defensive check
-    `analysis/s9_live_read_55726984.py::load_episode_times` used inline before this
-    was pulled out so there is exactly one parser (ROADMAP §3, reuse rule).
+    `the removed s9 live read script::load_episode_times` used inline before this
+    was pulled out so there is exactly one parser (old roadmap §3, reuse rule).
 
     Returns {episode_id: {"createTime": str, "state": str, "type": str}} for every
     well-formed row, ladder AND validation episodes alike — callers decide what to

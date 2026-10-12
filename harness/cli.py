@@ -30,7 +30,7 @@ _SEED_SETS = dict(NAMED_SEED_SETS)
 def _parse_seeds(spec: str):
     """"0-11,17,23-24" -> [0..11, 17, 23, 24]. Only non-negative ints/ranges are supported;
     a bare regex match (instead of str.split("-")) avoids misparsing a leading "-" as a
-    range separator (review.md L1)."""
+    range separator (old audit L1)."""
     seeds = []
     for part in spec.split(","):
         part = part.strip()
@@ -108,9 +108,9 @@ def _results_json_dict(result) -> dict:
         "worker_turns_idle_b": result.worker_turns_idle_b,
         "worker_turns_total_a": result.worker_turns_total_a,
         "worker_turns_total_b": result.worker_turns_total_b,
-        "worker_turns_moving_a": result.worker_turns_moving_a,  # R15 (ROADMAP §6)
+        "worker_turns_moving_a": result.worker_turns_moving_a,  # R15 (old roadmap §6)
         "worker_turns_moving_b": result.worker_turns_moving_b,
-        "worker_turns_working_a": result.worker_turns_working_a,  # R17 (ROADMAP §6)
+        "worker_turns_working_a": result.worker_turns_working_a,  # R17 (old roadmap §6)
         "worker_turns_working_b": result.worker_turns_working_b,
         "animals_underfed_days_a": result.animals_underfed_days_a,
         "animals_underfed_days_b": result.animals_underfed_days_b,
@@ -120,7 +120,7 @@ def _results_json_dict(result) -> dict:
         "melon_units_b": result.melon_units_b,
         "melon_revenue_a": result.melon_revenue_a,
         "melon_revenue_b": result.melon_revenue_b,
-        "milk_units_a": result.milk_units_a,  # R20 (ROADMAP §6)
+        "milk_units_a": result.milk_units_a,  # R20 (old roadmap §6)
         "milk_units_b": result.milk_units_b,
         "milk_revenue_a": result.milk_revenue_a,
         "milk_revenue_b": result.milk_revenue_b,
@@ -253,14 +253,14 @@ def _cmd_compare(args):
             f"({100.0 * result.worker_turns_idle_a / max(1, result.worker_turns_total_a):.1f}%) "
             f"B={result.worker_turns_idle_b}/{result.worker_turns_total_b} "
             f"({100.0 * result.worker_turns_idle_b / max(1, result.worker_turns_total_b):.1f}%); "
-            # R15 (ROADMAP §6): worker_turns_moving was aggregated by _V1K_REPORT_METRICS but
+            # R15 (old roadmap §6): worker_turns_moving was aggregated by _V1K_REPORT_METRICS but
             # never surfaced in the CLI summary — the commute share had to be recovered by a
-            # separate script (analysis/v1o3_visit_efficiency.py) every time it mattered.
+            # separate script (the removed v1o3 visit efficiency script) every time it mattered.
             f"worker_moving A={result.worker_turns_moving_a}/{result.worker_turns_total_a} "
             f"({100.0 * result.worker_turns_moving_a / max(1, result.worker_turns_total_a):.1f}%) "
             f"B={result.worker_turns_moving_b}/{result.worker_turns_total_b} "
             f"({100.0 * result.worker_turns_moving_b / max(1, result.worker_turns_total_b):.1f}%); "
-            # R17 (ROADMAP §1.1): a ratio on worker_turns_moving alone is satisfiable by
+            # R17 (old roadmap §1.1): a ratio on worker_turns_moving alone is satisfiable by
             # shrinking the farm (v1p1b arm A1) — worker_turns_working is the absolute
             # counterweight that has to sit next to it in every summary line, never quoted alone.
             f"worker_working A={result.worker_turns_working_a}/{result.worker_turns_total_a} "
@@ -275,7 +275,7 @@ def _cmd_compare(args):
             f"($/u={((result.melon_revenue_a or 0) / (result.melon_units_a or 1)):.2f}) "
             f"B={result.melon_units_b} "
             f"($/u={((result.melon_revenue_b or 0) / (result.melon_units_b or 1)):.2f}); "
-            # R20 (ROADMAP §6): MILK + WOOL realised price ($/u = revenue/units) — the §4.1
+            # R20 (old roadmap §6): MILK + WOOL realised price ($/u = revenue/units) — the §4.1
             # currency and the number the herd-13 MILK-saturation risk (§3.3) is decided on.
             f"milk_units A={result.milk_units_a} "
             f"($/u={((result.milk_revenue_a or 0) / (result.milk_units_a or 1)):.2f}) "
@@ -297,7 +297,7 @@ def _cmd_compare(args):
         results_json = json.dumps(_results_json_dict(result), indent=2)
         results_path.write_text(results_json)
         print(f"results written to {results_path}")
-        # review.md H5: runs/ (replays, per-episode jsonl) stays gitignored — this small
+        # old audit H5: runs/ (replays, per-episode jsonl) stays gitignored — this small
         # results.json is copied into a tracked directory so a gate's evidence survives a
         # `git clean` / disk cleanup instead of only living in gitignored runs/.
         gates_path = Path(args.gates_dir) / out_dir.name / "results.json"
@@ -307,7 +307,7 @@ def _cmd_compare(args):
 
 
 def _cmd_ladder(args):
-    """ROADMAP R22 / S6 step 3 — rank against a graded bench in the ladder's own currency."""
+    """old roadmap R22 / S6 step 3 — rank against a graded bench in the ladder's own currency."""
     bench = {}
     for spec in args.bench.split(","):
         spec = spec.strip()
@@ -444,18 +444,18 @@ def main(argv=None):
                             help="allow GO=True when verdict=WITHIN_MARGIN (a statistically "
                                  "confirmed regression that's still inside the margin) or when "
                                  "a sign test confirms wins_b>wins_a at p<0.01 — otherwise "
-                                 "either blocks GO regardless of the $-verdict (review.md H2)")
+                                 "either blocks GO regardless of the $-verdict (old audit H2)")
     p_compare.add_argument("--allow-repeat-confirm", action="store_true",
                             help="allow a second stage=holdout-confirm run against the same "
                                  "(agent_b, seed set) already recorded in the confirm ledger — "
-                                 "otherwise this raises (review.md C1/C2)")
+                                 "otherwise this raises (old audit C1/C2)")
     p_compare.add_argument("--confirm-ledger", default=None,
                             help="path to the confirm ledger jsonl (default: "
                                  "harness.compare.DEFAULT_CONFIRM_LEDGER, gates/confirm_log.jsonl)")
     p_compare.add_argument("--gates-dir", default="gates",
                             help="tracked directory that also receives a copy of --out's "
                                  "results.json (small, no replays) — the durable, git-tracked "
-                                 "evidence a gate ran (review.md H5)")
+                                 "evidence a gate ran (old audit H5)")
     p_compare.add_argument("--town-pin", choices=PIN_MODES, default=None,
                             help="pin which shops the town unlocks so both arms play the same "
                                  "town per seed (§Β.0′): schedule=permutation "
@@ -472,12 +472,12 @@ def main(argv=None):
     p_compare.set_defaults(func=_cmd_compare)
 
     p_ladder = sub.add_parser(
-        "ladder", help="Bradley-Terry ranking against a graded bench (ROADMAP R22)")
+        "ladder", help="Bradley-Terry ranking against a graded bench (old roadmap R22)")
     p_ladder.add_argument("agent")
     p_ladder.add_argument(
         "--bench", required=True,
         help="comma-separated opponents, each 'name' or 'name=path'. Keep it GRADED and keep "
-             "earlier meta generations in it (ROADMAP §2), e.g. "
+             "earlier meta generations in it (old roadmap §2), e.g. "
              "'pass,starter,meta_route,v1i=checkpoints/v1i/main.py'")
     p_ladder.add_argument("--seeds", default="0-2",
                           help="e.g. '0-11'; every pairing is played from BOTH seats (§2.1.1)")
@@ -489,7 +489,7 @@ def main(argv=None):
              "BT ratings identified rather than inferred through the challenger alone")
     p_ladder.add_argument(
         "--shop-draw", action="store_true",
-        help="report the shop draw this seed set actually sampled (ROADMAP R21 / §4.1b — "
+        help="report the shop draw this seed set actually sampled (old roadmap R21 / §4.1b — "
              "realised premium price moves 5-18x with it). Implies recording replays")
     p_ladder.add_argument("--out", default=None, help="directory for ladder.json + replays")
     p_ladder.set_defaults(func=_cmd_ladder)
@@ -520,7 +520,7 @@ def main(argv=None):
     p_checkpoint.set_defaults(func=_cmd_checkpoint)
 
     args = parser.parse_args(argv)
-    # review.md C2(c): --stage silently overrode --seed-set's implied stage with no warning,
+    # old audit C2(c): --stage silently overrode --seed-set's implied stage with no warning,
     # so `--seed-set dev --stage holdout-confirm` could produce a GO from seeds that were just
     # tuned on. A mismatched explicit pair is now a usage error, not a silent override.
     if args.command == "compare" and args.stage is not None and args.seed_set is not None:

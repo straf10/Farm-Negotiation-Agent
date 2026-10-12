@@ -129,7 +129,7 @@ def _simulate_market(farms, privates, market, actions, configuration):
             if idx_esc >= 100_000:
                 # review_89d99f0_2026-08-05.md L2: mirror the engine's own runaway-loop guard (kaggriculture.py
                 # market loop) — a pathological replay must not hang metrics extraction.
-                # review.md M11: unlike the engine (which prints a WARNING), this used to break
+                # old audit M11: unlike the engine (which prints a WARNING), this used to break
                 # silently — sales/average_sell_price/units_sold_at_or_below_5 would then be
                 # silently incomplete for this transition with no signal anywhere. Surface it.
                 aborted = True
@@ -359,7 +359,7 @@ def extract_metrics(env_json: dict, seat: int, diagnostics: list | None = None) 
     # harness/report.py's acceptance criterion is pinpointing *which* tile/step caused a loss,
     # not just a daily count — one record per water_weeds_lost/plant_decay occurrence.
     loss_events = []
-    # review.md M11: True if any transition's market simulation hit the 100k-iteration
+    # old audit M11: True if any transition's market simulation hit the 100k-iteration
     # runaway-loop guard — when that happens, sales/average_sell_price/units_sold_at_or_below_5
     # are incomplete for that transition, so this episode's metrics can't be trusted as gate
     # input even though every individual counter still returned a (silently partial) number.
@@ -525,7 +525,7 @@ def extract_metrics(env_json: dict, seat: int, diagnostics: list | None = None) 
                                     "type": "clipped_production_ticks", "step": previous_engine_step,
                                     "day": int(previous_observation.get("day", 0)), "pos": [x, y],
                                 })
-                    # review.md M4: leading indicator for an escape — engine's own
+                    # old audit M4: leading indicator for an escape — engine's own
                     # `_daily_refresh_animals` (kaggriculture.py:791-795) bumps
                     # consecutive_unfed on any day-boundary where fed_today is still False;
                     # two in a row is the escape itself (animals_escaped above), one alone is
@@ -558,7 +558,7 @@ def extract_metrics(env_json: dict, seat: int, diagnostics: list | None = None) 
         for item, prices in prices_by_item.items()
     }
     # v1k: occupancy is an acceptance dimension, not just a replay-profile
-    # visualization. Match analysis.replay_profile's end-of-day definition exactly so the
+    # visualization. Match analysis.replay profile's end-of-day definition exactly so the
     # local gate is directly comparable with the ladder baseline (415 crop tile-days/ep).
     turns_per_day = int(configuration.get("turnsPerDay", 24))
     crop_tile_days = 0

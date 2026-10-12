@@ -66,7 +66,7 @@ def _needs_replan(runtime: RuntimeContext, snapshot: Snapshot) -> bool:
 def agent(obs, configuration=None):
     """Run the current planner → scheduler → executor policy.
 
-    review.md M3: kaggle_environments' Agent.act() inspects __code__.co_argcount and, for a
+    old audit M3: kaggle_environments' Agent.act() inspects __code__.co_argcount and, for a
     2-arg agent function, calls agent(observation, configuration) — this second parameter is
     how farmHandCostMult reaches the agent at all. Keep it optional so direct unit-style
     calls (agent(obs)) still work."""

@@ -1,4 +1,4 @@
-"""S6 step 1 Phase 0 — pin the donor-selection machinery (ROADMAP §4.3 S6 step 1).
+"""S6 step 1 Phase 0 — pin the donor-selection machinery (old roadmap §4.3 S6 step 1).
 
 Phase 0 is "the whole risk": it decides whether S6 builds a reconstruction or STOPs to C-C. These
 guards pin the three load-bearing pieces of that decision, all pure-python (no engine, no archive):

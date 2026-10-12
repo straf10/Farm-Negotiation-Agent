@@ -1,7 +1,7 @@
 """Tests for harness/town_pin.py and its integration into compare() (§Β.0′).
 
 The pin exists because shop unlock and weed spawning share one per-day RNG stream
-(MASTERPLAN §2 #7), so an occupancy change on *either* farm re-rolls the whole shop sequence
+(old strategy doc §2 #7), so an occupancy change on *either* farm re-rolls the whole shop sequence
 and an unpinned occupancy gate silently compares two different towns. Two things therefore
 have to be true and stay true, and both are tested here rather than argued:
 

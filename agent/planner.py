@@ -204,7 +204,7 @@ def _dynamic_sell_floors(
 def _herd_ramp_cap(ramp, day: int, targets: dict) -> int | None:
     """Total-herd cap for the current day under an optional day-gated ramp.
 
-    ROADMAP §4.3 S3 step 2 (v1s). `ramp` is None (no cap — the shipped step-purchase behaviour,
+    old roadmap §4.3 S3 step 2 (v1s). `ramp` is None (no cap — the shipped step-purchase behaviour,
     the full targets from day 0) or a list of ``[day_threshold, cap]`` rungs sorted ascending by
     day. The cap is the first rung whose threshold is >= the current day; once day is past every
     rung the herd is uncapped (returns the full summed target, which is equivalent to no clamp).
@@ -313,7 +313,7 @@ def make_day_plan(snapshot: Snapshot, config: dict, env_config=None) -> DayPlan:
     animal_purchases = {}
     structures_to_build = {}
     if animals_config.get("enabled", False):
-        # v1s (ROADMAP §4.3 S3 step 2): optional day-gated herd ramp. `animals.ramp` is None
+        # v1s (old roadmap §4.3 S3 step 2): optional day-gated herd ramp. `animals.ramp` is None
         # (shipped: full targets from day 0, a step purchase) or a list of [day, cap] rungs — the
         # total herd is capped for the current day and the cap is spent across names in targets
         # DICT ORDER (COW before SHEEP for the 9C+4S profile). §4.0 names the ramp as the specific

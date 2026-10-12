@@ -1210,7 +1210,7 @@ def test_v1g2_throttle_cannot_add_a_market_order():
     structurally incapable of repeating that failure — pinned here so a later refactor into a
     real per-day rate budget can't quietly reintroduce the risk.
 
-    ⚠️ **v1h.1 correction — the original claim was too strong, and 1.32.6 exposed it.** This test
+    **v1h.1 correction — the original claim was too strong, and 1.32.6 exposed it.** This test
     used to assert `set(throttled_sells) <= set(baseline_sells)`. That held only while the
     throttle never dropped an order at the 10-order cap. Under 1.32.6 the town centre buys 1/day
     instead of 4/day late season, so the throttle binds harder, WOOL is throttled to **zero

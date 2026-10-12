@@ -10,7 +10,7 @@ spread across the 84 ladder episodes. Guards pin the load-bearing findings:
   5. Leg C: desync adds nothing after composition is partialled out.
   6. Leg D: episodes flippable by full recovery are a small fraction.
 
-🔴 **Re-pinned 2026-08-20 (S7 leg 0) after the live set grew 84 → 178 episodes.** The pass
+**Re-pinned 2026-08-20 (S7 leg 0) after the live set grew 84 → 178 episodes.** The pass
 REPLICATED on the 2,1x sample and got sharper — r(drain,bank) 0,579 -> 0,605, partial
 r(desync|drain) +0,007 -> -0,029, flippable 2/84 (+2,4 pts) -> 11/178 (+6,2 pts), both still
 negligible. Two guards were phrased against the smaller sample and are corrected here rather

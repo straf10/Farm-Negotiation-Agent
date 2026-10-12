@@ -243,7 +243,7 @@ def run_target13(package_main, seeds, targets, slot_ranges, wheat_default, out_d
         print(f"    herd OWNS {target_total} on day: {owned_day}  (placed 13 on day {placed_day})"
               f"  ({'owned <= 12 OK' if reaches_by_12 else 'LATE / never — FAIL'})")
         if boundary_starved:
-            print(f"    ⚠️ money <= 0 at a day boundary with animals placed: "
+            print(f"    WARNING: money <= 0 at a day boundary with animals placed: "
                   f"steps {[r['step'] for r in boundary_starved]}")
         print(f"    seed gate: {'PASS' if seed_ok else 'FAIL'}")
         Path(result.replay_path).unlink(missing_ok=True)

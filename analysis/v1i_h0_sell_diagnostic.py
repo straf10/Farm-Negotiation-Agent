@@ -15,7 +15,7 @@ Two questions, both answered from replays rather than from a hypothesis:
 
 Η2 (prediction controller / one-turn front-run)
     Only worth building if the opponent's sell wave moves the price of a product **we hold
-    stock in**, inside a window we could react to. ⚠️ Engine fact that bounds this
+    stock in**, inside a window we could react to. Engine fact that bounds this
     (kaggriculture.py:599-608): within one turn both players are quoted against the *same*
     pre-commit inventory, so a same-turn opponent sale costs us nothing. Only units the
     opponent committed on an EARLIER turn are front-runnable, so that is exactly what is

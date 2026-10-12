@@ -373,7 +373,7 @@ def _print(rec: dict):
               f"{z['zero_drain_cells']} zero-drain cells (mean units {uz['mean']}, "
               f"nonzero-frac {uz['nonzero_frac']}) vs {z['nonzero_drain_cells']} drained cells "
               f"(mean units {un['mean']}, nonzero-frac {un['nonzero_frac']})"
-              + ("  ⚠ CELL TOO THIN (n<5)" if z["cell_too_thin"] else ""))
+              + ("  WARNING: CELL TOO THIN (n<5)" if z["cell_too_thin"] else ""))
         ws = r["within_step_drain_split"]
         print(f"  [2*] WITHIN-STEP drain split (decisive): of {ws['n_contested_steps_with_both_subpops']} "
               f"contested steps with BOTH sub-pops, modal action differs in "

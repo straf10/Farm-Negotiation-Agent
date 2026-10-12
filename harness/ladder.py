@@ -25,7 +25,7 @@ Two disciplines from §2 are structural here, not optional:
   graph. Without it the bench agents are only ever seen through the challenger, and BT cannot
   place either.
 
-⚠️ **The town is a confounder** (§4.1b / R21). A fixed seed fixes the shop draw, and realised
+**The town is a confounder** (§4.1b / R21). A fixed seed fixes the shop draw, and realised
 premium price moves 5-18× with it. `--shop-draw` reports the drain distribution actually
 sampled, so a suspiciously clean result can be checked against the towns that produced it.
 """
@@ -295,5 +295,5 @@ def format_ladder(result: dict) -> str:
                          f"range {e['min']}-{e['max']}  "
                          f"zero-drain episodes {e['zero_drain_episodes']}/{sd['episodes']}")
     if result["errors"]:
-        lines.append(f"\n  ⚠️  {result['errors']} episode(s) errored and were dropped.")
+        lines.append(f"\n  WARNING: {result['errors']} episode(s) errored and were dropped.")
     return "\n".join(lines)

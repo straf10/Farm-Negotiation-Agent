@@ -581,10 +581,10 @@ def main() -> int:
             if arm == "A" and not legs["leg1_standalone"] and not legs["leg2_unblock"]:
                 a_stop_fired = True
                 if args.run_all_arms:
-                    print("\n  ⛔ arm A misses BOTH legs (pre-registered stop). --run-all-arms set: "
+                    print("\n  STOP: arm A misses BOTH legs (pre-registered stop). --run-all-arms set: "
                           "measuring B/C to confirm and report B/A.")
                 else:
-                    print("\n  ⛔ arm A misses BOTH legs — B and C are bounded by A. Ending the pass.")
+                    print("\n  STOP: arm A misses BOTH legs — B and C are bounded by A. Ending the pass.")
                     stopped_early = True
                     break
 

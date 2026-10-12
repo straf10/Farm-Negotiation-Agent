@@ -1,4 +1,4 @@
-"""Executable form of MASTERPLAN §2/§7 engine ground truth.
+"""Executable form of old strategy doc §2/§7 engine ground truth.
 
 Imports from the **installed** kaggle-environments package, not engine_reference/, so a
 future `pip install -U kaggle-environments` that changes behavior fails this suite loudly
@@ -87,7 +87,7 @@ def test_market_price_table(item):
 
 
 def test_market_price_known_examples():
-    """Literal cross-check against MASTERPLAN worked examples."""
+    """Literal cross-check against old strategy doc worked examples."""
     I0 = k.MARKET_I0
     assert k.market_price("WHEAT", I0 - 400) == 45
     assert k.market_price("WHEAT", I0 + 400) == 20
@@ -109,7 +109,7 @@ def test_hire_cost_fib():
 
 
 def test_care_bonus_plus_one_not_two():
-    """MASTERPLAN §7#1 — a single fed+cared non-production day adds +1 to pending_care_bonus,
+    """old strategy doc §7#1 — a single fed+cared non-production day adds +1 to pending_care_bonus,
     not +2 (one bonus for the fed+cared combination, not one per action). kaggriculture.py:804-808."""
     farm = k._new_farm(10, 3000)
     farm["tiles"][0][0] = k._new_animal("SHEEP", 0)  # first_yield_day=6, interval=3
@@ -150,7 +150,7 @@ def test_care_bonus_zeroed_on_unfed_production_day():
 
 
 def test_fertilizer_sell_accepted():
-    """MASTERPLAN §7#2 — FERTILIZER is a sellable PRODUCTS entry like any crop/animal good."""
+    """old strategy doc §7#2 — FERTILIZER is a sellable PRODUCTS entry like any crop/animal good."""
     env = make_env(2, episode_steps=4)
     env.state[0].observation.private["shed"]["FERTILIZER"] = 1
     env.step([{"farmer": ["PASS"], "hands": [], "market": [["SELL", "FERTILIZER", 1]]}, PASS])
@@ -163,7 +163,7 @@ def test_fertilizer_sell_accepted():
 
 
 def test_dig_semantics():
-    """MASTERPLAN §7#3 — kaggriculture.py:428-435. DIG clears plant/weed/empty structure,
+    """old strategy doc §7#3 — kaggriculture.py:428-435. DIG clears plant/weed/empty structure,
     but is a no-op on a structure with a placed animal."""
     farm, private = new_farm_private()
 
@@ -196,7 +196,7 @@ def test_planting_day_counts_as_unwatered_tier_a():
 
 
 def test_planting_day_counts_as_unwatered_tier_b():
-    """MASTERPLAN §7#4 — a seed planted but not watered the same day becomes a weed that
+    """old strategy doc §7#4 — a seed planted but not watered the same day becomes a weed that
     same night (2 unwatered days reached: the planting day + the first unwatered end-of-day)."""
     env = make_env(1, episode_steps=10, turns_per_day=4)
     buy = {"farmer": ["PASS"], "hands": [], "market": [["BUY_SEED", "CARROT", 1]]}
@@ -216,7 +216,7 @@ def test_planting_day_counts_as_unwatered_tier_b():
 
 
 def test_melon_cap_day10():
-    """MASTERPLAN §7#5 — kaggriculture.py:383-387,16. Watering every day drives melon
+    """old strategy doc §7#5 — kaggriculture.py:383-387,16. Watering every day drives melon
     yield_units to the max_yield cap (6) exactly at age 10; ages 11-12 add nothing further."""
     farm, private = new_farm_private()
     farm["tiles"][0][0] = k._new_plant("MELON", 0, 24)
@@ -232,7 +232,7 @@ def test_melon_cap_day10():
 
 
 def test_strawberry_exactly_4_yields():
-    """MASTERPLAN §7#6,#7 — kaggriculture.py:767-780. Strawberry (ongoing) produces exactly
+    """old strategy doc §7#6,#7 — kaggriculture.py:767-780. Strawberry (ongoing) produces exactly
     4 times, at ages 10/12/14/16, then max_lifespan_step is set and no further production."""
     farm, private = new_farm_private()
     farm["tiles"][0][0] = k._new_plant("STRAWBERRY", 0, 24)
@@ -255,7 +255,7 @@ def test_strawberry_exactly_4_yields():
 
 
 def test_fertilizer_available_no_care_required():
-    """MASTERPLAN §7#8 — kaggriculture.py:809,492-499. fertilizer_available is set for every
+    """old strategy doc §7#8 — kaggriculture.py:809,492-499. fertilizer_available is set for every
     surviving animal regardless of CARE, and COLLECT_FERTILIZER does not stack same-turn."""
     farm, private = new_farm_private()
     farm["tiles"][0][0] = k._new_animal("GOOSE", 0)
@@ -271,7 +271,7 @@ def test_fertilizer_available_no_care_required():
 
 
 def test_shed_access_tiles():
-    """MASTERPLAN §7#9 — kaggriculture.py:118-121,327-329. Exactly the 4 inner-corner tiles
+    """old strategy doc §7#9 — kaggriculture.py:118-121,327-329. Exactly the 4 inner-corner tiles
     are shed-adjacent (NWSE order); DROP is a no-op from anywhere else."""
     assert k._shed_access_tiles(10) == [(4, 4), (5, 4), (4, 5), (5, 5)]
 
@@ -287,7 +287,7 @@ def test_shed_access_tiles():
 
 
 def test_market_order_cap_10():
-    """MASTERPLAN §2#2 — kaggriculture.py:537. Raw order list is truncated to 10 before type
+    """old strategy doc §2#2 — kaggriculture.py:537. Raw order list is truncated to 10 before type
     dispatch: HIRE/BUY_LAND count against the cap like anything else and are dropped if past it."""
     env = make_env(3, episode_steps=6, turns_per_day=24, startingMoney=1_000_000)
     orders = [["BUY_SEED", "WHEAT", 1] for _ in range(10)] + [["HIRE"], ["BUY_LAND"]]
@@ -302,7 +302,7 @@ def test_market_order_cap_10():
 
 
 def test_market_interleaving_lockstep_same_index():
-    """MASTERPLAN §2#3 — kaggriculture.py:539-603. Both players quoting the same item at the
+    """old strategy doc §2#3 — kaggriculture.py:539-603. Both players quoting the same item at the
     same order-list index get the identical per-unit price (symmetric within an index)."""
     env = make_env(44, episode_steps=4, startingMoney=1_000_000)
     env.state[0].observation.private["shed"]["WHEAT"] = 100
@@ -332,7 +332,7 @@ def test_market_interleaving_earlier_index_exhausts_first():
 
 
 def test_hands_action_mapping():
-    """MASTERPLAN §2#1 — kaggriculture.py:264-268,914-916. hands[i] action maps to
+    """old strategy doc §2#1 — kaggriculture.py:264-268,914-916. hands[i] action maps to
     farm['hands'][i]. Fewer actions than hands leave the extras idle; more actions than
     hands are silently dropped (pos=None no-op) with no crash or conflict."""
     env = make_env(3, episode_steps=8, turns_per_day=24)
@@ -353,7 +353,7 @@ def test_hands_action_mapping():
 
 
 def test_hand_spawn_ignores_locked():
-    """MASTERPLAN discussion.md:34 — kaggriculture.py:510-518,309-317. With no extra quadrant
+    """old strategy doc discussion.md:34 — kaggriculture.py:510-518,309-317. With no extra quadrant
     unlocked, the first hired hand spawns on the LOCKED tile (5,4) and can still move off it."""
     env = make_env(3, episode_steps=6, turns_per_day=24)
     env.step([{"farmer": ["PASS"], "hands": [], "market": [["HIRE"]]}, PASS])
@@ -369,7 +369,7 @@ def test_hand_spawn_ignores_locked():
 
 
 def test_decay_per_2_steps():
-    """MASTERPLAN pre-#5 — kaggriculture.py:730-744. Once step >= max_lifespan_step, yield
+    """old strategy doc pre-#5 — kaggriculture.py:730-744. Once step >= max_lifespan_step, yield
     drains 1 unit every 2 steps (turns, not days); hitting 0 turns the tile into a weed."""
     farm = k._new_farm(10, 3000)
     farm["tiles"][0][0] = {
@@ -395,7 +395,7 @@ def test_decay_per_2_steps():
 
 
 def test_weed_rng_seat_coupling():
-    """MASTERPLAN §2#6 (new finding) — kaggriculture.py:848-855,814-818. _end_of_day shares one
+    """old strategy doc §2#6 (new finding) — kaggriculture.py:848-855,814-818. _end_of_day shares one
     rng instance across both players' _spawn_weeds calls (player 0 first): how many empty tiles
     player 0 has changes how many rng draws player 1's weed roll starts from. Confirmed via a
     seed where the resulting weed pattern for player 1 differs depending on player 0's tile-fill."""
@@ -416,7 +416,7 @@ def test_weed_rng_seat_coupling():
     # so the comparison below is only meaningful if both have crossed exactly the same number
     # of _end_of_day boundaries (fires at (step+1)%turns_per_day==0, i.e. step 3 then 7); pin
     # that invariant explicitly instead of relying on the step counts happening to line up
-    # (review.md L14).
+    # (old audit L14).
     assert day_idle == day_planted == 1
     assert tiles_idle != tiles_planted
 
@@ -425,7 +425,7 @@ def test_weed_rng_seat_coupling():
 
 
 def test_plant_atomic_block():
-    """MASTERPLAN §2#4 — kaggriculture.py:897-910. If total PLANT demand for a crop this turn
+    """old strategy doc §2#4 — kaggriculture.py:897-910. If total PLANT demand for a crop this turn
     exceeds available seeds, ALL PLANT requests for that crop become PASS (none partially wins)."""
     env = make_env(5, episode_steps=6, turns_per_day=24)
     buy = {"farmer": ["PASS"], "hands": [], "market": [["BUY_SEED", "MELON", 1]]}
@@ -451,7 +451,7 @@ def test_plant_atomic_block():
 
 def test_floor_sales_no_inventory_growth():
     """kaggriculture.py:636-637 — sales that clear at the $1 floor do not increase market
-    inventory. MELON's fragile above-curve floors after ~158 net units (MASTERPLAN §1); dumping
+    inventory. MELON's fragile above-curve floors after ~158 net units (old strategy doc §1); dumping
     far more than that should still leave inventory close to that crossover, not proportional
     to units sold. (Small residual wobble is town-center demand, which runs every turn
     regardless of player actions — kaggriculture.py:722-725 — not a market-mechanics bug.)"""
@@ -492,7 +492,7 @@ def test_determinism_cross_process_hashseed():
     same-process check can only catch nondeterminism the *engine* introduces; PYTHONHASHSEED
     is fixed for the lifetime of a process, so it can never expose set/dict-iteration
     nondeterminism (the one a future rule-based *agent* is likely to introduce, e.g.
-    `for pos in weed_tiles:` over a set — Υ3, review.md H4). Two fresh OS processes
+    `for pos in weed_tiles:` over a set — Υ3, old audit H4). Two fresh OS processes
     with different PYTHONHASHSEED, same seed + scripted actions, must still agree."""
     snippet = (
         "import json\n"
@@ -524,7 +524,7 @@ def test_determinism_cross_process_hashseed():
 
 
 def test_configuration_defaults_frozen():
-    """review.md H2 — every default here is load-bearing for existing tests/guards
+    """old audit H2 — every default here is load-bearing for existing tests/guards
     (test_market_order_cap_10 assumes maxMarketOrdersPerTurn==10, the future G3 guard assumes
     shedCapacity==100, harness.profile's ×3 rule assumes actTimeout==1, etc.), but no test
     actually pins the *values* — they're always passed as explicit overrides instead. Any
@@ -542,13 +542,13 @@ def test_configuration_defaults_frozen():
 
 
 def test_configuration_default_remaining_overage_time():
-    """harness.profile's overage_used check (review.md H3) budgets against this."""
+    """harness.profile's overage_used check (old audit H3) budgets against this."""
     env = make("kaggriculture")
     assert env.state[0].observation.remainingOverageTime == 60
 
 
 def test_engine_constants_frozen():
-    """review.md H2 — LAND_ORDER/LAND_PRICES/SHOPS/PRICE_FLOOR/MARKET_I0 are hardcoded
+    """old audit H2 — LAND_ORDER/LAND_PRICES/SHOPS/PRICE_FLOOR/MARKET_I0 are hardcoded
     assumptions baked into the agent design (constants.py vendoring, Υ6); pin them so a
     future engine version that changes one fails loudly here instead of silently."""
     assert k.LAND_ORDER == ["NE", "SW", "SE"]
@@ -565,8 +565,8 @@ def test_engine_constants_frozen():
 
 
 def test_engine_reference_matches_installed():
-    """review.md M10 — engine_reference/kaggriculture.py is a read-only copy that every line
-    reference in MASTERPLAN/this file's docstrings points at. It is not imported by
+    """old audit M10 — engine_reference/kaggriculture.py is a read-only copy that every line
+    reference in old strategy doc/this file's docstrings points at. It is not imported by
     any code (verified separately), so nothing else would notice `pip install -U
     kaggle-environments` leaving it stale — every one of those line references would silently
     go wrong. Byte-identity with the installed package is the cheapest possible tripwire."""
@@ -574,7 +574,7 @@ def test_engine_reference_matches_installed():
     reference = REPO_ROOT / "engine_reference" / "kaggriculture.py"
     assert installed.read_bytes() == reference.read_bytes(), (
         "engine_reference/kaggriculture.py is stale — re-copy from the installed package and "
-        "re-check every line reference that points at it (MASTERPLAN, docstrings here)."
+        "re-check every line reference that points at it (old strategy doc, docstrings here)."
     )
 
     installed_json = installed.with_suffix(".json")
@@ -584,8 +584,8 @@ def test_engine_reference_matches_installed():
             "engine_reference/kaggriculture.json is stale — re-copy from the installed package."
         )
 
-    # The shipped prose docs are line-cited too: MASTERPLAN §1 cites `README.md:NNN` against
-    # engine_reference/README.md ever since docs/game_rules.md (a byte-identical third copy) was
+    # The shipped prose docs are line-cited too: old strategy doc §1 cites `README.md:NNN` against
+    # engine_reference/README.md ever since an old game-rules copy (a byte-identical third copy) was
     # dropped in the 2026-08-06 docs reorg. Same tripwire, same reason as the .py above.
     for name in ("README.md", "AGENTS.md"):
         installed_doc = installed.parent / name
@@ -593,5 +593,5 @@ def test_engine_reference_matches_installed():
         if installed_doc.exists() and reference_doc.exists():
             assert installed_doc.read_bytes() == reference_doc.read_bytes(), (
                 f"engine_reference/{name} is stale — re-copy from the installed package and "
-                f"re-check every `{name}:NNN` citation (MASTERPLAN §1-§2, docs/reference/)."
+                f"re-check every `{name}:NNN` citation (old strategy doc §1-§2, the old reference notes)."
             )

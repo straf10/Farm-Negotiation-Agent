@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""S1.2 — extract donor action streams + validate replay fidelity (ROADMAP.md S1).
+"""S1.2 — extract donor action streams + validate replay fidelity (old roadmap S1).
 
 For each (episode_id, donor_seat) pair, this:
   1. Reads the LOCAL cached replay (data/archive/raw/<id>.json.gz — never re-fetches;
@@ -37,7 +37,7 @@ OUT_DIR = Path(__file__).resolve().parent.parent / "baselines" / "2026-08-11" / 
 CUTOFF_EPISODE_ID = 91476157  # min id of the daily_0810_ids.txt set used for the S1.1 target
                                # profile — donors are drawn strictly BELOW this id (older),
                                # the profile is measured strictly at/above it (later), per
-                               # the v27-notebook chronological protocol adopted in ROADMAP S1.
+                               # the v27-notebook chronological protocol adopted in old roadmap S1.
 
 # (episode_id, donor_seat) — all confirmed townCenterSellInterval==24 (current engine),
 # all EpisodeId < CUTOFF_EPISODE_ID, donor team is one of the 9 teams the S1.1 profile
@@ -49,7 +49,7 @@ DONOR_PICKS = [
     (90999409, 0, "Ueddy vs Calmracer"),
 ]
 
-FIDELITY_TOLERANCE = 0.02  # +-2%, ROADMAP S1 gate
+FIDELITY_TOLERANCE = 0.02  # +-2%, old roadmap S1 gate
 
 
 def load_replay(episode_id: int) -> dict:

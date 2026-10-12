@@ -1,4 +1,4 @@
-"""S16 task 1 fix (docs/plans/s16_slot_comparison.md correction, 2026-08-28) — the base
+"""S16 task 1 fix (an old pass brief correction, 2026-08-28) — the base
 arm in `analysis/s10_replay_bench.py`'s `h2_calibration`/`recovery_calibration` must be the
 BARE reconstruction stream, not the episode's own recorded reward/stream.
 

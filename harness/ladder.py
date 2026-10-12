@@ -1,6 +1,6 @@
 """Local Bradley-Terry ladder — rank an agent against a graded bench, in the ladder's currency.
 
-Why this exists (ROADMAP R22, §4.3 S6 step 3). Kaggriculture's final standings are a
+Why this exists (old roadmap R22, §4.3 S6 step 3). Kaggriculture's final standings are a
 **Bradley-Terry tournament** over post-deadline episodes (§1), and until now this repo has
 never computed BT locally. Every gate scored `median_bank` → W/L → `mean_diff` (§2.1.4),
 which are the right *acceptance* numbers but say nothing about *who* was beaten: a win over

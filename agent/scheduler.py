@@ -7,14 +7,14 @@ from .constants import ANIMALS, CROPS, SHED_ACCESS
 from .planner import DayPlan
 from .state import Snapshot, animals_needing
 
-# review.md L8: was a bare hardcoded 719; derive it from the same config every call site
+# old audit L8: was a bare hardcoded 719; derive it from the same config every call site
 # already uses, so a runtime.episode_steps change can't silently leave this stale. Every
 # production call site sets deadline_step explicitly — this only backs ad-hoc/test Tasks.
 _DEFAULT_DEADLINE_STEP = CONFIG["runtime"]["episode_steps"] - 1
 
 
 def _harvest_ready_age(crop: str) -> int:
-    """review.md M12: age (days since planted) at which `crop` first reaches its peak
+    """old audit M12: age (days since planted) at which `crop` first reaches its peak
     yield_units, derived from CROPS instead of a hardcoded magic number. Ongoing crops
     (STRAWBERRY) keep accumulating yield via the engine's daily refresh at
     first_yield_day + interval*k; the last production tick (k = max_yield-1) is the day
@@ -29,7 +29,7 @@ def _harvest_ready_age(crop: str) -> int:
 
 
 def _water_window(crop: str) -> tuple[int, int]:
-    """review.md M12: [start, end] age range in which watering a non-ongoing crop still
+    """old audit M12: [start, end] age range in which watering a non-ongoing crop still
     grows yield_units, mirroring the engine's own `window_start = (max_yield_day+1)//2`
     (engine kaggriculture.py L384)."""
     max_yield_day = CROPS[crop]["max_yield_day"]
@@ -145,7 +145,7 @@ def build_tasks(snapshot: Snapshot, plan: DayPlan, config: dict) -> list[Task]:
                 # eight steps. FEED's at-risk tier (-1) therefore outranks it, and the v1o.3
                 # screen measured exactly that: promoting FEED/PICKUP above WATER broke
                 # `plant_decay_units_lost` (4 in variant C, 14 in D) — a structural counter, hard
-                # zero under ROADMAP §2.1.5 — while fixing the animals. Give a tile that is
+                # zero under old roadmap §2.1.5 — while fixing the animals. Give a tile that is
                 # actually losing yield today the same at-risk standing, so the two hard
                 # deadlines compete with each other on urgency and distance instead of one
                 # silently always winning. None (the default) is a strict no-op.
@@ -462,14 +462,14 @@ def _build_animal_tasks(
             bundle_unit_by_position.setdefault(unit_pos, unit_index)
 
     for (x, y), needed in animal_needs.items():
-        # v1o.3 (ROADMAP §4.3 S3 step 1b) — **animal-visit bundling**. An animal tile needs up to
+        # v1o.3 (old roadmap §4.3 S3 step 1b) — **animal-visit bundling**. An animal tile needs up to
         # four ops a day (FEED/CARE/HARVEST/COLLECT_FERTILIZER), but assign() drops *every*
         # unrestricted task at an assigned position once one of them is taken, and its `committed`
         # stickiness is only set when a unit MOVES — so a unit standing on an animal tile performs
         # exactly one op, then re-competes from scratch next turn and is pulled away by the nearest
         # priority-0 WATER. With ~60 planted tiles the tier-0 pool no longer empties inside a day
-        # (`sw_hands_target=12` STOP, ROADMAP §3.3), so tier-1 CARE/HARVEST and tier-3
-        # COLLECT_FERTILIZER starve deterministically: analysis/v1o1_product_split.py measured WOOL
+        # (`sw_hands_target=12` STOP, old roadmap §3.3), so tier-1 CARE/HARVEST and tier-3
+        # COLLECT_FERTILIZER starve deterministically: the removed v1o1 product split script measured WOOL
         # losing 41% of its units and FERTILIZER 27% purely from added WATER work.
         #
         # Promoting those tasks globally would be **zero-sum** — every unit-turn they win above
@@ -519,7 +519,7 @@ def _build_animal_tasks(
     return tasks
 
 
-# v1p.2 (ROADMAP §4.3 S3 step 1c, zone assignment). Quadrant boundaries mirror the engine's own
+# v1p.2 (old roadmap §4.3 S3 step 1c, zone assignment). Quadrant boundaries mirror the engine's own
 # `_quadrant_of` (engine_reference/kaggriculture.py:114-116) at boardSize=10 — the same hardcoded
 # geometry every other constant in this module already assumes (SHED_ACCESS, target_tiles, ...).
 _QUADRANT_ORDER = ("NW", "NE", "SW", "SE")
@@ -542,7 +542,7 @@ def _zone_partition(
 ) -> dict[int, str]:
     """Which quadrant each unit is zoned to this turn, or `{}` if zoning has no effect.
 
-    ROADMAP §4.3 S3 step 1c: `assign()`'s global argmin can pull a unit standing in one
+    old roadmap §4.3 S3 step 1c: `assign()`'s global argmin can pull a unit standing in one
     quadrant to a task in another, a commute of up to ~12 turns to perform one 1-turn action.
     This computes a proportional split of units across the quadrants we currently own, sized by
     that turn's actual task count per quadrant (not a fixed ratio, which would re-break the
@@ -552,7 +552,7 @@ def _zone_partition(
     with an explicit fallback to the full unit pool when a task's own zone has nobody in it — a
     task must never become unservable just because its zone is momentarily empty.
 
-    v1p.2b (ROADMAP §4.3 S3 step 1c): v1p.2's own SMOKE STOP diagnosed why the plain version of
+    v1p.2b (old roadmap §4.3 S3 step 1c): v1p.2's own SMOKE STOP diagnosed why the plain version of
     this function above was never safe to ship — it recomputed zones fresh every turn from the
     *current* snapshot alone, so a unit already `committed` to a task (the C1 stickiness fix
     `assign()`'s own docstring describes at length) could be re-zoned OUT of eligibility for that
@@ -726,7 +726,7 @@ def assign(
         # v1p.2: a unit already holding WHEAT is zone-exempt regardless of task kind. The feed
         # round's PICKUP is itself allowed_unit-restricted (already zone-exempt, one task per
         # unit), so this only ever matters for the FEED/CARE/HARVEST/COLLECT_FERTILIZER tasks
-        # downstream of it — decided explicitly rather than left implicit, per ROADMAP §4.3 S3
+        # downstream of it — decided explicitly rather than left implicit, per old roadmap §4.3 S3
         # step 1c: "decide explicitly whether carriers are zone-exempt while holding WHEAT."
         inventory = snapshot.inventories[unit_index] if unit_index < len(snapshot.inventories) else {}
         return inventory.get("WHEAT", 0) > 0
@@ -802,7 +802,7 @@ def assign(
         if not candidates:
             break
 
-        # review.md L2: Task is a frozen dataclass without order=True, so it can't be compared
+        # old audit L2: Task is a frozen dataclass without order=True, so it can't be compared
         # — sorting on (*, task) tuples only worked because (unit_index, task.id) is always
         # unique, making the tuple comparison stop one element early. Sort on the key tuple
         # explicitly so a future duplicate key fails loudly in the key, not by TypeError deep
@@ -823,7 +823,7 @@ def assign(
             actions[unit_index] = [task.kind]
 
         unassigned_units.remove(unit_index)
-        # review.md M2: only tasks that actually compete for this pos should be dropped.
+        # old audit M2: only tasks that actually compete for this pos should be dropped.
         # allowed_unit-restricted tasks (e.g. per-unit liquidation DROPs, all sharing the
         # shed's access tile) are non-competing by construction — dedup those by task.id so
         # only the just-assigned one is dropped, not every other unit's own DROP task at the

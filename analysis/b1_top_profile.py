@@ -3,9 +3,9 @@
 
 `analysis/b1_top4_profile_2026_08_21.py` and its dependency `b1_top5_profile.py` were
 both pruned in eafcd43 ("prune 53 superseded one-off analysis scripts") along with the
-untracked collector chain that fed them (ROADMAP §11) — so the 2026-08-21 fit is two
+untracked collector chain that fed them (old roadmap §11) — so the 2026-08-21 fit is two
 weeks stale and cannot be re-run as-is. This is a from-scratch rewrite that reads
-directly off `analysis.s8_replay_io` (the one shared replay reader, ROADMAP §3) and
+directly off `analysis.s8_replay_io` (the one shared replay reader, old roadmap §3) and
 `analysis.s9_market_ledger.episode_ledger` (the one shared per-unit sale ledger) — no
 second reader, no second ledger.
 
@@ -118,7 +118,7 @@ def profile_seat(replay: dict, seat: int) -> dict:
     money_at = {str(d): (at(d) or {}).get("money") for d in CHECK_DAYS}
     tiles_at = {str(d): (at(d) or {}).get("tiles") for d in CHECK_DAYS}
     hands_at = {str(d): (at(d) or {}).get("hands") for d in CHECK_DAYS}
-    # Total head count per day (matches ROADMAP §5.1's "Animals d5/d10/.../end" row);
+    # Total head count per day (matches old roadmap §5.1's "Animals d5/d10/.../end" row);
     # the per-species breakdown lives in `animals_peak` instead — this dict must stay
     # single-level, scalar-per-key, like every other *_at field (`_agg_team`/
     # `_range_across_teams` only handle one level of nesting).

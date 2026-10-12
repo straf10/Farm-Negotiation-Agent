@@ -19,7 +19,7 @@ shop ξεκλειδώνει. Οποιαδήποτε αλλαγή στον αρι
 φύτευση, συγκομιδή, DIG, BUY_LAND, τοποθέτηση ζώων — σε **οποιαδήποτε** από τις δύο πλευρές
 ξαναρίχνει όλη την επόμενη ακολουθία shop unlocks, ακόμα και του αντιπάλου.
 
-Πλήρης τεκμηρίωση του μηχανισμού: `docs/MASTERPLAN.md` §2 Αμφισημία #7 (και #6 για το
+Πλήρης τεκμηρίωση του μηχανισμού: `the old strategy doc` §2 Αμφισημία #7 (και #6 για το
 weed σκέλος). Ο επιχειρησιακός κανόνας «occupancy knob vs market-only knob»:
 §Πρωτόκολλο.
 
@@ -37,7 +37,7 @@ weed σκέλος). Ο επιχειρησιακός κανόνας «occupancy k
 
 Ο μηχανισμός (context manager γύρω από το `_end_of_day`) είναι προσαρμοσμένη αναδιατύπωση
 της ιδέας του community notebook `notebooks/your-seed-does-not-fix-the-town.ipynb` §8 —
-evidence, όχι πηγή κώδικα agent (MASTERPLAN Ανοιχτό #11).
+evidence, όχι πηγή κώδικα agent (old strategy doc Ανοιχτό #11).
 
 Χρήση::
 

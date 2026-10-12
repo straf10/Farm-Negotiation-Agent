@@ -6,7 +6,7 @@ from .scheduler import ResourceLedger, animal_placed, open_animal_slots, placed_
 from .state import Snapshot
 
 
-# review.md H8: truncation used to keep construction order (SELL first, HIRE/BUY_LAND last),
+# old audit H8: truncation used to keep construction order (SELL first, HIRE/BUY_LAND last),
 # so a budget-tight turn silently dropped HIRE and BUY_LAND — the two orders with the largest
 # measured ROI — in favor of a SELL FERTILIZER worth a few dollars. Lower number = kept first
 # when max_market_orders forces a cut. WHEAT is life-or-death for placed animals
@@ -19,7 +19,7 @@ def _order_tier(order: list) -> int:
 
 
 def _hire_cost(n_already_today: int, mult: int = 1) -> int:
-    """review.md M3: mirrors the engine's `cost = mult * _fib(n)`
+    """old audit M3: mirrors the engine's `cost = mult * _fib(n)`
     (engine_reference/kaggriculture.py:675-676) — the mult was previously dropped, so a
     non-default farmHandCostMult would make the agent underestimate cost and emit HIRE
     orders the engine silently no-ops."""
@@ -401,7 +401,7 @@ def market_orders(
         # already-placed animals fed through the endgame ("they keep producing until the
         # episode ends") — gating this on liquidation starved both animals to death within 2
         # days of liquidation_day in a v1d smoke test.
-        # review.md M4: was gated on `hour == 0` only, so an hour-0 cash shortfall got no
+        # old audit M4: was gated on `hour == 0` only, so an hour-0 cash shortfall got no
         # retry even after the same day's SELLs freed up money. Sizing wheat_needed against
         # unfed_animals (not placed_animals) keeps re-running every hour idempotent: FEED
         # flips a tile's fed_today True and consumes 1 WHEAT in the same action
@@ -430,7 +430,7 @@ def market_orders(
                     orders.append(["BUY_PRODUCT", "WHEAT", wheat_to_buy])
                     available_money -= wheat_to_buy * wheat_price
                 if wheat_to_buy < wheat_needed:
-                    # review.md M4: partial/zero wheat purchases were invisible even in a
+                    # old audit M4: partial/zero wheat purchases were invisible even in a
                     # debug run — this is the leading indicator for an animal escape.
                     emit_receipt({
                         "kind": "wheat_shortfall",
@@ -464,7 +464,7 @@ def market_orders(
     if config.get("animals", {}).get("enabled", False) and not plan.force_liquidation:
         # v1d / v1g: only buy up to as many empty, already-built structure slots
         # as `name` actually has waiting — buying more would just have the surplus sit in the
-        # shed as dead capital (the same MASTERPLAN §3.2#7 lesson land-without-hands teaches,
+        # shed as dead capital (the same old strategy doc §3.2#7 lesson land-without-hands teaches,
         # generalized from "never buy a second one" to "never buy past open homes" now that a
         # name can have N slots). New investment stops once liquidation starts (no runway left
         # to recoup an animal's cost), same as crops.
@@ -479,7 +479,7 @@ def market_orders(
         # exactly the engine's escape threshold (consecutive_unfed >= 2), so the whole batch
         # escaped together. Reserve enough cash to feed the herd this hour's purchases would
         # create for FEED_RESERVE_DAYS before spending further on NEW animals.
-        # ROADMAP §4.3 S3 step 1e (v1r): FEED_RESERVE_DAYS and the reserved-herd count are now
+        # old roadmap §4.3 S3 step 1e (v1r): FEED_RESERVE_DAYS and the reserved-herd count are now
         # config-gated (agent/config.py "feed_reserve_*"), all defaulting to the shipped, inert
         # behaviour. `total_placed + buy_target` counted animals on tiles plus this order's
         # additions but NOT animals already bought on earlier turns and still carried/in the shed
@@ -512,7 +512,7 @@ def market_orders(
                 continue
             cost = int(ANIMALS[name]["cost"])
             if reserve_horizon == "target":
-                # Arm C2 (ROADMAP §4.3 S3 step 1e/2): reserve for the full intended herd — the sum
+                # Arm C2 (old roadmap §4.3 S3 step 1e/2): reserve for the full intended herd — the sum
                 # of animal_purchases targets — regardless of how many are placed or still in flight.
                 # This is the reserve shape that keeps binding as the target grows past what has been
                 # bought yet (the §4.0 herd-13 profile needs the $676 liability of 13 animals sized
@@ -552,7 +552,7 @@ def market_orders(
         and len(snapshot.hand_positions) >= plan.hands_target
         and all(animal_placed(snapshot, name) for name in plan.animal_purchases)
     ):
-        # v1c / MASTERPLAN §3.2#7: only buy once hands_target hands are already
+        # v1c / old strategy doc §3.2#7: only buy once hands_target hands are already
         # observed hired — land bought before a workforce exists to work it is dead capital.
         # The animal_placed check is load-bearing, not decorative: BUY_LAND's own hands_target
         # gate is satisfiable as early as day 0 hour ~2, well before COW/SHEEP are bought
@@ -592,7 +592,7 @@ def market_orders(
     # (engine_reference/kaggriculture.py:538 + .json "extra orders beyond this limit are
     # silently dropped"), and hands are wiped every night — so a crew rebuilt entirely inside
     # hour 0 can never exceed 10, whatever the target says. This is the real mechanism behind
-    # ROADMAP §3.3's v1j STOP ("+2 hands never hired"), which had been attributed to cost.
+    # old roadmap §3.3's v1j STOP ("+2 hands never hired"), which had been attributed to cost.
     #
     # Two changes, one mechanism — "emit only what fits, continue next turn":
     #   * hires may now be emitted through `hire_last_hour` instead of at hour 0 only. The
@@ -631,7 +631,7 @@ def market_orders(
     if len(orders) > max_orders:
         # review_89d99f0_2026-08-05.md M7: raising here would turn one budget slip into a submission ERROR and a
         # lost episode. Truncate defensively instead and leave a receipt to catch it in dev.
-        # review.md H8: truncate by priority (_ORDER_TIER), not construction order — a stable
+        # old audit H8: truncate by priority (_ORDER_TIER), not construction order — a stable
         # sort keeps each tier's own relative order (e.g. SELL products stay in their existing
         # order among themselves), only reordering across tiers.
         emit_receipt({

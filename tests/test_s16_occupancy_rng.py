@@ -1,4 +1,4 @@
-"""ROADMAP §3.1 rule 1, corrected 2026-08-28 (S16 task 4, docs/plans/s16_slot_comparison.md).
+"""old roadmap §3.1 rule 1, corrected 2026-08-28 (S16 task 4, an old pass brief).
 
 The old wording — "a one-tile difference on either farm re-rolls the whole remaining shop
 sequence" — overclaims. `_spawn_weeds` (kaggriculture.py:836-840) calls `rng.random()` once

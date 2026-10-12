@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""S6 step 0, leg 1 — the same-town control (ROADMAP §4.3 S6 step 0; can end the pass).
+"""S6 step 0, leg 1 — the same-town control (old roadmap §4.3 S6 step 0; can end the pass).
 
 §4.1b established that comparing realised $/unit *across* episodes measures the town's random
 shop draw, not the agent. The controlled comparison is **the two seats inside one episode**:

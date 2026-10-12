@@ -1,8 +1,8 @@
-# Top-decile replay profile vs v1b (plan.md §1.5.5)
+# Top-decile replay profile vs v1b (old plan doc §1.5.5)
 
 Top-decile teams: **21** (winrate n>=8, Wilson lower bound, top 10%). Extracted from **662** (episode, seat) rows.
 
-> Replays used strictly as target curve / diagnostic (MASTERPLAN §3.4, Open #11). No trajectory copying, no BC/IL prior — only aggregate per-day state.
+> Replays used strictly as target curve / diagnostic (old strategy doc §3.4, Open #11). No trajectory copying, no BC/IL prior — only aggregate per-day state.
 
 ## (i) Quadrant acquisition day (median across top-decile episodes)
 
@@ -21,7 +21,7 @@ Top-decile teams: **21** (winrate n>=8, Wilson lower bound, top 10%). Extracted 
 | GOOSE | 12 | 97 / 662 |
 | SHEEP | 5.0 | 368 / 662 |
 
-## plan.md §5.1 decision: land vs animals first
+## old plan doc §5.1 decision: land vs animals first
 
 Median day of 1st animal (any species): **0** (n=593). Median day of 1st extra quadrant (beyond starting NW): **9** (n=649).
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""S8 — the replay-read contract, written ONCE (docs/plans/s8_submission_analysis_tasks.md §1).
+"""S8 — the replay-read contract, written ONCE (an old pass brief §1).
 
 Both live submissions store their episodes as `episode-<id>-replay.json` under
 `data/archive/raw/live_<submission>/` — a different layout from the S6 `2026-08-16`
@@ -128,8 +128,8 @@ def parse_episodes_csv(path: Path) -> dict[int, dict]:
     (`Use "kaggle competitions replay <episode_id>" ...`), which `csv.DictReader`
     renders as a row with missing/non-numeric fields. Skip anything malformed
     rather than special-casing the trailer text — same defensive check
-    `analysis/s9_live_read_55726984.py::load_episode_times` used inline before this
-    was pulled out so there is exactly one parser (ROADMAP §3, reuse rule).
+    `the removed s9 live read script::load_episode_times` used inline before this
+    was pulled out so there is exactly one parser (old roadmap §3, reuse rule).
 
     Returns {episode_id: {"createTime": str, "state": str, "type": str}} for every
     well-formed row, ladder AND validation episodes alike — callers decide what to

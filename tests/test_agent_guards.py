@@ -76,7 +76,7 @@ def test_policy_returns_index_aligned_hand_actions():
     # animals disabled here: this test is about index alignment (G12), not the v1d animal
     # feature, and an empty farm otherwise has no tasks at all — with animals on, the two
     # always-free BUILD_PASTURE slots would legitimately draw a unit away from PASS.
-    # review.md L5: restore the actual prior value, not a hardcoded literal — a hardcoded
+    # old audit L5: restore the actual prior value, not a hardcoded literal — a hardcoded
     # restore silently "fixes" CONFIG to the wrong value (and masks it for every later test)
     # if the true default ever differs from the literal here.
     previous_enabled = CONFIG["animals"]["enabled"]
@@ -112,10 +112,8 @@ def test_vendored_constants_and_prices_match_pinned_engine():
     assert _vendored.SHOPS == engine.SHOPS
     # M7: analysis/ scripts carry their own SHOPS copies — verify they match the engine too
     from analysis.s7_ladder_census import SHOPS as census_SHOPS
-    from analysis.s6_step2e import SHOPS as step2e_SHOPS
     from analysis.v1v_shop_demand import SHOPS as v1v_SHOPS
     assert census_SHOPS == engine.SHOPS, "s7_ladder_census.SHOPS drifted from engine"
-    assert step2e_SHOPS == engine.SHOPS, "s6_step2e.SHOPS drifted from engine"
     assert v1v_SHOPS == engine.SHOPS, "v1v_shop_demand.SHOPS drifted from engine"
     # v1g.2 — the demand model reads TOWN_CENTER_PRODUCTS, so the fallback's derivation of it
     # (from MARKET_PARAMS, minus FERTILIZER) has to stay identical to the engine's own.
@@ -155,7 +153,7 @@ def test_v1h1_constants_resolve_per_symbol_not_all_or_nothing():
 
 def test_v1h1_town_center_ramp_is_gone_from_the_engine():
     """v1h.1 — the flat town centre is the single most consequential balance change of the
-    season (140 -> 30 units/product/season, MASTERPLAN §3.2#6). If a future engine version
+    season (140 -> 30 units/product/season, old strategy doc §3.2#6). If a future engine version
     reinstates a day-stepped ramp, `agent/demand.py` silently under-counts late-season demand
     and every sell-timing decision built on it is wrong. Fail here, loudly, instead."""
     assert not hasattr(engine, "TOWN_CENTER_DEMAND_SCHEDULE")
@@ -166,7 +164,7 @@ def test_v1h1_town_center_ramp_is_gone_from_the_engine():
 def test_l3_hire_cost_matches_engine():
     """review_89d99f0_2026-08-05.md L3 — executor._hire_cost is a hand-copied reimplementation of the engine's
     fib-cost sequence with no parity test, unlike the rest of the vendored constants.
-    review.md M3 — the original version of this test only swept the default mult=1, so it
+    old audit M3 — the original version of this test only swept the default mult=1, so it
     never caught that _hire_cost dropped farmHandCostMult entirely; now swept across
     mult in {1, 2, 3} to lock the full `cost = mult * fib(n)` relationship."""
     from agent.executor import _hire_cost
@@ -177,7 +175,7 @@ def test_l3_hire_cost_matches_engine():
 
 
 def test_m12_harvest_ready_age_derived_from_crops():
-    """review.md M12 — the hardcoded `age >= 3` (CARROT) / `age >= 16` (STRAWBERRY) harvest
+    """old audit M12 — the hardcoded `age >= 3` (CARROT) / `age >= 16` (STRAWBERRY) harvest
     triggers in scheduler.py must stay derived from CROPS, not drift into a second hand-copied
     magic number if the pinned engine's CROPS constants ever change."""
     from agent.scheduler import _HARVEST_READY_AGE, _WATER_WINDOWS
@@ -240,7 +238,7 @@ def test_g1_scheduler_reserves_time_to_water_new_plant():
     # animals disabled: this is a G1 plant-timing test, not a v1d animal-priority test — with
     # animals on, the free/always-available BUILD_PASTURE tasks legitimately outrank a single
     # CARROT plant this late in the day and would otherwise mask what G1 is checking.
-    # review.md L5: restore the actual prior value, not a hardcoded literal.
+    # old audit L5: restore the actual prior value, not a hardcoded literal.
     previous_enabled = CONFIG["animals"]["enabled"]
     CONFIG["animals"]["enabled"] = False
     try:
@@ -313,7 +311,7 @@ def test_m7_market_orders_truncates_instead_of_raising():
 
 
 def test_v1o2_hire_no_longer_displaces_a_sell_but_is_only_deferred():
-    """v1o.2 supersedes review.md H8's *resolution* while keeping its concern.
+    """v1o.2 supersedes old audit H8's *resolution* while keeping its concern.
 
     H8's problem was that a budget-tight turn silently dropped HIRE — the highest-ROI order —
     in favour of a low-value SELL, because truncation followed construction order. Its fix made
@@ -609,7 +607,7 @@ def test_h4_debug_receipts_emit_and_reconcile(capsys):
     """review_89d99f0_2026-08-05.md H4 — the harness side (KAGGRI_RECEIPT parsing in play.py) already existed;
     this is the missing transmitter: a committed WATER must emit an expected_transition
     receipt now and a reconciliation receipt the next time this seat is observed."""
-    # review.md L5: restore the actual prior value, not a hardcoded literal.
+    # old audit L5: restore the actual prior value, not a hardcoded literal.
     previous_debug = CONFIG["guards"]["debug"]
     CONFIG["guards"]["debug"] = True
     try:
@@ -882,7 +880,7 @@ def _buy_cow(snapshot, plan, **executor_overrides):
 
 
 def test_v1r_feed_reserve_counts_in_flight_animals():
-    """ROADMAP §4.3 S3 step 1e — the located defect. The v1g feed-cash reserve is
+    """old roadmap §4.3 S3 step 1e — the located defect. The v1g feed-cash reserve is
     `(total_placed + buy_target) * wheat_price * FEED_RESERVE_DAYS`; it counts animals on tiles
     plus this order's additions but NOT the herd already bought and sitting carried/in the shed,
     each of which eats one WHEAT/day once placed. Purchases spread across turns then bypass it.
@@ -1018,7 +1016,7 @@ def test_v1g_build_tasks_places_multiple_same_named_animals_in_parallel():
 
 def test_v1g_buy_animal_caps_at_open_slot_headroom():
     """v1g: buying more of a same-named animal than there are currently open, already-built
-    homes for it would be dead capital sitting in the shed — the same MASTERPLAN §3.2#7 lesson
+    homes for it would be dead capital sitting in the shed — the same old strategy doc §3.2#7 lesson
     land-without-hands teaches, generalized from "never buy a second one of the same target"
     (the old one-slot-per-name model) to "never buy past open homes"."""
     from agent.executor import market_orders
@@ -1383,7 +1381,7 @@ def test_v1h_wheat_waits_for_sw_and_for_its_own_first_plant_day():
 
 
 def test_v1o1_strawberry_is_replanted_past_the_old_day_5_window():
-    """ROADMAP §4.3 S3 step 1 / §3.2: "our farm shuts down on day 17" was this constant. E0
+    """old roadmap §4.3 S3 step 1 / §3.2: "our farm shuts down on day 17" was this constant. E0
     traced the planner's own raw targets and found STRAWBERRY's target hitting 0 on day 6 and
     never returning, so the 8 tiles planted on days 0-5 decayed to WEED around days 17-21 with
     nothing planted behind them — 26 planted tiles at peak against the top-30's 62.
@@ -1416,7 +1414,7 @@ def test_v1o1_wheat_window_is_independent_of_the_strawberry_window():
 
 
 def _v1o3_config(**overrides):
-    """v1o.3's ladder is SHIPPED OFF (ROADMAP §3.3 — the acceptance arm stopped it twice), so
+    """v1o.3's ladder is SHIPPED OFF (old roadmap §3.3 — the acceptance arm stopped it twice), so
     every guard below drives the knobs explicitly instead of reading the live values. What is
     still being pinned is that the mechanism works when switched on: the code is retained,
     disabled, as the artefact the recorded numbers refer to, and a silent rot would make those
@@ -1439,12 +1437,12 @@ def _fed_animal_needing_everything_else(step=10, farmer=(4, 2)):
 
 
 def test_v1o3_a_standing_unit_finishes_the_animal_visit_instead_of_leaving_for_water():
-    """ROADMAP §4.3 S3 step 1b. assign() drops every unrestricted task at an assigned position
+    """old roadmap §4.3 S3 step 1b. assign() drops every unrestricted task at an assigned position
     and only sets `committed` when a unit MOVES, so a unit standing on an animal tile did one op
     and then re-competed from scratch — losing to the nearest priority-0 WATER every time, since
     task.priority leads the sort key absolutely. With ~60 planted tiles the tier-0 pool never
     empties inside a day, so tier-1 CARE/HARVEST and tier-3 COLLECT_FERTILIZER starved
-    deterministically (WOOL -41% of units, FERTILIZER -27%, analysis/v1o1_product_split.py).
+    deterministically (WOOL -41% of units, FERTILIZER -27%, the removed v1o1 product split script).
 
     Bundling promotes only the tile the unit is *already standing on*, so it can never induce a
     commute — it can only finish one."""
@@ -1534,7 +1532,7 @@ def test_v1o3_a_decaying_crop_keeps_its_standing_against_the_promoted_feed_round
     (:738-752) strips one yield_unit every second step once `max_lifespan_step` is reached, so
     crop HARVEST is the only *other* task in the game with a hard yield deadline — and lifting
     FEED to -1 put it above that. Measured: `plant_decay_units_lost` 4 (variant C) and 14
-    (variant D), a structural counter that is hard-zero under ROADMAP §2.1.5. With the guard both
+    (variant D), a structural counter that is hard-zero under old roadmap §2.1.5. With the guard both
     hard deadlines sit in the same tier and compete on urgency and distance instead."""
     config = _v1o3_config(feed_priority=-1, feed_at_risk_priority=-2,
                           crop_harvest_at_risk_priority=-1)
@@ -1612,7 +1610,7 @@ def test_v1o3_the_animal_priority_ladder_is_config_not_literals():
 
 
 def _v1p2_config(**overrides):
-    """v1p.2's zone assignment is off by default (ROADMAP §4.3 S3 step 1c) — every guard below
+    """v1p.2's zone assignment is off by default (old roadmap §4.3 S3 step 1c) — every guard below
     drives `zone_assignment_enabled` explicitly, matching the `_v1o3_config` convention above."""
     config = copy.deepcopy(CONFIG)
     config["scheduler"].update(zone_assignment_enabled=True, **overrides)
@@ -1638,7 +1636,7 @@ def test_v1p2_zone_partition_is_inert_when_disabled_or_single_quadrant():
 
 
 def test_v1p2_zone_partition_splits_units_proportionally_to_task_count():
-    """ROADMAP §4.3 S3 step 1c: 'proportional, not fixed' — sized by that turn's actual task
+    """old roadmap §4.3 S3 step 1c: 'proportional, not fixed' — sized by that turn's actual task
     count per quadrant. 3 NW tasks + 1 NE task over 4 units divides exactly 3:1, and each unit
     here is already geometrically closest to the zone its quota assigns it to, so the result is
     unambiguous: farmer and both near-NW hands land in NW, the NE hand lands in NE."""
@@ -1753,7 +1751,7 @@ def test_v1p2_assign_exempts_allowed_unit_tasks_from_zoning():
 
 
 def test_v1p2_assign_treats_a_wheat_carrier_as_zone_exempt():
-    """ROADMAP §4.3 S3 step 1c: 'decide explicitly whether carriers are zone-exempt while
+    """old roadmap §4.3 S3 step 1c: 'decide explicitly whether carriers are zone-exempt while
     holding WHEAT' — decided yes. A unit zoned to the *wrong* quadrant but already holding
     WHEAT must stay eligible for an unrestricted task (CARE, not FEED — FEED's own
     `_carries_cargo` check already narrows to wheat-carriers, which would make this exemption
@@ -1778,7 +1776,7 @@ def test_v1p2_assign_treats_a_wheat_carrier_as_zone_exempt():
 
 
 def test_v1p2b_zone_partition_pins_a_committed_unit_to_its_own_task_zone():
-    """ROADMAP §4.3 S3 step 1c (v1p.2b) — the mandatory guard. v1p.2's own SMOKE STOP diagnosed
+    """old roadmap §4.3 S3 step 1c (v1p.2b) — the mandatory guard. v1p.2's own SMOKE STOP diagnosed
     that the plain zone partition had no memory across turns, so a unit already `committed` to a
     task could be re-zoned OUT of eligibility for that exact task the moment the day's
     task-count mix shifted. A unit deep in NE, `committed` to an NW task that still exists, must

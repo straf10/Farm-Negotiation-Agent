@@ -401,7 +401,7 @@ def test_s10_realized_aliases_track_their_sources():
 def test_s10_transition_events_consumers_survive_the_widened_tuple():
     """Regression: `_transition_events` returns a 7-tuple since S10 P2, but three
     analysis/ callers unpacked exactly 5. They kept importing cleanly and failed only when
-    called — so an import check could not see it, and `s6_step2b_phase05` swallowed the
+    called — so an import check could not see it, and `s6 step2b phase 0.5` swallowed the
     ValueError into its `skipped_transitions` counter, turning a hard break into a silently
     empty result. Pin the contract from the consumer side, where it actually broke."""
     env = make("kaggriculture", configuration={"seed": 0, "episodeSteps": 4})

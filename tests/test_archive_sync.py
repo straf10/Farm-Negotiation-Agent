@@ -1,4 +1,4 @@
-"""analysis/archive_sync.py — the collector automation (ROADMAP §3.2/§9/§11).
+"""analysis/archive_sync.py — the collector automation (old roadmap §3.2/§9/§11).
 
 No real network/CLI calls: every test that would otherwise shell out to `kaggle`
 monkeypatches `archive_sync._run_kaggle` with a fake that writes to disk the way the

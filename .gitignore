@@ -15,7 +15,7 @@ baselines/
 !/gates/**/
 !/gates/**/results.json
 
-# checkpoints/: immutable local baselines (ROADMAP R14, decided 2026-08-11). The agent packages
+# checkpoints/: immutable local baselines (old roadmap R14, decided 2026-08-11). The agent packages
 # themselves stay out of git — ~20 near-identical copies of agent/ — but every manifest.json IS
 # tracked, so the fingerprint of each accepted baseline is recoverable from history and any gate
 # artefact that cites one can still be checked. This is the compromise between the invariant
@@ -29,7 +29,7 @@ baselines/
 !/checkpoints/*/manifest.json
 
 # Kaggle notebooks — large embedded outputs, not part of the agent/harness source.
-# Leading slash matters: a bare `notebooks/` also swallowed docs/source/notebooks/,
+# Leading slash matters: a bare `notebooks/` also swallowed the old source extracts
 # which holds the small tracked markdown extracts every doc reference points at.
 /notebooks/
 
@@ -42,7 +42,7 @@ docs/reviews/
 
 # R25: the MIT tier-0-5 reference agents (Rayk Kretzschmar, kaggriculture-reference-agents).
 # MIT permits redistribution, but they are not ours to carry in this public repo and nothing
-# needs them to be (ROADMAP §4.5). Fetched locally only. Tiers 6-9 and the CC BY-SA CSVs are
+# needs them to be (old roadmap §4.5). Fetched locally only. Tiers 6-9 and the CC BY-SA CSVs are
 # never fetched (R23 / §4.5).
 /harness/bench_agents/reference/
 
@@ -55,12 +55,12 @@ docs/reviews/
 !/data/derived/b2_current_engine_meta.json
 !/data/derived/b3_target_profile.json
 !/data/derived/daily_meta-2026-08-10.json
-!/data/derived/s6_step0_leg3.json
+!/data/derived/s6 step0 leg 3.json
 !/data/derived/top_agent_profiles.csv
 !/data/derived/top_agent_profiles.md
 !/data/derived/v1t_engine_probe-2026-08-14.json
 !/data/derived/v1t_engine_probe-2026-08-15.json
-!/data/derived/v1u_oracle-2026-08-15.json
-!/data/derived/v1u_travel_ratio-2026-08-15.json
+!/data/derived/v1u oracle-2026-08-15.json
+!/data/derived/v1u travel ratio-2026-08-15.json
 !/data/derived/v1v_shop_demand.json
 /harness/bench_agents/neighbourhood/

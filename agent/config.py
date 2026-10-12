@@ -12,7 +12,7 @@ CONFIG = {
         # for the v1g animal-mass increment. NE's carrot mirror tiles
         # (ne_carrot_tiles) are untouched.
         #
-        # ⛔ v1p.1 (ROADMAP §4.3 S3 step 1c, herd compaction — arm A) STOPPED at SMOKE, kept at 3.
+        # ⛔ v1p.1 (old roadmap §4.3 S3 step 1c, herd compaction — arm A) STOPPED at SMOKE, kept at 3.
         # Tried: reassign (3, 4) and (4, 3) — the two remaining NW CARROT tiles here besides
         # (4, 4), distance 1 from the (4,4) shed spawn and otherwise idle land (CARROT is
         # $34,9/tile-day, the worst crop in the game — §3.2(6) — and §4.3 already wants it at
@@ -40,9 +40,9 @@ CONFIG = {
         # distance-1 tiles to SHEEP specifically (arms B and C in the original screen share the
         # same two tiles and would hit the identical race), not a bookkeeping detail of this one
         # arm, so no further variant of "give SHEEP the freed CARROT tiles" was screened. See
-        # ROADMAP §3.3 and memory.md 2026-08-13.
+        # old roadmap §3.3 and old journal 2026-08-13.
         #
-        # ⛔ v1p.1b (ROADMAP §4.3 S3 step 1c) STOPPED at SMOKE, kept at 3 — this closes the
+        # ⛔ v1p.1b (old roadmap §4.3 S3 step 1c) STOPPED at SMOKE, kept at 3 — this closes the
         # "convert a CARROT tile to compact the herd" family for good. Two untested controls
         # v1p.1's own root cause implied, both run: arm A1 (same tile set as arm A, COW instead
         # of SHEEP gets the two distance-1 tiles — see animal_structure_tiles["PASTURE"] below)
@@ -64,8 +64,8 @@ CONFIG = {
         # 2,2,2,3,3,4,4,5,6,6,7,7,8 — the ten currently-claimed slots are already the ten
         # nearest, so there is no free reorder left inside the existing PASTURE pool; proximity
         # can only be bought by converting a crop tile, and that purchase does not pay for
-        # itself. Checkpoints `checkpoints/v1p1b_armA1` / `checkpoints/v1p1b_armB`. See ROADMAP
-        # §3.3 and memory.md 2026-08-13.
+        # itself. Checkpoints `checkpoints/v1p1b_armA1` / `checkpoints/v1p1b_armB`. See old roadmap
+        # §3.3 and old journal 2026-08-13.
         "carrot_tiles": 3,
         # v1e: reduced from 16 to 15 to free tile (3, 0) for GOOSE's COOP structure
         # — all 25 NW tiles were already fully allocated (7 CARROT + 16 STRAWBERRY + 2 PASTURE),
@@ -81,18 +81,18 @@ CONFIG = {
         # freeing the 11 new PASTURE slots v1g asks for (2 existing + 11 new
         # = 13, matching the elite ceiling of 8 COW + 5 SHEEP). NW is fully allocated either way
         # (3 CARROT + 8 STRAWBERRY + 13 PASTURE + 1 COOP = 25); this is a targeted reclaim to
-        # fit the new structures, not the full crop/animal portfolio rebalance MASTERPLAN
+        # fit the new structures, not the full crop/animal portfolio rebalance old strategy doc
         # reserves for v1h.
         "strawberry_tiles": 8,
-        # v1o.1 (ROADMAP §4.3 S3 step 1): the single gate that shut the farm down. E0
-        # (analysis/e0_s3_blockers.py, 4 seeds x both seats vs meta_route) traced the planner's
+        # v1o.1 (old roadmap §4.3 S3 step 1): the single gate that shut the farm down. E0
+        # (the removed e0 blockers script, 4 seeds x both seats vs meta_route) traced the planner's
         # own raw targets per day and found STRAWBERRY's raw target drops to 0 on **day 6** and
         # never returns: the 8 tiles planted on days 0-5 reach their 4th and last yield tick
         # (first_yield_day 10 + interval 2 * 3 = age 16) around days 17-21, decay to WEED, and
         # nothing is ever planted behind them. Measured consequence at the old value of 5:
         # planted tiles peak at **26** on d14-17 and fall to 18 (d20) / 11,5 (d24) / 0 (d28),
         # against the current-engine top-30 profile's 62 / 60 / 59 / 1
-        # (data/derived/b3_target_profile.json). That is ROADMAP §3.2's "our farm shuts down on
+        # (data/derived/b3_target_profile.json). That is old roadmap §3.2's "our farm shuts down on
         # day 17", and it is a config constant, not an emergent capacity limit: the capacity
         # gate (_capacity_limited_targets) trims nothing at all on days 14-24, and the crew hits
         # its hands_target on every single day of all 8 E0 runs.
@@ -110,17 +110,17 @@ CONFIG = {
         #
         # Tile-days and idle keep improving monotonically past 12 and the bank keeps falling,
         # because the extra watering is paid for out of the animals: analysis/
-        # v1o1_product_split.py (vs the non-mirror `meta_route` bench) measured STRAWBERRY going
+        # v1o1 product split.py (vs the non-mirror `meta_route` bench) measured STRAWBERRY going
         # 32 -> 80 units at a *higher* realized price ($232,9 -> $259,0, i.e. no saturation at
         # all) while WOOL lost 41% of its units and FERTILIZER 27% — HARVEST on an animal tile
         # is priority 1 and COLLECT_FERTILIZER is priority 3, both below WATER's 0, so new
         # priority-0 crop work crushes them first. 16 and 20 additionally break a *structural*
         # counter (an animal's yield left uncollected past its cap), which is a STOP under
-        # ROADMAP §2.1.5 regardless of the dollar verdict.
+        # old roadmap §2.1.5 regardless of the dollar verdict.
         #
         # So 12 is not "the best window" — it is the largest window that today's task priorities
         # can actually staff. Raising it again is gated on protecting animal upkeep from crop
-        # watering first; see ROADMAP §3.3.
+        # watering first; see old roadmap §3.3.
         "strawberry_last_plant_day": 12,
         # v1o.1: WHEAT's start used to be spelled `snapshot.day > strawberry_last_plant_day`
         # (planner.make_day_plan), which silently coupled the two windows — extending
@@ -148,7 +148,7 @@ CONFIG = {
         # workload. The capacity gate below is already binding at 6 hands with NE unlocked —
         # _capacity_limited_targets trims STRAWBERRY from 24 to 21 — so buying a third quadrant
         # without also raising the crew buys tiles nobody can water, which is the same dead
-        # -capital mistake MASTERPLAN §3.2#7 warns about for land bought before hands exist.
+        # -capital mistake old strategy doc §3.2#7 warns about for land bought before hands exist.
         # Hands are re-hired every morning (the engine wipes farm["hands"] at end of day), so
         # this is a recurring fib(n) cost, not a one-off: 6 hands cost 1+1+2+3+5+8 = $20/day,
         # 10 cost $143/day. That ~$123/day is what the extra ~77 unit-turns/day has to pay for.
@@ -158,8 +158,8 @@ CONFIG = {
         # episode to feed contention. 10 is the first size where the herd stays whole while SW
         # is being worked, and 12 measured identical to 10 (the 11th and 12th hire cost fib(10)
         # =89 / fib(11)=144 at an hour when the bank rarely has it, so they are mostly never
-        # actually hired). See memory.md 2026-08-08 for the full sweep.
-        # v1o.2 (ROADMAP §4.3 S3 step 1, crew shape): screened again on top of v1o.1's refilled
+        # actually hired). See old journal 2026-08-08 for the full sweep.
+        # v1o.2 (old roadmap §4.3 S3 step 1, crew shape): screened again on top of v1o.1's refilled
         # farm, because every number above was measured against a farm that emptied after day 17
         # and therefore against a workload that no longer exists. The top-30 profile
         # (data/derived/b3_target_profile.json) runs 14 hands at d10 and d20; E0 established
@@ -187,12 +187,12 @@ CONFIG = {
         # session has produced (`mean_diff` **+$4.144,7**, IMPROVED, episodes **82-14**,
         # `median_bank` **$59.409**) — and `priced_loss_delta` came in at **$477,6/ep against a
         # budget of $414,5** (10% of mean_diff; it is inside the $500 absolute leg but the rule
-        # is AND, not OR), driven by `animals_escaped` **87 vs 32**. That is ROADMAP §2.1.5, and
+        # is AND, not OR), driven by `animals_escaped` **87 vs 32**. That is old roadmap §2.1.5, and
         # it is not a tuning opportunity: the mechanism is that 12 hands on ~594 crop tile-days
         # generate more priority-0 WATER than the same tier's FEED can survive, which is the
-        # *same* displacement analysis/v1o1_product_split.py measured taking 41% of WOOL and 27%
+        # *same* displacement the removed v1o1 product split script measured taking 41% of WOOL and 27%
         # of FERTILIZER. The crew is not the fix for that and cannot be raised past it; feed
-        # priority has to be protected first. See ROADMAP §3.3 and memory.md 2026-08-11.
+        # priority has to be protected first. See old roadmap §3.3 and old journal 2026-08-11.
         "sw_hands_target": 10,
         # v1o.2: what the crew drops back to once SW's last WHEAT is harvestable
         # (wheat_last_plant_day + max_yield_day = day 24). Was hard-wired to the pre-SW
@@ -281,12 +281,12 @@ CONFIG = {
         # nearest-first, preserving both C1/§1.2's far-but-urgent fix and v1b's efficient
         # default ordering.
         "urgency_slack_margin": 2,
-        # ⛔ v1p.2 (ROADMAP §4.3 S3 step 1c, zone assignment) STOPPED at SMOKE, kept at False.
+        # ⛔ v1p.2 (old roadmap §4.3 S3 step 1c, zone assignment) STOPPED at SMOKE, kept at False.
         # `assign()`'s global argmin takes no account of *where* a unit already is relative to
         # where the rest of the day's work is — a hand standing in one owned quadrant can be
         # pulled to a task in another, a commute of up to ~12 turns to perform one 1-turn action.
         # `worker_turns_moving` measured 57-62% of every unit-turn
-        # (analysis/v1o3_visit_efficiency.py, ROADMAP §3.3), and v1o.3 already showed that
+        # (the removed v1o3 visit efficiency script, old roadmap §3.3), and v1o.3 already showed that
         # nothing *inside* a saturated priority tier can be reordered profitably — this instead
         # narrowed *which units* a task is even offered, via scheduler._zone_partition (kept, see
         # its docstring for the full mechanism: proportional to that turn's real task counts per
@@ -299,11 +299,11 @@ CONFIG = {
         # ~55%, zoning is not binding") fired at the very first screen — `worker_turns_moving`
         # barely moved (60,0% -> 58,7%, B vs A), nowhere near the target, so the commute share
         # this increment exists to cut was essentially untouched. Worse, it broke a *structural*
-        # hard-zero counter: `plant_decay_units_lost` **17** (0 at baseline; ROADMAP §2.1.5, a
+        # hard-zero counter: `plant_decay_units_lost` **17** (0 at baseline; old roadmap §2.1.5, a
         # STOP on its own regardless of the dollar verdict), alongside `animals_escaped` 20 vs 6
         # and `shed_overflow_burnt` 12 vs 0.
         #
-        # WHY, most likely (not re-tuned against, only documented — ROADMAP §2's STOP protocol):
+        # WHY, most likely (not re-tuned against, only documented — old roadmap §2's STOP protocol):
         # the zone partition is a pure function of the *current* snapshot, recomputed fresh every
         # `assign()` call, with no memory of which zone a unit was in the turn before. A unit
         # mid-walk toward a task it is already `committed` to (the C1 stickiness mechanism this
@@ -320,10 +320,10 @@ CONFIG = {
         # `committed` into `_zone_partition` so a unit already walking toward a task keeps its
         # eligibility) is a plausible fix but was not built or screened — that would be tuning
         # against this specific measured failure, not the next independently-motivated
-        # increment. Hands off to ROADMAP §4.3's deferred item ③ (min-cost matching inside
+        # increment. Hands off to old roadmap §4.3's deferred item ③ (min-cost matching inside
         # `assign()` itself) per the kill criterion's own instruction.
         #
-        # ⛔ v1p.2b (ROADMAP §4.3 S3 step 1c) STOPPED at SMOKE, kept at False — the untested
+        # ⛔ v1p.2b (old roadmap §4.3 S3 step 1c) STOPPED at SMOKE, kept at False — the untested
         # control v1p.2's own root cause implied, now run. `scheduler._zone_partition` threads
         # `committed` through and pins a unit with a live commitment to its own task's zone
         # before any quota is computed (see that function's docstring), closing exactly the
@@ -337,16 +337,16 @@ CONFIG = {
         # (CI [-3.832,5, -1.544,8]), driven by `water_weeds_lost`/`unexpected_weeds_lost` 226 vs
         # 61 and new `shed_overflow_burnt` 18 vs 0 — the fix removed the thrash-driven structural
         # break but not the underlying commute cost, and traded it for a different, smaller loss
-        # pattern. Per this increment's own restated kill criterion (ROADMAP §4.3 S3 step 1c):
+        # pattern. Per this increment's own restated kill criterion (old roadmap §4.3 S3 step 1c):
         # stickiness in place and `worker_turns_moving` still does not fall means the constraint
         # genuinely is not *which* tasks a unit is offered — zoning was never the lever.
         # **Refuted, not just under-delivering**: hands off to the deferred travel-ratio
-        # diagnostic (ROADMAP §4.3 item ③), not directly to min-cost matching (item ④), per the
+        # diagnostic (old roadmap §4.3 item ③), not directly to min-cost matching (item ④), per the
         # kill criterion's own instruction — that diagnostic decides whether ④ is even
-        # justified. Checkpoint `checkpoints/v1p2b`. See ROADMAP §3.3 and memory.md 2026-08-13.
+        # justified. Checkpoint `checkpoints/v1p2b`. See old roadmap §3.3 and old journal 2026-08-13.
         "zone_assignment_enabled": False,
         # ======================================================================================
-        # ⛔ v1o.3 (ROADMAP §4.3 S3 step 1b) — "protect the animal-upkeep pipeline". **STOPPED on
+        # ⛔ v1o.3 (old roadmap §4.3 S3 step 1b) — "protect the animal-upkeep pipeline". **STOPPED on
         # the acceptance arm.** Every value below is at its pre-v1o.3 default, so this whole block
         # is behaviourally inert and live `main.py` remains behaviour-identical to
         # `checkpoints/v1o_2` (verified: mirror compare, mean_diff exactly $0,00, all ties). The
@@ -357,7 +357,7 @@ CONFIG = {
         # WHAT IT WAS FOR. assign()'s sort key leads with task.priority, so a tier-1 task never
         # beats a tier-0 one at any distance. With v1o.1/v1o.2's ~60 planted tiles the tier-0
         # WATER pool no longer empties inside a day, and everything at tier >= 1 starves
-        # deterministically: analysis/v1o1_product_split.py measured WOOL losing 41% of its units
+        # deterministically: the removed v1o1 product split script measured WOOL losing 41% of its units
         # and FERTILIZER 27% while STRAWBERRY volume rose 2,5x at a *higher* realised price, and
         # the sw_hands_target=12 STOP measured escapes 87 vs 32 on the same mechanism.
         #
@@ -391,11 +391,11 @@ CONFIG = {
         # for out of production (`crop_tile_days` 58.749 -> 55.099, `crop_revenue` -$2.361/ep),
         # while `animals_underfed_days` still got *worse* (2.942 -> 3.198). Thirteen prevented
         # escapes are worth ~$271/ep. The watering they cost is worth ~$2.361/ep. The exchange
-        # rate inside the saturated tier is simply bad, because ROADMAP §3.2(5) still holds: the
+        # rate inside the saturated tier is simply bad, because old roadmap §3.2(5) still holds: the
         # whole gap to the top-30 is in plants, and we are at 573 crop tile-days against 1.316.
         #
         # ⚠️ AND THE MIRROR ARM SAID YES: +$4.877,5, IMPROVED, 40-8 seeds, p=3,3e-6, 79-17
-        # episodes. This is the sharpest demonstration this repo has produced of ROADMAP §3.4's
+        # episodes. This is the sharpest demonstration this repo has produced of old roadmap §3.4's
         # "the mirror loop optimises inside a ceiling it cannot see" — a change that beats its own
         # predecessor decisively and buys nothing at all against a stronger opponent. Had the
         # acceptance arm not existed, v1o.3 would have shipped.
@@ -416,7 +416,7 @@ CONFIG = {
         # only *other* task in the game with a hard yield deadline: variants C and D broke
         # `plant_decay_units_lost` (4 and 14 on 24 episodes) on exactly that. Setting it to -1
         # took SMOKE decay to 0 but only made it rarer, not absent — DEV measured 14 (acceptance)
-        # and 22 (mirror) on 96 episodes, still a structural failure under ROADMAP §2.1.5.
+        # and 22 (mirror) on 96 episodes, still a structural failure under old roadmap §2.1.5.
         "crop_harvest_at_risk_priority": None,
         # Animal-visit bundling: promote this tile's remaining CARE/HARVEST/COLLECT_FERTILIZER to
         # `bundle_priority` for the unit ALREADY STANDING on it, so a visit is finished in place
@@ -510,7 +510,7 @@ CONFIG = {
         # shed-first across the claimed slots (FEED/CARE is a recurring daily commute cost
         # ×10 now, review_89d99f0_2026-08-05.md C1 §1.3).
         "animal_structure_tiles": {
-            # ⛔ v1p.1 (ROADMAP §4.3 S3 step 1c) tried swapping (0, 2)/(2, 0) — the two farthest
+            # ⛔ v1p.1 (old roadmap §4.3 S3 step 1c) tried swapping (0, 2)/(2, 0) — the two farthest
             # SHEEP slots, distance 6 each — for (3, 4)/(4, 3), the two NW CARROT tiles freed by
             # the carrot_tiles comment above (distance 1 each), cutting the herd's summed shed
             # distance 39 -> 27. STOPPED at SMOKE: `animals_escaped_a` 48 vs 2 over 24
@@ -555,7 +555,7 @@ CONFIG = {
         # ⚠️ The two halves of v1o.2 are **not separable** and the screen proves it. Applying the
         # order-slot cap while leaving this at 0 measured **-$9.704/ep, REGRESSED, 0-24** with
         # crop tile-days collapsing 513 -> 415: with hires confined to hour 0, capping them at
-        # the leftover slots simply means the day's SELLs starve the crew. review.md H8 was
+        # the leftover slots simply means the day's SELLs starve the crew. old audit H8 was
         # right that HIRE must not lose to SELL — it is only safe to let it yield the slot
         # *because* the hire now happens one turn later instead of not at all.
         #
@@ -604,7 +604,7 @@ CONFIG = {
         # Left in place, disabled, as the artifact those numbers refer to. Turning it on is a
         # measured regression, not a tuning opportunity — the missing-shop risk is production-
         # side (a wool-less town costs $12,077/ep by itself) and sell-side adaptation cannot
-        # reach it. See memory.md 2026-08-07.
+        # reach it. See old journal 2026-08-07.
         "dynamic_sell_floor": False,
         # How many days' worth of NPC demand of glut to tolerate before refusing to sell. Higher
         # = weaker throttle (3.0 already leaves STRAWBERRY's floor below its static 8 with a full
@@ -619,7 +619,7 @@ CONFIG = {
         # DEV_SEEDS 0-7 against checkpoints/v1g_1 at every headroom that bound at all.
         "shop_evidence_min_unlocks": 5,
         "opponent_price_safety_units": 4,
-        # ROADMAP §4.3 S3 step 1e (v1r): the day-0 feed-cash reserve. The v1g reserve (see the
+        # old roadmap §4.3 S3 step 1e (v1r): the day-0 feed-cash reserve. The v1g reserve (see the
         # long note in executor.market_orders) sets aside FEED_RESERVE_DAYS' worth of WHEAT cash
         # for the herd before spending on new animals, so a whole batch bought in one hour can't
         # starve. Its liability count was `total_placed + buy_target` — animals already on tiles
@@ -663,7 +663,7 @@ CONFIG = {
         },
     },
     "land": {
-        # v1c / MASTERPLAN §3.2#7: buy NE as soon as money allows AND a workforce
+        # v1c / old strategy doc §3.2#7: buy NE as soon as money allows AND a workforce
         # actually exists to work it (buying land before hands_target hands are hired would
         # be dead capital).
         "enabled": True,
@@ -706,7 +706,7 @@ CONFIG = {
         # economically (+$18940/ep — feed-logistics overhead outweighs the extra animal's
         # yield); 12+ starts failing the gate again (water_weeds_lost>0). GOOSE's 15%
         # adoption and low yield made it a measured drop here, not a carry-over — see
-        # memory.md v1g entry for the full screen history.
+        # old journal v1g entry for the full screen history.
         "enabled": True,
         # v1h.2 D2 (engine 1.32.6): the town centre now absorbs 30 rather than 140 units
         # per product/season. In mirror, 6 COW per side collapsed MILK to $31-37 while WOOL
@@ -714,7 +714,7 @@ CONFIG = {
         # 4C/6S +$2,644/ep with 0 water weeds and 54 escapes; 5C/4S +$2,191 but 52/122;
         # 4C/4S -$1,055 with 66/0. Keep ten animals but diversify production toward WOOL.
         "targets": {"COW": 4, "SHEEP": 6, "GOOSE": 0},
-        # ROADMAP §4.3 S3 step 2 (v1s): optional day-gated herd ramp. None = shipped behaviour
+        # old roadmap §4.3 S3 step 2 (v1s): optional day-gated herd ramp. None = shipped behaviour
         # (buy toward the full `targets` from day 0, a step purchase). A list of [day, cap] rungs
         # sorted ascending caps the total herd per day, spending the cap across names in `targets`
         # dict order; past the last rung the herd is uncapped. §4.0's profile is [[5, 6], [10, 12]]

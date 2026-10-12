@@ -1,4 +1,4 @@
-"""v1s — ROADMAP §4.3 S3 step 2 guards: the herd-13 slot assignment and the day-gated ramp.
+"""v1s — old roadmap §4.3 S3 step 2 guards: the herd-13 slot assignment and the day-gated ramp.
 
 Two separable pieces of the herd-13 increment, pinned in isolation:
 

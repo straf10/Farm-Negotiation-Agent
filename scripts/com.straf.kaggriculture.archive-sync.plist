@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  Local launchd job for analysis/archive_sync.py (ROADMAP §3.2/§9/§11).
+  Local launchd job for analysis/archive_sync.py (old roadmap §3.2/§9/§11).
 
   Why launchd and not a GitHub Action: the artefacts (replay JSON, leaderboard CSVs)
   must land on THIS machine's disk — they are gitignored under data/archive/ and an
@@ -33,7 +33,7 @@
     launchctl unload ~/Library/LaunchAgents/com.straf.kaggriculture.archive-sync.plist
     rm ~/Library/LaunchAgents/com.straf.kaggriculture.archive-sync.plist
 
-  Runs daily at 06:15 local time (episodes accrue at ~1-2/hour per ROADMAP §2, so once
+  Runs daily at 06:15 local time (episodes accrue at ~1-2/hour per old roadmap §2, so once
   a day is plenty; adjust Hour/Minute below if you want tighter freshness before the
   09-30 deadline). A missed run (laptop asleep/off at 06:15) is NOT re-queued — it just
   waits for the next scheduled minute, so `launchctl start` after waking the machine is

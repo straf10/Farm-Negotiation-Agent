@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """v1v — how much of the top-30's realised-price spread is the *town*, not the *agent*?
 
-ROADMAP §4.1 records a 2,75× / 3,70× / 3,49× spread in realised STRAWBERRY / WOOL / MILK
+old roadmap §4.1 records a 2,75× / 3,70× / 3,49× spread in realised STRAWBERRY / WOOL / MILK
 $/unit across nine top teams whose production is a copied constant, and reads it as a
 "three-product timing race". That reading has never been controlled for the one exogenous
 variable that also moves realised price: **which shops the town happened to unlock.**

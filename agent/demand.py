@@ -4,7 +4,7 @@ v1g.2 (β). This is a *reimplementation of the engine's own consumption
 rule*, not an estimate: `_town_consume` (engine_reference/kaggriculture.py:714-736) is fully
 deterministic given `town["unlocked_shops"]`, the day, and three configuration intervals — all
 three of which the agent can observe. The only thing that is genuinely random is *which* shops
-unlock (MASTERPLAN §2 Αμφισημία #7), and that we read straight off the observation.
+unlock (old strategy doc §2 Αμφισημία #7), and that we read straight off the observation.
 
 Why the agent needs it: price is a monotone function of market inventory, NPC demand is the
 only thing that pulls inventory back down, and the glut side of the price curve is brutally
@@ -108,7 +108,7 @@ def npc_daily_demand(unlocked_shops, day: int, env_config=None) -> dict[str, int
     # 1.32.6 (v1h.1): exactly one unit per product per tick, flat for the whole season. The
     # day-stepped x2/x4 ramp that used to multiply this was deleted from the engine, which is
     # what makes the town centre a ~30 unit/season buyer instead of 140 — and what strips the
-    # last reason to hold inventory for a later, richer market (MASTERPLAN §3.2#6).
+    # last reason to hold inventory for a later, richer market (old strategy doc §3.2#6).
     if center_ticks:
         for item in TOWN_CENTER_PRODUCTS:
             demand[item] = demand.get(item, 0) + center_ticks

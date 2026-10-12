@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Load the gitignored donor tapes as programmatic bench opponents (ROADMAP R26 / A2).
+"""Load the gitignored donor tapes as programmatic bench opponents (old roadmap R26 / A2).
 
 The three donor action streams live, self-contained, inside the `main.py` of each
 `baselines/2026-08-16/tape_submissions/<episode_id>_seat0/` package — baked as a JSON
@@ -24,7 +24,7 @@ from typing import Callable
 
 from analysis.tape_agent import make_tape_agent
 
-# episode_id -> team, the three donors S1 extracted (ROADMAP §4.3 S1 / R26).
+# episode_id -> team, the three donors S1 extracted (old roadmap §4.3 S1 / R26).
 DONORS = {
     91456307: "Valmorlee",
     90999409: "Ueddy",

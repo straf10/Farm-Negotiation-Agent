@@ -47,7 +47,7 @@ ladder έναντι του μέσου όρου της κορυφής.
 (rating-sorted daily dataset· ids μέσω `kaggle datasets files`, replays από το CDN με
 `analysis/b0_fetch_top_replays.py --ids-file`). **120 seats**, και τα 60 επεισόδια
 επιβεβαιωμένα `townCenterSellInterval = 24` — **0 skipped**. Script:
-[`analysis/b2_current_engine_meta.py`](analysis/b2_current_engine_meta.py) · aggregate:
+`analysis/b2_current_engine_meta.py` · aggregate:
 [data/derived/b2_current_engine_meta.json](data/derived/b2_current_engine_meta.json).
 Median bank **$82.747** — ταυτίζεται με το $82.237 του
 [topfarms-0811](#topfarms-0811), άρα το δείγμα είναι η ίδια ζώνη.
@@ -129,8 +129,8 @@ strawberry+wool· ο Ueddy κερδίζει milk και **χάνει** wool ($52
 
 **Πηγή:** 70 `EPISODE_TYPE_PUBLIC` replays (**14 ανά ομάδα**) των πέντε κορυφαίων ομάδων του
 leaderboard της 2026-08-11, κατεβασμένα στοχευμένα με
-[`analysis/b0_fetch_top_replays.py`](analysis/b0_fetch_top_replays.py) και προφιλαρισμένα με
-[`analysis/b1_top5_profile.py`](analysis/b1_top5_profile.py). Aggregate JSON:
+`analysis/b0_fetch_top_replays.py` και προφιλαρισμένα με
+`analysis/b1_top5_profile.py`. Aggregate JSON:
 [data/derived/b1_top5_profile.json](data/derived/b1_top5_profile.json). Όλα median/ep.
 
 > ⚠️ **Φρεσκάδα του δείγματος.** Ο metadata crawl είναι βαριά rate-limited (57 ok / 116 limited /
@@ -908,4 +908,4 @@ Wheat: **$25 → $56** με base $25. *«Το wheat που σκαρφαλώνε�
 > την ανάποδη: στην κορυφή, οι μετρήσεις όγκου (plant/sell/hire/harvest) είναι **ταυτόσημες**
 > μεταξύ νικητών και ηττημένων. Πρώτα κλίμακα (γη + hands + ζώα), μετά ποιότητα απόφασης· το
 > tuning παραμέτρων πριν από αυτά βελτιστοποιεί σε λάθος ταβάνι
-> ([MASTERPLAN §3.4](docs/MASTERPLAN.md)).
+> (MASTERPLAN §3.4).

@@ -14,7 +14,7 @@
 
 - **Reference (ΜΗΝ ΤΗΝ ΑΛΛΑΞΕΙΣ):** [`analysis/s9_h2_k10.py`](../../analysis/s9_h2_k10.py),
   συνάρτηση `make_h2_agent(stream, variant="tail", stats)`.
-- **Μετρημένα αποτελέσματα:** [`baselines/2026-08-23/s9_plan_review.md`](../../baselines/2026-08-23/s9_plan_review.md) §4α/§4β/§4γ/§4δ.
+- **Μετρημένα αποτελέσματα:** `baselines/2026-08-23/s9_plan_review.md` §4α/§4β/§4γ/§4δ.
 - **Per-episode δεδομένα στον δίσκο** (gitignored): `data/derived/s9_h2_k10_tail_dev.json` ·
   `data/derived/s9_h2_a8_tail_holdout.json` · `data/derived/s9_h2_fresh.json`.
 

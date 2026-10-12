@@ -373,7 +373,7 @@ sell-timing"): **δεν υπήρχε town-conditioning να σβήσει**. Το
 χρειάζεται **κανένα** state και είναι **ήδη reproduced** ⇒ reachable ≈ **$0**, όχι 43-60%.
 
 ### Παραδοτέα / standing conditions
-Report: [`baselines/2026-08-18/s6_step2b_phase05_report.md`](baselines/2026-08-18/s6_step2b_phase05_report.md).
+Report: `baselines/2026-08-18/s6_step2b_phase05_report.md`.
 Script `analysis/s6_step2b_phase05.py` (`recover`/`live`/`report`). Derived `s6_step2b_phase05.json`
 (**προστέθηκε στο `.gitignore`**, §2.4b/R11). Guards `tests/test_s6_step2b_phase05.py` (**5 passed**);
 `pytest tests/` **331 passed, 3 pre-existing `test_v1h2d_*` failed**. **No `agent/` change, no upload
@@ -670,7 +670,7 @@ upload του step 2 πετάει το **Ueddy** και αφήνει {recon, rec
 gate → αν κανένας δεν περνάει STOP προς C-C (MELON). Μετά: build majority-vote reconstruction,
 fidelity check, μέτρα shed headroom. **ΜΗΝ** χτίσεις το premium-lead overlay (step 2). Καμία αλλαγή
 `agent/`, κανένα submission (R27). Report:
-[baselines/2026-08-17/s6_step1_phase0_report.md](baselines/2026-08-17/s6_step1_phase0_report.md) (gitignored).
+baselines/2026-08-17/s6_step1_phase0_report.md (gitignored).
 `pytest tests/` **316 → 324** (+8 `test_s6_step1_phase0.py`, μετά +2 reconstruction guards = 10),
 τα 3 γνωστά `test_v1h2d_*` fails ίδια.
 
@@ -719,7 +719,7 @@ ReCurSiON reconstruction + sibling traces είναι το νέο BT rung που 
 
 **Εντολή:** το pass brief του S6 step 0 (ROADMAP §4.3 S6) — bound τον μοχλό πριν χτιστεί κάτι. Τρία
 legs, καμία αλλαγή σε `agent/`, κανένα submission (R27). Report:
-[baselines/2026-08-17/s6_step0_report.md](baselines/2026-08-17/s6_step0_report.md) (gitignored).
+baselines/2026-08-17/s6_step0_report.md (gitignored).
 `pytest tests/` **304 → 316 passed** (+12 `test_s6_step0.py`), τα 3 γνωστά `test_v1h2d_*` fails ίδια.
 
 ### Τι χτίστηκε
@@ -770,7 +770,7 @@ action, §6 R21/R25/R26 ✅.
 από τον loop (real losses → ένας μηχανισμός → challengers → πολλές ομάδες & και τα δύο seats →
 απόρριψη των περισσότερων → freeze → test σε later episodes), με ρητή απαίτηση να **κρατάμε
 representative strategies από παλιότερα stages**. Report:
-[baselines/2026-08-17/v1v_shop_demand_report.md](baselines/2026-08-17/v1v_shop_demand_report.md).
+baselines/2026-08-17/v1v_shop_demand_report.md.
 
 ### 1. Episodes + ladder read (09:41 UTC)
 
@@ -927,8 +927,8 @@ Valmorlee (08-16, **1.617,6**) + Ueddy (08-17, 1.027,8), **οποιοδήποτ�
 **Εντολή:** εκτέλεση του T2 pass brief — hybrid: open-loop production (tape's farmer/hands verbatim),
 closed-loop market (overlay το δικό μας sell logic στο `market` channel του Valmorlee tape 91456307),
 για να πιάσουμε το −61% realised-STRAWBERRY loss που μέτρησε το T1. Reports (τοπικά):
-[baselines/2026-08-16/t2_phase0_report.md](baselines/2026-08-16/t2_phase0_report.md) +
-[t2_report.md](baselines/2026-08-16/t2_report.md).
+baselines/2026-08-16/t2_phase0_report.md +
+t2_report.md.
 
 ### Phase 0 (cash coupling) → GO, με cash-constrained σχεδίαση
 
@@ -978,7 +978,7 @@ $124.056, 96-0, 0 seats < $57.360 floor** — ίδια αυστηρότητα μ
 
 **Εντολή:** εκτέλεση του `docs/plans/` T1 pass brief — ship το tape agent ως challenger (εντολή
 χρήστη: *"the measured path where we copy the tape and if we win we will figure it out"*). Champion
-= v1o.2 (`55438252`). Πλήρες record: [baselines/2026-08-15/t1_repair_justification.md](baselines/2026-08-15/t1_repair_justification.md) (τοπικό).
+= v1o.2 (`55438252`). Πλήρες record: baselines/2026-08-15/t1_repair_justification.md (τοπικό).
 
 ### Step 0 — donors re-verified σε **1.32.7** ✅
 
@@ -1034,7 +1034,7 @@ measured weakness) το κόβει. Το market overlay (S3 step 3) είναι �
 **Εντολή:** εκτέλεση του `docs/plans/item4_step2_prompt.md` (item ④ βήμα 2). Καμία αλλαγή σε
 `agent/`/`main.py`/`submission.tar.gz`, καμία υποβολή — **μέτρηση ceiling**· ένα «⛔ STOP, refuted»
 είναι **επιτυχία** (και το brief το προέβλεπε ως πιθανό). Report:
-[baselines/2026-08-15/item4_step2_report.md](baselines/2026-08-15/item4_step2_report.md) (τοπικό).
+baselines/2026-08-15/item4_step2_report.md (τοπικό).
 Data: `data/derived/v1u_oracle-2026-08-15.json`. Script:
 [analysis/v1u_oracle.py](analysis/v1u_oracle.py). `pytest tests/`: **275 → 286** (+11
 `test_v1u_oracle.py`, οι 3 προϋπάρχουσες `test_v1h2d_*` αποτυχίες αναμενόμενες).
@@ -1102,7 +1102,7 @@ Data: `data/derived/v1u_oracle-2026-08-15.json`. Script:
 **Εντολή:** εκτέλεση του pass brief `docs/plans/item4_step1_prompt.md` (item ④ βήμα 1). Καμία
 αλλαγή σε `agent/`/`main.py`/`submission.tar.gz`, καμία υποβολή — **μέτρηση** που αποφασίζει αν το
 ④ χτίζεται καθόλου· ένα «⛔ STOP, refuted» θα ήταν επιτυχία. Προ-καταχωρημένα κατώφλια γραμμένα
-**πριν** τον πρώτο αριθμό (§3.1 κανόνας 4). Report: [baselines/2026-08-15/item4_step1_report.md](baselines/2026-08-15/item4_step1_report.md)
+**πριν** τον πρώτο αριθμό (§3.1 κανόνας 4). Report: baselines/2026-08-15/item4_step1_report.md
 (τοπικό). Data: `data/derived/v1u_travel_ratio-2026-08-15.json`. `pytest tests/`: **268 → 275**
 (+7 `test_v1u_travel_ratio.py`, οι 3 προϋπάρχουσες `test_v1h2d_*` αποτυχίες αναμενόμενες).
 
@@ -1260,7 +1260,7 @@ seeds, position exclusivity, turn budget, και το §3.4 metric (absolute `wo
 Φάση 0 αριθμητικής μετρητών στο target 13, μετά race τεσσάρων arms (B0/H1/H2/H2R, όλα με C2 on)
 αποσυνθέτοντας το «herd 10→13 σε 9C+4S» στις τρεις ταυτόχρονες αλλαγές του (count / tile-reassignment /
 recomposition), και μόνο αν βγει νικητής, Phase 2 + υποβολή (με ρητή έγκριση). Πλήρες report:
-[baselines/2026-08-15/s3_step2_report.md](baselines/2026-08-15/s3_step2_report.md) (τοπικό).
+baselines/2026-08-15/s3_step2_report.md (τοπικό).
 `pytest tests/`: **254 passed** (248→254, +6 `test_v1s_herd.py` guards), 3 προϋπάρχουσες αποτυχίες.
 **Καμία υποβολή.** Ενεργό ζεύγος αμετάβλητο: `55438252` (v1o.2) + `55414570` (v1i).
 
@@ -1335,7 +1335,7 @@ retry**. Το herd 13 ξανα-δοκιμάζεται μόνο ενάντια σ
 **Εντολή:** εκτέλεση `prompt.md` (S3 βήμα 1e) — πρώτα διόρθωση δύο λαθών του record του βήματος 1d
 (δεν υπάρχει χάσμα HIRE στην ώρα 1· τα προγράμματα αγορών ΔΙΑΦΕΡΟΥΝ), μετά υποχρεωτική Φάση 0
 αριθμητικής του reserve, μετά race τριών arms πάνω στο εντοπισμένο defect του
-`agent/executor.py`. Πλήρες report: [baselines/2026-08-14/s3_step1e_report.md](baselines/2026-08-14/s3_step1e_report.md)
+`agent/executor.py`. Πλήρες report: baselines/2026-08-14/s3_step1e_report.md
 (τοπικό). `pytest tests/`: **248 passed** (245→248, +3 νέα `test_v1r_*` guards
 συμπεριλαμβανομένου ενός που καρφώνει την αριθμητική του reserve), 3 προϋπάρχουσες αποτυχίες.
 **Καμία υποβολή.**
@@ -1409,7 +1409,7 @@ control είναι κόκκινη σημαία για trace, όχι εύρημα
 **Εντολή:** εκτέλεση του `prompt.md` (γραμμένο στο προηγούμενο session) — πρώτα διορθώσεις
 μέτρησης/αρχείου (R17, §1.2/§1.3/§1.4), μετά υποχρεωτικό debug πριν από οποιοδήποτε arm (Φάση 0),
 μετά το race (Φάση 1) μόνο αν η Φάση 0 επιβεβαιώσει μία από τις δύο προ-καθορισμένες υποθέσεις.
-Πλήρες report: [baselines/2026-08-14/s3_step1d_report.md](baselines/2026-08-14/s3_step1d_report.md)
+Πλήρες report: baselines/2026-08-14/s3_step1d_report.md
 (τοπικό). `pytest tests/`: **245 passed** (αμετάβλητο — το ίδιο baseline καθαρού clone, 3
 προϋπάρχουσες αποτυχίες εξαρτημένες από artefact). **Κανένα arm δεν πέρασε screening, καμία
 υποβολή.**
@@ -2074,9 +2074,9 @@ release gates · price-impact ranking των υπαρχόντων SELL slots · 
 
 ### Γ.2 — **Το μετρημένο προφίλ των πέντε, από τα δικά μας replays** ([b1-top5](docs/meta/ladder_snapshots.md#b1-top5))
 
-Δύο νέα εργαλεία: [`analysis/b0_fetch_top_replays.py`](analysis/b0_fetch_top_replays.py)
+Δύο νέα εργαλεία: `analysis/b0_fetch_top_replays.py`
 (στοχευμένο κατέβασμα — το `scrape.py` τραβά τα **παλαιότερα** missing, όχι τα νεότερα) και
-[`analysis/b1_top5_profile.py`](analysis/b1_top5_profile.py) (προφίλ ανά μέρα + sell cadence +
+`analysis/b1_top5_profile.py` (προφίλ ανά μέρα + sell cadence +
 $/tile-day). **Μόνο aggregate state, καμία ακολουθία actions.** 66 replays κατέβηκαν στοχευμένα,
 **14 ανά ομάδα** για τις πέντε κορυφαίες.
 
@@ -4719,7 +4719,7 @@ byte-identical). Στόχος: να βρίσκει ένας μελλοντικό
   πάει η νέα πληροφορία», χάρτης παλιών → νέων διαδρομών.
 - `docs/reviews/` — τα δύο reviews (`89d99f0`, `4452427`· το δεύτερο ήρθε από το root `review.md`).
 
-**Νέο εργαλείο:** [analysis/nb_extract.py](analysis/nb_extract.py) — μετατρέπει `.ipynb` σε
+**Νέο εργαλείο:** analysis/nb_extract.py — μετατρέπει `.ipynb` σε
 markdown με `## cell [N]` headings (23 MB → ~7 KB, `--no-code` για μόνο outputs, pandas
 `to_html` πίνακες → pipe rows). Απαραίτητο γιατί τα δύο community notebooks **ξανατρέχουν
 προγραμματισμένα** στο Kaggle: κάθε re-download είναι **νέα μέτρηση**, όχι διόρθωση της παλιάς.

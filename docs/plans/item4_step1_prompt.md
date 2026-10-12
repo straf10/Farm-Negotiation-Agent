@@ -53,7 +53,7 @@ valuable answer — record it and stop, rather than building for three more pass
 One script: **`analysis/v1u_travel_ratio.py`**, on the template of
 [analysis/v1o3_visit_efficiency.py](../../analysis/v1o3_visit_efficiency.py). Read
 [analysis/v1r_feed_reserve.py](../../analysis/v1r_feed_reserve.py) for how to work from *existing*
-replays instead of re-running episodes, and [analysis/v1t_engine_probe.py](../../analysis/v1t_engine_probe.py)
+replays instead of re-running episodes, and analysis/v1t_engine_probe.py
 for the "state explicitly what your measurement cannot conclude" discipline this one also needs.
 
 Source replays: whatever is under `gates/` (currently `v1q_onboarding_escape`, `v1r_feed_reserve`,
@@ -64,7 +64,7 @@ seed).
 Measure, per episode and per day:
 
 1. **`worker_turns_working` / `_moving` / `_idle`, absolute counts.** These already exist in
-   [harness/compare.py](../../harness/compare.py) around [:300](../../harness/compare.py:300) —
+   [harness/compare.py](../../harness/compare.py) around [:300](../../harness/compare.py) —
    read R15's comment there before defining anything new.
 2. **Greedy regret.** At each turn, reconstruct the assignment `assign()` actually produced, then
    compute the min-cost matching over the **same candidate set under the same constraints**, and

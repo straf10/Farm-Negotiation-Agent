@@ -175,27 +175,27 @@ Related: [[s7-leg-a-killed-by-fidelity]], [[s7-conditional-agreement-k3]], [[kag
 # Memory index
 
 ## Current state (live)
-- [S9 Phase 2 — SHIPPED 55726984](s9-phase2-gate.md) — 2026-08-23/24: H2 tail-liquidation package (55586926+H2) gated (Instrument B b=0: dev 43-0-5, holdout 39-0-9; all counters Δ=0; pytest 390/390) → **uploaded, evicted 55586926**. Active pair **55726984 + 55675634**. Built bit-exact from the frozen H2 rule (params F=25/first_day=22/h_max=12/d_days=4/force_step=686), 412/412 bit-exact vs reference. First live read 2026-08-24: score 1669,2, rank 1234/6128, sub-100 eps → **not judgeable; judge nothing before ~100 episodes**.
-- [S7 Ship B — tile recovery SHIPPED 55675634](s7-ship-b-tile-recovery.md) — 2026-08-21: 6-rule tile-recovery overlay on the ReCurSiON tape; SMOKE 336-0-0; the cheaper active slot (next eviction by date).
+- S9 Phase 2 — SHIPPED 55726984 — 2026-08-23/24: H2 tail-liquidation package (55586926+H2) gated (Instrument B b=0: dev 43-0-5, holdout 39-0-9; all counters Δ=0; pytest 390/390) → **uploaded, evicted 55586926**. Active pair **55726984 + 55675634**. Built bit-exact from the frozen H2 rule (params F=25/first_day=22/h_max=12/d_days=4/force_step=686), 412/412 bit-exact vs reference. First live read 2026-08-24: score 1669,2, rank 1234/6128, sub-100 eps → **not judgeable; judge nothing before ~100 episodes**.
+- S7 Ship B — tile recovery SHIPPED 55675634 — 2026-08-21: 6-rule tile-recovery overlay on the ReCurSiON tape; SMOKE 336-0-0; the cheaper active slot (next eviction by date).
 
 ## Reference — mechanics (durable)
-- [Town & shop mechanics](kaggriculture-town-shop-mechanics.md) — 8 shops on fixed days 3/6/…/24, identity uniform iid; #draws feeding STRAWBERRY is the dominant town variable ($24→$237, wr 0,52→0,77); MELON 0 shops, FERTILIZER 0 absorption; wheat tiles are animal feed (don't convert them).
-- [Ladder rating mechanics](kaggle-ladder-rating-mechanics.md) — placement burst then 1-2 eps/h; judge past ~100 eps; score deflates pool-wide (read RANK); a re-submission costs ~1.000 pts; optimise wins, not coins.
-- [Active-pair mechanics](kaggriculture-active-pair-mechanics.md) — only the latest 2 by DATE play; eviction is by date not score; deadline 2026-09-30.
-- [Harness metric gate can't pass a tape arm — by design](harness-metric-gate-on-tape-arms.md) — GO=False is expected on every tape/reconstruction submission; read the structural leg differentially.
-- [Kaggle API auth](kaggle-api-auth.md) — OAuth token in gitignored `.env` as KAGGLE_API_TOKEN, introspected by kagglesdk; `source .env` before `kaggle` CLI calls.
+- Town & shop mechanics — 8 shops on fixed days 3/6/…/24, identity uniform iid; #draws feeding STRAWBERRY is the dominant town variable ($24→$237, wr 0,52→0,77); MELON 0 shops, FERTILIZER 0 absorption; wheat tiles are animal feed (don't convert them).
+- Ladder rating mechanics — placement burst then 1-2 eps/h; judge past ~100 eps; score deflates pool-wide (read RANK); a re-submission costs ~1.000 pts; optimise wins, not coins.
+- Active-pair mechanics — only the latest 2 by DATE play; eviction is by date not score; deadline 2026-09-30.
+- Harness metric gate can't pass a tape arm — by design — GO=False is expected on every tape/reconstruction submission; read the structural leg differentially.
+- Kaggle API auth — OAuth token in gitignored `.env` as KAGGLE_API_TOKEN, introspected by kagglesdk; `source .env` before `kaggle` CLI calls.
 
 ## User feedback
-- [ROADMAP is the plan, not the diary](roadmap-is-the-plan-not-the-diary.md) — keep ROADMAP a forward technical plan (~544 lines); narrative → memory.md; **price the programme not the increment**, and **every pass ends in an upload**.
+- ROADMAP is the plan, not the diary — keep ROADMAP a forward technical plan (~544 lines); narrative → memory.md; **price the programme not the increment**, and **every pass ends in an upload**.
 
 ## Closed phases (consolidated)
-- [S6 — erased-conditioning programme CLOSED](s6-erased-conditioning-closed.md) — the vote is a faithful open-loop copy of ReCurSiON; market layer town-invariant, production town-reactive but $597/ep (+2,4 pts), loss tail = shop composition (r=0,605) not desync; donor gap is strength+clock. Reusable: same-town seat-vs-seat premium-ratio test.
-- [S7 leg 0 — the ladder's currency](s7-leg0-ladder-currency.md) — win rate 43,4% converged (65% was the burst); acceptance order wins→BT→bank→diff; rank is the invariant; donor gap is real strength.
-- [S7 Leg A — top-4 re-donor KILLED by fidelity](s7-leg-a-killed-by-fidelity.md) — every top-4 candidate is state-adaptive (cross-trace agreement 0,25-0,37 vs ReCurSiON 0,993); fidelity replay now required before any recon upload.
-- [S7 conditional agreement — STOPPED](s7-conditional-agreement-k3.md) — no single variable explains top-4 disagreement; two top-4 policies in the SAME town disagree 99,93% → no shared core to extract. Reusable: the same-seed cross-match control.
-- [S7 glut-metering — STOPPED at gate](s7-glut-phase0-desk.md) — desk gates pass but the lever is largely COMMON-MODE (K5 risk); revisit only via a differential measure (now exists in s8-wins).
-- [S8 two-submission analysis — DONE](s8-two-submission-analysis.md) — diagnostics not levers; the neighbourhood bench inverts live order → **standing kill, do not tune on it**.
-- [S8 wins analysis → the liquidation lever](s8-wins-analysis-liquidation-lever.md) — no volume variable; the only lever is when/into-what-inventory we liquidate → became the shipped H2 (s9-phase2-gate).
+- S6 — erased-conditioning programme CLOSED — the vote is a faithful open-loop copy of ReCurSiON; market layer town-invariant, production town-reactive but $597/ep (+2,4 pts), loss tail = shop composition (r=0,605) not desync; donor gap is strength+clock. Reusable: same-town seat-vs-seat premium-ratio test.
+- S7 leg 0 — the ladder's currency — win rate 43,4% converged (65% was the burst); acceptance order wins→BT→bank→diff; rank is the invariant; donor gap is real strength.
+- S7 Leg A — top-4 re-donor KILLED by fidelity — every top-4 candidate is state-adaptive (cross-trace agreement 0,25-0,37 vs ReCurSiON 0,993); fidelity replay now required before any recon upload.
+- S7 conditional agreement — STOPPED — no single variable explains top-4 disagreement; two top-4 policies in the SAME town disagree 99,93% → no shared core to extract. Reusable: the same-seed cross-match control.
+- S7 glut-metering — STOPPED at gate — desk gates pass but the lever is largely COMMON-MODE (K5 risk); revisit only via a differential measure (now exists in s8-wins).
+- S8 two-submission analysis — DONE — diagnostics not levers; the neighbourhood bench inverts live order → **standing kill, do not tune on it**.
+- S8 wins analysis → the liquidation lever — no volume variable; the only lever is when/into-what-inventory we liquidate → became the shipped H2 (s9-phase2-gate).
 ```
 
 ---

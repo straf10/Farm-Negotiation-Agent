@@ -22,7 +22,7 @@
 | **«Τι κάνει η κορυφή της ladder;»** | [ROADMAP.md §4](../ROADMAP.md) + [meta/ladder_snapshots.md](meta/ladder_snapshots.md) |
 | **«Τι έγινε στις προηγούμενες συνεδρίες;»** | [journal/memory.md](journal/memory.md) |
 | **«Τι σημαίνει ένα `plan.md §…` / `current_phase.md §…` σε σχόλιο;»** | [journal/RETIRED_DOCS.md](journal/RETIRED_DOCS.md) |
-| **«Τι βρήκε το τελευταίο code review;»** | [reviews/](reviews) |
+| **«Τι βρήκε το τελευταίο code review;»** | reviews/ |
 | **«Τι λέει *ακριβώς* η επίσημη σελίδα;»** | [source/](source) |
 
 ## Τα τρία επίπεδα, και ποιος γράφει πού

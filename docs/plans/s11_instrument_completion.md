@@ -122,7 +122,7 @@ upload, 5-7 μέρες, cutoff ~09-23 — ROADMAP §9).
 **Το αρχικό shed είναι μηδέν** για κάθε προϊόν (επαληθευμένο). Άρα τρέχεις σωρευτικά από το 0:
 
 ```
-shed_ub[p](t) = min(shed_cap, max(0, cum_harvest[p] + cum_bought[p] − cum_sold[p] − cum_consumed[p]))
+shed_ubp = min(shed_cap, max(0, cum_harvest[p] + cum_bought[p] − cum_sold[p] − cum_consumed[p]))
 ```
 
 **Εισροή — από τα δημόσια πλακίδια του αντιπάλου** (`obs["farms"][opp]["tiles"]`):

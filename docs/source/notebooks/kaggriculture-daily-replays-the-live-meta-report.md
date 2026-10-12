@@ -866,7 +866,7 @@ display(Markdown(textwrap.dedent(f'''
    **{(max(prices["MELON"]) - min(prices["MELON"])) / base_price["MELON"]:.0%}** of its base price
    and wheat ran **{min(prices["WHEAT"])}–{max(prices["WHEAT"])}**.
 
-The [dataset]({"https://www.kaggle.com/datasets/georgymamarin/kaggriculture-episodes"}) and this
+The [dataset](https://www.kaggle.com/datasets/georgymamarin/kaggriculture-episodes) and this
 notebook both refresh daily, so these numbers re-compute themselves as the meta moves. Build
 something on top (a deeper dive, an imitation model, a better fingerprint) and post it; I
 feature community work on the dataset page. If there is a metric you want tracked here, say so

@@ -249,7 +249,7 @@ tests: `test_fertilizer_sell_accepted`, `test_fertilizer_available_no_care_requi
 για την τελική κατάταξη. Στόχος: μείωση της επίδρασης των «hot streaks».
 **Impact:** Ευνοεί **σταθερά ισχυρό, ντετερμινιστικό** bot έναντι high-variance. Με 10 **ισόποσα**
 βραβεία των $5.000, ο σωστός στόχος είναι «σταθερά top-10», όχι high-variance #1.
-**Ενέργεια:** ήδη ενσωματωμένο σε [MASTERPLAN §7](docs/MASTERPLAN.md).
+**Ενέργεια:** ήδη ενσωματωμένο σε MASTERPLAN §7.
 
 ### 2026-07-29 (περίπου) — Daily Top Episodes Dataset
 
@@ -261,7 +261,7 @@ tests: `test_fertilizer_sell_accepted`, `test_fertilizer_available_no_care_requi
 **Impact:** Πηγή για gap analysis και target curves.
 **Ενέργεια:** χρησιμοποιείται σε [meta/ladder_snapshots.md](docs/meta/ladder_snapshots.md).
 ⚠️ **Όριο του repo:** τα replays είναι **διαγνωστικό και target curve, ΠΟΤΕ πηγή κινήσεων** —
-BC/IL/trajectory copying είναι μόνιμα εκτός scope ([MASTERPLAN §3.4](docs/MASTERPLAN.md)).
+BC/IL/trajectory copying είναι μόνιμα εκτός scope (MASTERPLAN §3.4).
 
 ---
 

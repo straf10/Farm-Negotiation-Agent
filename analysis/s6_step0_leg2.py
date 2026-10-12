@@ -29,7 +29,7 @@ import copy
 import gzip
 import json
 import sys
-from collections import Counter, defaultdict
+from collections import Counter
 from itertools import permutations
 from pathlib import Path
 

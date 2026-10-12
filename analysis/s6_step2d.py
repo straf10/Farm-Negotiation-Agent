@@ -53,7 +53,7 @@ import gzip
 import json
 import statistics
 import sys
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -61,7 +61,7 @@ sys.path.insert(0, str(ROOT))
 
 from analysis.s6_step1_phase0 import _canon  # the exact token the reconstruction votes on
 from analysis.s6_step2b_phase05 import (  # reuse the exact loading plumbing
-    ARCHIVE, DERIVED, LIVE, RECON, _load_recon, _load_traces, _obs, _pearson,
+    DERIVED, LIVE, _load_recon, _load_traces, _obs,
 )
 
 OUT = DERIVED / "s6_step2d.json"

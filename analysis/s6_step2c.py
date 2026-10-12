@@ -49,7 +49,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from analysis.s6_step2b_phase05 import (  # reuse the exact Phase 0.5 plumbing
-    ARCHIVE, RECON, DERIVED, _market, _obs, _load_recon, _load_traces, _pearson,
+    DERIVED, _market, _obs, _load_recon, _load_traces, _pearson,
 )
 
 OUT = DERIVED / "s6_step2c.json"

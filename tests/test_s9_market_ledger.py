@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from analysis.s8_replay_io import ladder_episodes, load, replay_paths  # noqa: E402
-from analysis.s9_market_ledger import episode_ledger, step_ledger  # noqa: E402
+from analysis.s9_market_ledger import episode_ledger  # noqa: E402
 from engine_reference.kaggriculture import market_price  # noqa: E402
 
 # One primary submission with lots of episodes on disk; the small extra live_55726984

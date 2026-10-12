@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 # Reuse the one parser + the one premium meter (§1.2, §1.4). Do NOT write a second.
-from analysis.s6_step1_phase0 import _seat_streams, _realised_premium  # noqa: E402
+from analysis.s6_step1_phase0 import _seat_streams  # noqa: E402
 
 RAW = ROOT / "data" / "archive" / "raw"
 OUR_TEAM = "STRAF"

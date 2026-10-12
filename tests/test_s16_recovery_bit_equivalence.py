@@ -71,7 +71,7 @@ def test_the_test_actually_detects_a_divergence(stream, tmp_path):
     (drop tile recovery entirely) and confirm the two trajectories then disagree on at
     least one of a handful of seeds. This is the 'reddens on the pre-fix version' check
     (plan §4 rule 5) applied to a verification test rather than a bug fix."""
-    from analysis.build_tape_overlay_submission import MAIN_TEMPLATE, build
+    from analysis.build_tape_overlay_submission import MAIN_TEMPLATE
     from agent.tape_overlay import TapeOverlay
     from harness.play import play
 
@@ -81,7 +81,6 @@ def test_the_test_actually_detects_a_divergence(stream, tmp_path):
     )
     assert broken_template != MAIN_TEMPLATE
 
-    import analysis.build_tape_overlay_submission as build_mod
     rec = json.loads(RECONSTRUCTION.read_text())
     stream_json = json.dumps(rec["stream"], separators=(",", ":"))
     broken_main = tmp_path / "main.py"

@@ -36,7 +36,6 @@ import argparse
 import glob
 import gzip
 import json
-import statistics
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path

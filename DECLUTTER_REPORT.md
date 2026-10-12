@@ -217,8 +217,8 @@ commented-out code. They are banners, so I dropped the parentheses (C2). That cl
 without touching any code. The `agent/config.py:175` ERA001 is frozen and stays.
 
 - **C4 `Unwrap markdown links to files that exist in neither checkout`** (section 4.3 D, which had
-  deferred it). 60 links become their link text, one link to an existing file loses its `:300` line
-  suffix, and one malformed dataset link becomes a proper URL. The ROADMAP §1 table and the end of
+  deferred it). 59 links become their link text. One link to an existing file loses its `:300` line
+  suffix, and one malformed dataset link becomes a proper URL. That makes 61 in all. The ROADMAP §1 table and the end of
   `docs/journal/memory.md` are not touched: the highest changed line in memory.md is 4722 of 5,276, and
   the first changed ROADMAP line is 448. The 117 links to gitignored artefacts are left as they are.
 - **C5 `Remove dead helpers and an unused constant (vulture 60%, pass 2)`**: `invalidate_cache()` in

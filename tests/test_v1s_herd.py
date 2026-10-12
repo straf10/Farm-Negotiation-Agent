@@ -17,7 +17,7 @@ from agent.planner import _herd_ramp_cap, make_day_plan
 from agent.state import parse
 
 
-def _obs(day, *, enabled=True):
+def _obs(day):
     """A minimal day-`day` observation on an empty NW farm (money to spare)."""
     farm = {
         "money": 3000,

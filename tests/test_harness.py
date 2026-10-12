@@ -119,7 +119,7 @@ def test_resolve_agent_entrypoint_mismatch_raises():
             resolve_agent(str(agent_path), entrypoint="agent")
 
 
-# --------------------------------------------------------------------------- play()
+# --------------------------------------------------------------------------- play
 
 
 def test_play_writes_replay(tmp_path):
@@ -210,7 +210,7 @@ def test_play_persists_receipts_only_when_diagnostics_nonempty(tmp_path):
     assert without_receipts.receipts_path is None
 
 
-# --------------------------------------------------------------------------- compare()
+# --------------------------------------------------------------------------- compare
 
 
 pytestmark_small_seed_warning = pytest.mark.filterwarnings(
@@ -220,7 +220,7 @@ pytestmark_small_seed_warning = pytest.mark.filterwarnings(
 
 @pytestmark_small_seed_warning
 def test_compare_distinct_orientations_write_distinct_replay_files(tmp_path):
-    result = compare("starter", "pass", [0], both_seats=True, steps=4, run_dir=tmp_path, record=True)
+    compare("starter", "pass", [0], both_seats=True, steps=4, run_dir=tmp_path, record=True)
     replay_files = list(tmp_path.glob("*.json.gz"))
     assert len(replay_files) == 2
     assert replay_files[0].name != replay_files[1].name

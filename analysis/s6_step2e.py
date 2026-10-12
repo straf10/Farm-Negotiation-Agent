@@ -93,7 +93,7 @@ def _tile_label(tile):
     if isinstance(tile, dict):
         k = tile.get("kind", "?")
         if k == "PLANT":
-            return "WEED" if False else f"PLANT|{'w' if tile.get('watered_today') else 'd'}"
+            return f"PLANT|{'w' if tile.get('watered_today') else 'd'}"
         if k == "WEED":
             return "WEED"
         if "animal" in tile:

@@ -285,7 +285,7 @@ def test_g7_executor_never_exceeds_market_cap():
     observation["market"]["inventory"]["CARROT"] = 10_000
     observation["market"]["prices"]["CARROT"] = 35
     snapshot = parse(observation)
-    plan = make_day_plan(snapshot, CONFIG)
+    make_day_plan(snapshot, CONFIG)
     action = agent(observation)
     assert len(action["market"]) <= CONFIG["executor"]["max_market_orders"]
 

@@ -88,7 +88,7 @@ def test_logistic_fit_matches_sklearn_unpenalized():
     Optional: skips rather than fails when sklearn isn't installed, since it is not
     a project dependency — the IRLS fitter itself is exercised by the other tests
     in this file regardless."""
-    sklearn = pytest.importorskip("sklearn")
+    pytest.importorskip("sklearn")
     from sklearn.linear_model import LogisticRegression
 
     rng = np.random.default_rng(13)

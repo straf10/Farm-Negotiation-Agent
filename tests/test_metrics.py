@@ -175,10 +175,7 @@ def test_v1l_metrics_report_crop_revenue_from_plant_sales_only():
         configuration={"seed": 0, "episodeSteps": 2, "turnsPerDay": 2, "weedSpawnChance": 0},
     )
     replay = _finish(env)
-    # Inject market sales into the finished replay the same way extract_metrics reads them.
-    steps = replay["steps"]
-    # extract_metrics reconstructs sales from engine info; for a unit test, patch via a
-    # minimal synthetic sales path by checking the returned field exists and ignores animals.
+    # Only checks that crop_revenue is present and non-negative; no sales are injected.
     metrics = extract_metrics(replay, 0)
     assert "crop_revenue" in metrics
     assert isinstance(metrics["crop_revenue"], int)

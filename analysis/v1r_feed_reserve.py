@@ -235,7 +235,6 @@ def run_target13(package_main, seeds, targets, slot_ranges, wheat_default, out_d
         # money never $0 at a day boundary (hour 0) while animals are placed
         boundary_starved = [r for r in rows
                             if r["hour"] == 0 and r["placed"] > 0 and r["money"] <= 0.0]
-        day_reached = owned_day
         reaches_by_12 = owned_day is not None and owned_day <= 12
         no_boundary_starve = not boundary_starved
         seed_ok = reaches_by_12 and no_boundary_starve

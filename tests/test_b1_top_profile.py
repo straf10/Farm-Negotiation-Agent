@@ -1,7 +1,7 @@
 """analysis/b1_top_profile.py — the §5.1 target-profile rewrite.
 
 Day-snapshot / sell-calendar / aggregation logic is tested against hand-crafted replay
-dicts (same style as tests/test_s9_live_read_reader.py::_fake_replay) so it doesn't need
+dicts, hand-built rather than loaded from a replay file, so it doesn't need
 a full engine run. `build_profile`'s ledger integration is tested against one real
 engine episode (tests/fixtures/replays.py), so the revenue/units_sold path is exercised
 against genuine market mechanics, not a stub.

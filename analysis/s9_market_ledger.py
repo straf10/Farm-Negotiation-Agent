@@ -26,6 +26,9 @@ from engine_reference.kaggriculture import (  # noqa: E402
 )
 
 MAX_ORDERS = 10
+# Live replays often encode "sell all" as qty 1_000_000. The engine stops at shed empty;
+# this ledger does not model sheds, so uncapped simulation can loop millions of times per step.
+MAX_UNITS_PER_MARKET_PASS = 20_000
 
 
 def _parse(order):
@@ -70,6 +73,7 @@ def step_ledger(inventory, orders_by_player, hires_today=(0, 0), quadrants=(1, 1
                     spend[pid]["BUY_LAND"] += LAND_PRICES[extra]
                     quads[pid] += 1
         ostates = [None if (s and s["type"] in ("HIRE", "BUY_LAND")) else s for s in ostates]
+        units_this_pass = 0
         while True:
             quoted = [None, None]
             for pid, st in enumerate(ostates):
@@ -102,6 +106,9 @@ def step_ledger(inventory, orders_by_player, hires_today=(0, 0), quadrants=(1, 1
                     if op == "BUY_PRODUCT":
                         inv[item] -= 1
                 ostates[pid]["remaining"] -= 1
+                units_this_pass += 1
+            if units_this_pass >= MAX_UNITS_PER_MARKET_PASS:
+                break
     return revenue, units, spend, inv
 
 

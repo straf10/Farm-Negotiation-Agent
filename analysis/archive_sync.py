@@ -152,6 +152,24 @@ def _on_disk_ids(dir_: Path) -> set[int]:
 
 # --------------------------------------------------------------------------- ours
 
+def _episode_listing_text(stdout: str) -> str:
+    """Keep the CSV table and drop the CLI's trailing help sentence.
+
+    `kaggle competitions episodes -v` prints a blank line between rows and then a
+    prose hint (`Use "kaggle competitions replay ..."`). That hint is not a row.
+    A line is a row when it has the same number of comma-separated fields as the
+    header. This listing does not quote fields, so a comma count is the field count.
+    """
+    lines = [ln for ln in stdout.splitlines() if ln.strip()]
+    if not lines:
+        return ""
+    width = lines[0].count(",") + 1
+    kept = [ln for ln in lines if ln.count(",") + 1 == width]
+    if not kept:
+        return ""
+    return "\n".join(kept) + "\n"
+
+
 def sync_episodes_csv(sub: str) -> Path:
     """Run `episodes -v` for `sub` and write it to data/archive/raw/live_<sub>_episodes.csv
     (same naming as the hand-downloaded ones already on disk, e.g. live_55675634_episodes.csv)."""
@@ -159,7 +177,7 @@ def sync_episodes_csv(sub: str) -> Path:
     if not _cli_ok(r):
         raise SystemExit(f"kaggle competitions episodes {sub} failed: {r.stderr.strip()}")
     out = RAW / f"live_{sub}_episodes.csv"
-    out.write_text(r.stdout)
+    out.write_text(_episode_listing_text(r.stdout))
     return out
 
 
@@ -274,7 +292,15 @@ def build_manifest(force: bool = False) -> list[dict]:
     cache: dict[tuple, list[dict]] = defaultdict(list)
     if MANIFEST_PATH.exists() and not force:
         with open(MANIFEST_PATH, newline="") as fh:
-            for row in csv.DictReader(fh):
+            reader = csv.DictReader(fh)
+            fields = set(reader.fieldnames or [])
+            needed = {"path", "mtime", "size"}
+            if not needed.issubset(fields):
+                raise SystemExit(
+                    f"{MANIFEST_PATH} is not a provenance index (columns {sorted(fields)}). "
+                    "Pass --force to rebuild it. That replaces the file."
+                )
+            for row in reader:
                 cache[(row["path"], row["mtime"], row["size"])].append(row)
 
     rows: list[dict] = []

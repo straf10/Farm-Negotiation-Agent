@@ -27,8 +27,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from analysis.s8_replay_io import ladder_episodes, load, replay_paths  # noqa: E402
-from analysis.s9_market_ledger import episode_ledger  # noqa: E402
-from engine_reference.kaggriculture import market_price  # noqa: E402
+from analysis.s9_market_ledger import episode_ledger, step_ledger  # noqa: E402
+from engine_reference.kaggriculture import PRODUCTS, market_price  # noqa: E402
 
 # One primary submission with lots of episodes on disk; the small extra live_55726984
 # is used for the alignment lock.
@@ -54,6 +54,16 @@ def _first_n(sub: str, n: int):
 # ---------------------------------------------------------------------------
 # Layer 1 — CI (synthetic corpus, always runs)
 # ---------------------------------------------------------------------------
+
+def test_step_ledger_does_not_spin_on_million_unit_sell_orders():
+    """Live tapes use qty 1_000_000 as 'sell all'; the ledger must cap simulation."""
+    import time
+
+    inv = {p: 100 for p in PRODUCTS}
+    t0 = time.monotonic()
+    step_ledger(inv, [[["SELL", "WHEAT", 1_000_000]], []])
+    assert time.monotonic() - t0 < 2.0
+
 
 def test_cash_conservation_synthetic(synthetic_corpus):
     """Cash conservation on synthetic replays: aggregate error < 5%."""

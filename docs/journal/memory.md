@@ -8,10 +8,30 @@ does not: our own corrections, the dated decisions, the submission history, and 
 
 ---
 
-## Latest state (2026-10-12)
+## Latest state (2026-10-15)
 
-Submissions closed on 2026-09-30. The board is in its convergence window, to about 14 October. The
-final ranking has not been recorded yet.
+Submissions closed on 2026-09-30. **Leaderboard:** post-deadline snapshot
+`data/archive/raw/live_leaderboard_2026-10-15/kaggriculture-publicleaderboard-2026-10-15T08_12_48.csv`
+(08:12 UTC, 10,148 teams; STRAF rank 4,432, score 924.4) is recorded in [RECORD.md](../RECORD.md) §1.
+**`55675634` replays:** 760 files in `data/archive/raw/live_55675634/` (154 September + 606
+post-cutoff). **Top-50 profile:** `data/derived/b1_top_profile_post0930_2026-10-14.json` (see prompt
+04 close loop). **Manifest:** `data/archive/manifest.csv` is the provenance index (2,384 episodes,
+4,768 seat-rows); `manifest_daily_index.csv` keeps the old daily-dataset header.
+
+**Prompt 04 iteration log (close data / final board).**
+1. Pulled `live_leaderboard_2026-10-14` then `2026-10-15`; used the latter for §1.
+2. Downloaded 606 missing `55675634` post-cutoff replays (0 API failures).
+3. `b1_top_profile` hung on `episode-122734506` — root cause: `step_ledger` simulated 1e6-unit SELL
+   orders literally; fixed with `MAX_UNITS_PER_MARKET_PASS` in `s9_market_ledger.py` and UTF-8 manifest
+   read in `b1_top_profile.py`.
+4. Copied `manifest.csv` → `manifest_daily_index.csv`, then `archive_sync.py manifest --force`.
+
+Prior review: [REVIEW_2026-10-14.md](../post_mortem/REVIEW_2026-10-14.md).
+
+## State on 2026-10-12
+
+Submissions closed on 2026-09-30. The board was in its convergence window. The final ranking had not
+been recorded yet.
 
 **Session 2026-10-12, post-deadline data refresh** (run by the parallel agent under `prompts/01`):
 
@@ -157,16 +177,15 @@ Short form. The engine-level reasons and the full rows are in [RECORD.md](../REC
 - **v1c NE land expansion (2026-08-05):** three capacity and routing variants failed the smoke gate.
   Reverted exactly; the animals step did not proceed while v1c was regressive.
 
-## 7. Open items (as of 2026-10-12)
+## 7. Open items (as of 2026-10-15)
 
 - **Submissions are closed.** The deadline was 2026-09-30 23:59 UTC. Ship B component (i) and the glut
   test (row 31) were never built or uploaded, and can no longer be submitted. They stay here as the
   record of what was not done.
-- **Final ranking:** not yet recorded. It is one Bradley-Terry over post-deadline episodes, and the
-  board settles around 14 October. Record it in [RECORD.md](../RECORD.md) §1 once final.
-- **Superseded copies:** `data/archive/superseded_2026-10-12/` (619 MB) awaits your decision.
-- **Pipeline gaps from the refresh:** the top-50 profile is not produced, and the provenance manifest
-  needs a `--force` rebuild.
+- **Superseded copies:** `data/archive/superseded_2026-10-12/` measures 648.2 MB (12 files). The
+  review recommends keeping it. Deletion is still your decision.
+- **Notebook proposals:** wording for RECORD §10 and §11 is still only proposed in
+  [NOTEBOOK_META.md](../NOTEBOOK_META.md) §6. It was not merged.
 - **Still unexplained:** the gap of about 1,036 points to the donor at #9, and the ghost upload
   55387820. See [RECORD.md](../RECORD.md) §11.
 

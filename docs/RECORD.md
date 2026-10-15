@@ -23,11 +23,17 @@ Where a doc and the engine disagree, the engine wins.
   played until about 2026-10-15. Record it here from the final leaderboard.
 - Prize structure: ten equal prizes of $5,000 for places 1-10. The target was a stable top 10, not
   rank 1.
-- **Update 2026-10-12 (board snapshot 15:19 UTC, 10,148 teams).** STRAF rank 4,479, score 909.6.
-  Public scores have deflated since 1 September: `55726984` is 903.5 and `55675634` is 865.5 (not
-  re-collected). Scores are not comparable across dates, so use ranks. The top 10 is led by
-  M & M & P & Q at 3,298.0. Submissions closed on 2026-09-30. The final Bradley-Terry ranking is still
-  to be recorded here once the board settles, around 2026-10-14.
+- **Update 2026-10-15 (board snapshot 08:12 UTC, 10,148 teams).** Source file:
+  `data/archive/raw/live_leaderboard_2026-10-15/kaggriculture-publicleaderboard-2026-10-15T08_12_48.csv`.
+  STRAF rank 4,432, score 924.4. The two final submissions' public scores from the API (same date):
+  `55726984` 924.4, `55675634` 880.8. Scores are not comparable across dates, so use ranks. Top 10:
+  M & M & P & Q 3,314.1; Victor @ Tufa Labs 3,260.1; DSM 3,161.8; CDE 3,062.8; DECEM 3,054.0;
+  有辣条有权 3,042.6; Farmcore 3,019.3; Anton Tikhonov 2,961.0; TKNP 2,939.5; tetsuya & yuanzhe &
+  guoqin 2,931.9. Submissions closed 2026-09-30. The Kaggle competition deadline was 2026-10-14
+  23:59 UTC; the downloaded CSV has no explicit "final" flag — this is the post-deadline public
+  leaderboard snapshot used here as the settled standing.
+- **Earlier snapshot 2026-10-12 (15:19 UTC).** STRAF rank 4,479, score 909.6; kept under
+  `data/archive/raw/live_leaderboard_2026-10-12/`.
 
 **The honest headline.** Both final submissions replay a decoded action tape of another team's
 policy, with a thin closed-loop overlay. They are not an original strategy. Our own heuristic agent

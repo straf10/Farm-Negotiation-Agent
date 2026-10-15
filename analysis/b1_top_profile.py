@@ -278,7 +278,7 @@ def main() -> int:
     args = ap.parse_args()
 
     sel_path = Path(args.selection)
-    sel = json.loads(sel_path.read_text())
+    sel = json.loads(sel_path.read_text(encoding="utf-8"))
     selection = sel.get("selection", sel)  # accept either the wrapper or a bare {team: [...]} map
 
     profile = build_profile(selection)

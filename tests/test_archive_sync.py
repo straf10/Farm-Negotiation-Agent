@@ -205,6 +205,33 @@ def test_sync_episodes_csv_writes_expected_filename(tmp_path, monkeypatch):
     assert out.read_text() == "id,createTime\n1,2026-08-01\n"
 
 
+def test_sync_episodes_csv_drops_cli_help_footer(tmp_path, monkeypatch):
+    monkeypatch.setattr(asy, "RAW", tmp_path)
+    stdout = (
+        "id,createTime,endTime,state,type\n"
+        "\n"
+        "1,2026-08-01,2026-08-01,EpisodeState.COMPLETED,EpisodeType.EPISODE_TYPE_PUBLIC\n"
+        "\n"
+        'Use "kaggle competitions replay <episode_id>" to download a replay\n'
+    )
+    monkeypatch.setattr(asy, "_run_kaggle", lambda args, **kw: _fake_completed(stdout=stdout))
+    out = asy.sync_episodes_csv("999")
+    text = out.read_text()
+    assert "Use " not in text
+    assert text == (
+        "id,createTime,endTime,state,type\n"
+        "1,2026-08-01,2026-08-01,EpisodeState.COMPLETED,EpisodeType.EPISODE_TYPE_PUBLIC\n"
+    )
+
+
+def test_build_manifest_rejects_a_non_provenance_cache(tmp_path, monkeypatch):
+    monkeypatch.setattr(asy, "RAW", tmp_path)
+    monkeypatch.setattr(asy, "MANIFEST_PATH", tmp_path / "manifest.csv")
+    (tmp_path / "manifest.csv").write_text("date,daily_dataset_slug\n2026-08-01,slug\n", encoding="utf-8")
+    with pytest.raises(SystemExit, match="--force"):
+        asy.build_manifest()
+
+
 def test_cmd_ours_reports_missing_and_downloads(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(asy, "RAW", tmp_path)
     ep_csv = (
